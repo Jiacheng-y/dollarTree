@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { SafeAreaView, TextInput, Pressable, Text, Keyboard, StyleSheet, View } from 'react-native';
+import { logout } from "../firebase";
 
 const HomeScreen = ({ navigation }) => {
     return (
@@ -27,6 +28,13 @@ const HomeScreen = ({ navigation }) => {
                         </Text>
                 </Pressable>
             </View>
+
+            <Pressable 
+                style={styles.logOut}
+                onPress={logout}>
+                <Text style={{color: 'white'}}>Log Out</Text>
+            </Pressable>
+
         </SafeAreaView>
     )
 
@@ -51,6 +59,16 @@ const HomeScreen = ({ navigation }) => {
             fontSize: 20, 
             color: 'white', 
             fontWeight: 'bold'
+        },
+        logOut: {
+            height: 55,
+            width: 150,
+            backgroundColor: '#2962ff',
+            borderRadius: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 650,
+            marginLeft: 5
         }
     })
 }
