@@ -1,6 +1,8 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore'
 
+//initialise Firebase
 const firebaseApp = initializeApp({
     apiKey: "AIzaSyABi00gBjrUfJEujGU6u2I1OxGHTRpcBuM",
     authDomain: "dollartree-6eb49.firebaseapp.com",
@@ -11,7 +13,10 @@ const firebaseApp = initializeApp({
     measurementId: "G-84WRZPE0JB"
 }); 
 
-const auth = getAuth(firebaseApp);
+const auth = getAuth();
+
+//database
+const db = getFirestore(firebaseApp);
 
 export const loginEmailPassword = async (loginEmail, loginPassword) => {
     try {
@@ -30,3 +35,5 @@ export const signupEmailPassword = async (loginEmail, loginPassword) => {
     //     showAuthError(error);
     }
 }
+
+export {db};
