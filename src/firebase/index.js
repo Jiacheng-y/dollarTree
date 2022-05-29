@@ -1,8 +1,13 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore'
+import { 
+    getAuth, 
+    signInWithEmailAndPassword, 
+    createUserWithEmailAndPassword, 
+    onAuthStateChanged,
+    signOut
+} from 'firebase/auth';
+import { useState } from 'react';
 
-//initialise Firebase
 const firebaseApp = initializeApp({
     apiKey: "AIzaSyABi00gBjrUfJEujGU6u2I1OxGHTRpcBuM",
     authDomain: "dollartree-6eb49.firebaseapp.com",
@@ -13,10 +18,7 @@ const firebaseApp = initializeApp({
     measurementId: "G-84WRZPE0JB"
 }); 
 
-const auth = getAuth();
-
-//database
-const db = getFirestore(firebaseApp);
+const auth = getAuth(firebaseApp);
 
 export const loginEmailPassword = async (loginEmail, loginPassword) => {
     try {
@@ -36,4 +38,12 @@ export const signupEmailPassword = async (loginEmail, loginPassword) => {
     }
 }
 
-export {db};
+export const logout = async () => {
+    await signOut(auth);
+}
+
+export const authState = () => {
+    const [isSignedIn, setIsSignedIn] = useState(false);   
+    onAuthStateChanged(auth, (user) => user ? setIsSignedIn(true) : setIsSignedIn(false));         
+    return isSignedIn;
+}
