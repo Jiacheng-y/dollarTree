@@ -57,9 +57,10 @@ export const authState = () => {
 
 export const db = getFirestore(firebaseApp);
 
-export const addItem = (text, category) => {
+export const addItem = (object, category) => {
     const thisUserID = auth.currentUser.uid;
     addDoc(collection(db, "users", `${thisUserID}`, `${category}`), {
-        expense: text
+        category: object.category,
+        amount: object.amount
     })
 }
