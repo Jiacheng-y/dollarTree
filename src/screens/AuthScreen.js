@@ -1,4 +1,3 @@
-import { AuthErrorCodes } from 'firebase/auth';
 import React, { useState } from 'react';
 import { SafeAreaView, TextInput, Pressable, Text, Keyboard, StyleSheet, View } from 'react-native';
 import { loginEmailPassword, signupEmailPassword } from '../firebase';
@@ -108,5 +107,3 @@ const styles = StyleSheet.create({
         marginHorizontal: 15
     }
 })
-//cae1ff
-//ebecf0
