@@ -14,4 +14,11 @@ import {
 } from 'react-native';
 import { query, collection, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore';
 
+export const BudgetScreen = ({ navigation }) => {
+    return (
+        <SafeAreaView style={{marginTop: 135, alignItems: "center"}}>
+
+        </SafeAreaView>
+    );
+};
 

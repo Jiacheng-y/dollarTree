@@ -13,3 +13,11 @@ import {
     Keyboard,
 } from 'react-native';
 import { query, collection, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore';
+
+export const InOutFlowScreen = ({ navigation }) => {
+    return (
+        <SafeAreaView style={{marginTop: 135, alignItems: "center"}}>
+
+        </SafeAreaView>
+    );
+};
