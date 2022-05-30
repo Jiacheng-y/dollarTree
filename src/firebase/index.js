@@ -6,6 +6,7 @@ import {
     onAuthStateChanged,
     signOut
 } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 import { useState } from 'react';
 
 const firebaseApp = initializeApp({
@@ -19,6 +20,7 @@ const firebaseApp = initializeApp({
 }); 
 
 const auth = getAuth(firebaseApp);
+export const db = getFirestore(firebaseApp);
 
 export const loginEmailPassword = async (loginEmail, loginPassword) => {
     try {
