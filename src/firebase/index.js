@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, addDoc, setDoc, doc, onSnapshot } from 'firebase/firestore'; 
 import { 
     getAuth, 
     signInWithEmailAndPassword, 
@@ -6,7 +7,6 @@ import {
     onAuthStateChanged,
     signOut
 } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
 import { useState } from 'react';
 
 const firebaseApp = initializeApp({
@@ -19,8 +19,7 @@ const firebaseApp = initializeApp({
     measurementId: "G-84WRZPE0JB"
 }); 
 
-const auth = getAuth(firebaseApp);
-export const db = getFirestore(firebaseApp);
+export const auth = getAuth(firebaseApp);
 
 export const loginEmailPassword = async (loginEmail, loginPassword) => {
     try {
@@ -33,7 +32,13 @@ export const loginEmailPassword = async (loginEmail, loginPassword) => {
 
 export const signupEmailPassword = async (loginEmail, loginPassword) => {
     try {
-        const userCredential = await createUserWithEmailAndPassword(auth, loginEmail, loginPassword);
+        await createUserWithEmailAndPassword(auth, loginEmail, loginPassword)
+            .then((userCredential) => {
+                setDoc(doc(db, "users", userCredential.user.uid), {
+                    id: userCredential.user.uid,
+                    email: userCredential.user.email
+                });
+            })
     }
     catch (error) {
     //     showAuthError(error);
@@ -48,4 +53,13 @@ export const authState = () => {
     const [isSignedIn, setIsSignedIn] = useState(false);   
     onAuthStateChanged(auth, (user) => user ? setIsSignedIn(true) : setIsSignedIn(false));         
     return isSignedIn;
+}
+
+export const db = getFirestore(firebaseApp);
+
+export const addItem = (text, category) => {
+    const thisUserID = auth.currentUser.uid;
+    addDoc(collection(db, "users", `${thisUserID}`, `${category}`), {
+        expense: text
+    })
 }
