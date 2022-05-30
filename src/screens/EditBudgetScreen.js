@@ -11,7 +11,7 @@ import {
     ToastAndroid,
     Keyboard,
 } from 'react-native';
-import { db } from '../firebase';
+import { db, auth } from '../firebase';
 import { query, collection, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore';
 
 export const EditBudgetScreen = ({ navigation }) => {
@@ -23,10 +23,14 @@ export const EditBudgetScreen = ({ navigation }) => {
         if (budgetCat.length === 0) {
             showRes('Budget Category cannot be empty!');
             return;
+        } else if (budget.length === 0) {
+            showRes('Amount cannot be empty!');
+            return;
         }
 
         try {
-            const budgetRef = await addDoc(collection(db, 'budgets'), {
+            const q = collection(db, "users", `${auth.currentUser.uid}` , "budgets");
+            const budgetRef = await addDoc(q , {
                 category: budgetCat,
                 amount: budget
             });
@@ -62,8 +66,9 @@ export const EditBudgetScreen = ({ navigation }) => {
                         style={styles.budgetInput}
                     />
                     <TextInput
+                        keyboardType='numeric'
                         onChangeText={setBudget}
-                        value={budget}
+                        value={budget.toString()}
                         placeholder={'Enter budget amount'}
                         style={styles.budgetInput}
                     />

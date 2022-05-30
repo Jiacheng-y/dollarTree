@@ -12,7 +12,7 @@ import {
     ToastAndroid,
     Keyboard,
 } from 'react-native';
-import { db } from '../firebase';
+import { db, auth } from '../firebase';
 import { query, collection, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore';
 import { Item } from '../Components/Item';
 import { Platform } from 'react-native-web';
@@ -22,7 +22,7 @@ export const BudgetScreen = ({ navigation }) => {
     const [budgetList, setBudgetList] = useState([]);
 
     useEffect(() => {
-        const budgetQuery = query(collection(db, "budgets"));
+        const budgetQuery = query(collection(db, "users", `${auth.currentUser.uid}` , "budgets"));
 
         const subscriber = onSnapshot(budgetQuery, (snapshot) => {
             const budgets = [];
@@ -42,7 +42,7 @@ export const BudgetScreen = ({ navigation }) => {
 
     const onDeleteHandler = async (id) => {
         try {
-            await deleteDoc(doc(db, 'budgets', id));
+            await deleteDoc(doc(db, 'users', `${auth.currentUser.uid}`, 'budgets', id));
 
             console.log("successfully deleted");
 
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }, 
     buttonText: {
-        fontSize: 10,
+        fontSize: 20,
         color: 'white'
     }
 })
