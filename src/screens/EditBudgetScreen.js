@@ -11,7 +11,7 @@ import {
     ToastAndroid,
     Keyboard,
 } from 'react-native';
-import { db, auth } from '../firebase';
+import { db, auth, addItem } from '../firebase';
 import { query, collection, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore';
 
 export const EditBudgetScreen = ({ navigation }) => {
@@ -23,12 +23,13 @@ export const EditBudgetScreen = ({ navigation }) => {
         if (budgetCat.length === 0) {
             showRes('Budget Category cannot be empty!');
             return;
-        } else if (budget.length === 0) {
-            showRes('Amount cannot be empty!');
+        } else if (budget === 0) {
+            showRes('Amount cannot be 0!');
             return;
         }
 
         try {
+
             const q = collection(db, "users", `${auth.currentUser.uid}` , "budgets");
             const budgetRef = await addDoc(q , {
                 category: budgetCat,
@@ -54,7 +55,7 @@ export const EditBudgetScreen = ({ navigation }) => {
 
     return (
         <KeyboardAvoidingView
-            style={{ flex: 1 }}
+            style={{ backgroundColor: 'white', padding: 20, flex: 1 }}
             behavior={Platform.OS === 'ios' ? 'padding' : null}
         >
             <SafeAreaView style={styles.container}>
@@ -100,15 +101,18 @@ const styles = StyleSheet.create({
     budgetInput: {
         width: Dimensions.get('window').width*0.7, 
         padding: 10,
-        borderWidth: 2, 
         borderRadius: 10,
+        //borderWidth: 1,
+        backgroundColor: '#eef5ff',
+        margin: 10
     }, 
     button: {
         width: Dimensions.get('window').width*0.7, 
         padding: 10, 
-        borderWidth: 2,
         borderRadius: 10, 
+        margin: 10, 
         backgroundColor: '#2962ff',
+        alignItems: 'center',
         justifyContent: 'center'
     }, 
     buttonText: {

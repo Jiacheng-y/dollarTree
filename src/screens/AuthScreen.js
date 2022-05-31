@@ -23,6 +23,7 @@ export const AuthScreen = () => {
                 />
                 <Text style={styles.entryName}>Password</Text>
                 <TextInput
+                    secureTextEntry={true}
                     style={styles.entryBox}
                     placeholder='Password'
                     value={inputPassword}

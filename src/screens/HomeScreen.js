@@ -6,8 +6,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 export const HomeScreen = ({ navigation }) => {
     return (
-        <SafeAreaView style={{marginTop: 135, alignItems: "center"}}>
-            <Text style={StyleSheet.header}>
+        <SafeAreaView style={{backgroundColor: 'white', flex: 1, padding: 80, alignItems: "center"}}>
+            <Text style={styles.header}>
                 Welcome to dollarTree! 
             </Text>
 
@@ -43,8 +43,8 @@ export const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     header: {
         textAlign: 'center',
-        fontSize: 45, 
-        marginVertical: 30, 
+        fontSize: 40, 
+        marginVertical: 10, 
         fontFamily: 'San Francisco'
     }, 
     button: {
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     },
     options: {
         textAlign: 'center', 
-        fontSize: 10, 
+        fontSize: 12, 
         color: 'white', 
     },
     logOut: {

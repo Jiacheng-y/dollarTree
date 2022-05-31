@@ -53,7 +53,7 @@ export const BudgetScreen = ({ navigation }) => {
 
     return (
         <KeyboardAvoidingView
-        style={{flex: 1}}
+        style={{backgroundColor: 'white', flex: 1}}
         behaviour={Platform.OS === 'ios' ? 'padding' : null}>
             <SafeAreaView style={styles.container}>
                 <View style={styles.listContainer}>
