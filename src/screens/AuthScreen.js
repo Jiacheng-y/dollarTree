@@ -7,7 +7,7 @@ export const AuthScreen = () => {
     const [inputPassword, setInputPassword] = useState('');
 
     return (
-        <SafeAreaView style={{marginTop: 135, alignItems: "center"}}>
+        <SafeAreaView style={{alignItems: "center"}}>
 
             <Text style={styles.header}>
                 Enter dollarTree
