@@ -10,6 +10,10 @@ import { setDoc, doc } from 'firebase/firestore';
 import { auth } from '../firebase';
 
 export const AuthScreen = ({setAuthState}) => {
+    const [inputEmail, setInputEmail] = useState('');
+    const [inputPassword, setInputPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState(''); 
+
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -20,8 +24,35 @@ export const AuthScreen = ({setAuthState}) => {
         });
     }, []);
 
-    const [inputEmail, setInputEmail] = useState('');
-    const [inputPassword, setInputPassword] = useState('');
+    const logInEmailPassword = async (loginEmail, loginPassword) => {
+        try {
+            await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+        } 
+        catch (error) {
+            setErrorMessage("Wrong email or password.")
+        }
+    }
+    
+    const signUpEmailPassword = async (loginEmail, loginPassword) => {
+        try {
+           await createUserWithEmailAndPassword(auth, loginEmail, loginPassword)
+                    .then((userCredential) => {
+                        setDoc(doc(db, "users", userCredential.user.uid), {
+                            id: userCredential.user.uid,
+                            email: userCredential.user.email
+                        });
+                    });
+        }
+        catch (error) {
+            if (error.code === 'auth/email-already-in-use') {
+                setErrorMessage("Email already exists.")
+            } else if (error.code === 'auth/invalid-email' || error.code === 'auth/invalid-password') {
+                setErrorMessage("Invalid email or password.")
+            } else {
+                setErrorMessage("Error.")
+            }
+        }
+    }
 
     return (
         <SafeAreaView style={{alignItems: "center"}}>
@@ -70,24 +101,10 @@ export const AuthScreen = ({setAuthState}) => {
                 </Pressable>
             </View>
             
-            {/* <ErrorMessage 
-                error= /> */}
+            <Text style={styles.errorMessage}>{errorMessage}</Text>
         </SafeAreaView>
     )
 }
-
-// const ErrorMessage = ({error}) => {
-//     var errorMessage;
-//     if (error === AuthErrorCodes.INVALID_PASSWORD || error === AuthErrorCodes.INVALID_EMAIL) {
-//         errorMessage = "Wrong email or password. Try again."
-//     } else {
-//         errorMessage = "Error"
-//     }
-
-//     return (
-//         <Text>{errorMessage}</Text>
-//     )
-// }
 
 const styles = StyleSheet.create({
     header: {
@@ -124,31 +141,16 @@ const styles = StyleSheet.create({
         fontSize: 20, 
         color: 'white', 
         fontWeight: 'bold'
+    },
+    errorMessage: {
+        fontSize: 20,
+        marginTop: 25,
+        fontWeight: 'bold',
+        color: 'red'
     }
 })
 
-const logInEmailPassword = async (loginEmail, loginPassword) => {
-    try {
-        await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
-    } 
-    catch (error) {
-    }
-}
-
-const signUpEmailPassword = async (loginEmail, loginPassword) => {
-    try {
-       await createUserWithEmailAndPassword(auth, loginEmail, loginPassword)
-                .then((userCredential) => {
-                    setDoc(doc(db, "users", userCredential.user.uid), {
-                        id: userCredential.user.uid,
-                        email: userCredential.user.email
-                    });
-                });
-    }
-    catch (error) {
-    }
-}
-
 export const signOutEmailPassword = async () => {
     await signOut(auth);
+    setErrorMessage("");
 }
