@@ -1,19 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, TextInput, Pressable, Text, Keyboard, StyleSheet, View } from 'react-native';
-import { loginEmailPassword, signupEmailPassword } from '../firebase';
+import { 
+    signInWithEmailAndPassword, 
+    createUserWithEmailAndPassword, 
+    onAuthStateChanged,
+    signOut
+} from 'firebase/auth';
+import { setDoc, doc } from 'firebase/firestore'; 
+import { auth } from '../firebase';
 
-export const AuthScreen = () => {
+export const AuthScreen = ({setAuthState}) => {
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setAuthState(true);
+            } else {
+                setAuthState(false);
+            }
+        });
+    }, []);
+
     const [inputEmail, setInputEmail] = useState('');
     const [inputPassword, setInputPassword] = useState('');
 
     return (
         <SafeAreaView style={{alignItems: "center"}}>
-
             <Text style={styles.header}>
                 Enter dollarTree
             </Text>
 
-            <View style={{width: 350, alignSelf: "center"}}>
+            <View style={{width: 350}}>
                 <Text style={styles.entryName}>Email</Text>
                 <TextInput
                     style={styles.entryBox}
@@ -30,26 +46,27 @@ export const AuthScreen = () => {
                 />
                 <Text style={styles.footnote}>At least 6 characters</Text>
              </View>
+
              <View style={{flexDirection: 'row'}}>
                 <Pressable 
-                    style={styles.submit}
+                    style={styles.button}
                     onPress={() => {
-                        loginEmailPassword(inputEmail, inputPassword);
+                        logInEmailPassword(inputEmail, inputPassword);
                         Keyboard.dismiss;
                         setInputEmail('');
                         setInputPassword('');
                     }}>
-                    <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold'}}>Log In</Text>
+                    <Text style={styles.buttonText}>Log In</Text>
                 </Pressable>
                 <Pressable 
-                    style={styles.submit}
+                    style={styles.button}
                     onPress={() => {
-                        signupEmailPassword(inputEmail, inputPassword);
+                        signUpEmailPassword(inputEmail, inputPassword);
                         Keyboard.dismiss;
                         setInputEmail('');
                         setInputPassword('');
                     }}>
-                    <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold'}}>Sign Up</Text>
+                    <Text style={styles.buttonText}>Sign Up</Text>
                 </Pressable>
             </View>
             
@@ -74,10 +91,8 @@ export const AuthScreen = () => {
 
 const styles = StyleSheet.create({
     header: {
-        textAlign: 'center',
         fontSize: 45, 
-        marginVertical: 30,
-        fontFamily: 'San Francisco'
+        marginVertical: 30
     },
     entryName: {
         fontSize: 20,
@@ -87,7 +102,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#eef5ff',
         height: 55,
         width: 350,
-        alignSelf: 'center',
         borderRadius: 10,
         fontSize: 20,
         padding: 15
@@ -97,7 +111,7 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginBottom: 45
     },
-    submit: {
+    button: {
         height: 55,
         width: 150,
         backgroundColor: '#2962ff',
@@ -105,5 +119,36 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginHorizontal: 15
+    },
+    buttonText: {
+        fontSize: 20, 
+        color: 'white', 
+        fontWeight: 'bold'
     }
 })
+
+const logInEmailPassword = async (loginEmail, loginPassword) => {
+    try {
+        await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+    } 
+    catch (error) {
+    }
+}
+
+const signUpEmailPassword = async (loginEmail, loginPassword) => {
+    try {
+       await createUserWithEmailAndPassword(auth, loginEmail, loginPassword)
+                .then((userCredential) => {
+                    setDoc(doc(db, "users", userCredential.user.uid), {
+                        id: userCredential.user.uid,
+                        email: userCredential.user.email
+                    });
+                });
+    }
+    catch (error) {
+    }
+}
+
+export const signOutEmailPassword = async () => {
+    await signOut(auth);
+}
