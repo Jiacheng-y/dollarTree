@@ -7,7 +7,7 @@ import {
     signOut
 } from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore'; 
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 
 export const AuthScreen = ({setAuthState}) => {
     const [inputEmail, setInputEmail] = useState('');
