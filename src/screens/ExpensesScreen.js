@@ -21,6 +21,9 @@ export const ExpensesScreen = ({ navigation }) => {
                     ... doc.data()
                 }); 
             })
+            items.sort((a, b) => {
+                return parseInt(a.date.split("/")[0]) - parseInt(b.date.split("/")[0]);
+            });
             setList(items);
         })
     }, []);
@@ -32,11 +35,10 @@ export const ExpensesScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
             <FlatList
-             data={list}
-                renderItem={({item, index}) => (
+                data={list}
+                renderItem={({item}) => (
                     <ExpenseEntry
                         data={item}
-                        key={index}
                         onDelete={deleteItem}>
                     </ExpenseEntry>
                 )} 
