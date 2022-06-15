@@ -1,8 +1,5 @@
-import { NavigationContainer } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { SafeAreaView, TextInput, Pressable, Text, Keyboard, StyleSheet, View } from 'react-native';
-import { logout } from "../firebase";
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { SafeAreaView, Pressable, Text, StyleSheet, View } from 'react-native';
+import { signOutEmailPassword } from './AuthScreen';
 
 export const HomeScreen = ({ navigation }) => {
     return (
@@ -14,7 +11,7 @@ export const HomeScreen = ({ navigation }) => {
             <View style={{flexDirection: 'column', }}>
                 <Pressable 
                     style={styles.button}
-                    onPress={() => {navigation.navigate('InOutFlow')}}
+                    onPress={() => {navigation.navigate('Expenses')}}
                     android_ripple={{color:'#FFF'}}>
                         <Text style={styles.options}>
                             My Expenses
@@ -32,7 +29,7 @@ export const HomeScreen = ({ navigation }) => {
 
             <Pressable 
                 style={styles.logOut}
-                onPress={logout}>
+                onPress={signOutEmailPassword}>
                 <Text style={{color: 'white'}}>Log Out</Text>
             </Pressable>
 

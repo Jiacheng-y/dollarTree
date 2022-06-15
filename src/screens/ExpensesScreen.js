@@ -1,18 +1,19 @@
-import { SafeAreaView, Text, StyleSheet, TextInput, FlatList, View, Pressable } from "react-native";
+import { SafeAreaView, Text, StyleSheet, TextInput, FlatList, Pressable } from "react-native";
 import React, { useState, useEffect } from 'react';
-import { addItem } from "../firebase";
 import { db, auth } from "../firebase";
 import { query, collection, doc, onSnapshot, deleteDoc } from "firebase/firestore";
 import { Item } from "../Components/Item";
 
-export const InOutFlowScreen = () => {
+export const ExpensesScreen = () => {
     const [list, setList] = useState([]);
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState(0);
 
+    const thisUserID = auth.currentUser.uid;
+
     useEffect(() => {
-        const q = query(collection(db, "users", `${auth.currentUser.uid}`, "Expenses"));
-        const subscriber = onSnapshot(q, (snapshot) => {
+        const q = query(collection(db, "users", `${thisUserID}`, "Expenses"));
+        onSnapshot(q, (snapshot) => {
             const items = [];
             snapshot.forEach((doc) => {
                 items.push({
@@ -22,11 +23,17 @@ export const InOutFlowScreen = () => {
             })
             setList(items);
         })
-        return subscriber;
     }, []);
+    
+    const addItem = async (object) => {
+        await addDoc(collection(db, "users", `${thisUserID}`, "Expenses"), {
+            category: object.category,
+            amount: object.amount
+        })
+    }
 
     const deleteItem = async (id) => {
-        await deleteDoc(doc(db, "users", `${auth.currentUser.uid}`, "Expenses", `${id}`));
+        await deleteDoc(doc(db, "users", `${thisUserID}`, "Expenses", `${id}`));
     }
 
     return (
@@ -96,3 +103,4 @@ const styles = StyleSheet.create({
         marginVertical: 10
     }
 })
+
