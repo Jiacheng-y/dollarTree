@@ -6,6 +6,7 @@ import { BudgetScreen } from './src/screens/BudgetScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { ExpensesScreen } from './src/screens/ExpensesScreen';
 import { EditBudgetScreen } from './src/screens/EditBudgetScreen';
+import { EditExpensesScreen } from './src/screens/EditExpensesScreen';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Provider } from 'react-redux';
 import { store } from './src/store';
@@ -15,7 +16,7 @@ export default App = () => {
   return (
     <Provider store={store}>
       <NavigationContainer>
-          <ScreenManager/>
+          <ScreenManager />
       </NavigationContainer>
     </Provider>
   );
@@ -58,7 +59,8 @@ const Tabs = () => {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Budget" component={BudgetNavigator} 
         options={{ headerShown: false }}/>
-      <Tab.Screen name="Expenses" component={ExpensesScreen} />
+      <Tab.Screen name="Expenses" component={ExpensesNavigator} 
+        options={{ headerShown: false }}/>
     </Tab.Navigator>
     );
 };
@@ -73,6 +75,21 @@ const BudgetNavigator = () => {
           <Stack.Screen
               name="EditBudget"
               component={EditBudgetScreen}
+          />
+        </Stack.Navigator>
+  );
+};
+
+const ExpensesNavigator = () => {
+  return (
+    <Stack.Navigator>
+          <Stack.Screen
+              name="Expenses"
+              component={ExpensesScreen}
+          />
+          <Stack.Screen
+              name="Add Expenses"
+              component={EditExpensesScreen}
           />
         </Stack.Navigator>
   );

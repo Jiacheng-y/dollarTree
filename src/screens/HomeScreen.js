@@ -41,8 +41,7 @@ const styles = StyleSheet.create({
     header: {
         textAlign: 'center',
         fontSize: 40, 
-        marginVertical: 10, 
-        fontFamily: 'San Francisco'
+        marginVertical: 10
     }, 
     button: {
         height: 50, 

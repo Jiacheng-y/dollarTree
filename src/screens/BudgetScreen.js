@@ -89,8 +89,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     }, 
     header: {
-        fontSize: 45, 
-        fontFamily: 'San Fransico', 
+        fontSize: 45,  
         textAlign: 'left', 
         margin: 10
     },
