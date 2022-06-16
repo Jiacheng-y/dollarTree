@@ -3,17 +3,19 @@ import React, { useState, useEffect } from 'react';
 import { db, auth } from "../firebase";
 import { query, collection, doc, onSnapshot, deleteDoc } from "firebase/firestore";
 import { ExpenseEntry } from '../Components/ExpenseEntry';
+import { MonthPicker } from "../Components/MonthPicker";
 
 export const ExpensesScreen = ({ navigation }) => {
-    const [month, setMonth] = useState(new Date().getMonth() + 1);
-    const [year, setYear] = useState(new Date().getFullYear());
+    const [time, setTime] = useState([new Date().getMonth() + 1, new Date().getFullYear()]); 
+    const month = time[0];
+    const year = time[1];
     const [list, setList] = useState([]);
 
     const thisUserID = auth.currentUser.uid;
 
     useEffect(() => {
         const q = query(collection(db, "users", `${thisUserID}`, "Expenses", `${year}`, `${month}`));
-        onSnapshot(q, (snapshot) => {
+        const unsubscribe = onSnapshot(q, (snapshot) => {
             const items = [];
             snapshot.forEach((doc) => {
                 items.push({
@@ -25,8 +27,9 @@ export const ExpensesScreen = ({ navigation }) => {
                 return parseInt(a.date.split("/")[0]) - parseInt(b.date.split("/")[0]);
             });
             setList(items);
-        })
-    }, []);
+        });
+        return () => { unsubscribe(); }
+    }, [month, year]);
 
     const deleteItem = async (id) => {
         await deleteDoc(doc(db, "users", `${thisUserID}`, "Expenses", `${year}`, `${month}`, `${id}`));
@@ -46,10 +49,13 @@ export const ExpensesScreen = ({ navigation }) => {
             <Pressable
                 style={styles.button}
                 onPress={() => { 
-                    navigation.navigate('Add Expenses');
+                    navigation.navigate('Add Expenses', year, month);
                 }}>
                 <Text style={{fontSize: 20}}>Add Expense</Text>
             </Pressable>
+            <MonthPicker
+                setTime={setTime}
+            />
         </SafeAreaView>
     )
 }
