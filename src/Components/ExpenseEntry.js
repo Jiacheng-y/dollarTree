@@ -14,7 +14,8 @@ export const ExpenseEntry = ({data, onDelete}) => {
             <Text style={styles.taskText}>{data.date}</Text>
             <Text style={styles.taskText}>{data.description}</Text>
             <Text style={styles.taskText}>{data.amount}</Text>
-            <DeleteIcon />
+            <Text style={styles.taskText}>{data.category}</Text>
+            <DeleteIcon /> 
         </View>
     );
 }

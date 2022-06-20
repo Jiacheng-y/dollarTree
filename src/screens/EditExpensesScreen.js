@@ -1,14 +1,16 @@
-import { SafeAreaView, Text, StyleSheet, TextInput, Pressable, Button } from "react-native";
+import { SafeAreaView, Text, StyleSheet, TextInput, Pressable } from "react-native";
 import React, { useState } from 'react';
 import { db, auth } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { DatePicker } from "../Components/DatePicker";
+import { CategoryPicker } from "../Components/CategoryPicker";
 
-export const EditExpensesScreen = ({ navigation }) => {
+export const EditExpensesScreen = ({ navigation, year, month }) => {
     const [date, setDate] = useState(new Date());
     const formattedDate = `${date.getDate()}` + "/" + `${date.getMonth() + 1}` + "/" + `${date.getFullYear()}`;
     const [amount, setAmount] = useState(0);
     const [description, setDescription] = useState('');
+    const [category, setCategory] = useState(null);
     
     const thisUserID = auth.currentUser.uid;
 
@@ -16,7 +18,8 @@ export const EditExpensesScreen = ({ navigation }) => {
         await addDoc(collection(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`), {
             date: object.date,
             description: object.description,
-            amount: object.amount
+            amount: object.amount,
+            category: object.category
         })
     }
 
@@ -39,10 +42,16 @@ export const EditExpensesScreen = ({ navigation }) => {
                 onChangeText={setAmount}
                 value={amount}>
             </TextInput>
+            <CategoryPicker 
+                category={category}
+                setCategory={setCategory}
+                year={year}
+                month={month}
+            />
             <Pressable
                 style={styles.button}
                 onPress={() => { 
-                    addItem({date: formattedDate, description: description, amount: amount});
+                    addItem({date: formattedDate, description: description, amount: amount, category: category});
                     setDescription('');
                     setAmount('');
                     setDate(new Date());
