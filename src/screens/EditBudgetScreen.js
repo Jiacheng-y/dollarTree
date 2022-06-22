@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     StyleSheet,
     Text,
@@ -11,16 +11,24 @@ import {
     ToastAndroid,
     Keyboard,
 } from 'react-native';
-import { db, auth, addItem } from '../firebase';
+import { db, auth } from '../firebase';
 import { query, collection, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import { monthName } from '../functions/monthName';
+import MonthDropdown from '../Components/MonthDropdown';
 
 export const EditBudgetScreen = ({ navigation }) => {
-    
+
+    const [date, setDate] = useState(new Date());
+    const [month, setMonth] = useState(date.getMonth() + 1);
+    const currMonth = `${date.getMonth() + 1}`;
+
     const [budget, setBudget] = useState(0);
-    const [budgetCat, setBudgetCat] = useState('');
+    const [Category, setCategory] = useState('');
+
+    const thisUserID = auth.currentUser.uid;
 
     const onSubmitHandler = async () => {
-        if (budgetCat.length === 0) {
+        if (Category.length === 0) {
             showRes('Budget Category cannot be empty!');
             return;
         } else if (budget === 0) {
@@ -30,9 +38,10 @@ export const EditBudgetScreen = ({ navigation }) => {
 
         try {
 
-            const q = collection(db, "users", `${auth.currentUser.uid}` , "budgets");
+            const q = collection(db, "users", `${thisUserID}` , "budgets", `${date.getFullYear()}`, month);
             const budgetRef = await addDoc(q , {
-                category: budgetCat,
+                date: `${monthName(month)}`, 
+                category: Category,
                 amount: budget
             });
 
@@ -49,7 +58,7 @@ export const EditBudgetScreen = ({ navigation }) => {
 
     const clearForm = () => {
         setBudget(0);
-        setBudgetCat('');
+        setCategory('');
         Keyboard.dismiss();
     };
 
@@ -60,9 +69,13 @@ export const EditBudgetScreen = ({ navigation }) => {
         >
             <SafeAreaView style={styles.container}>
                 <View style={styles.formContainer}>
+                    <MonthDropdown
+                        style = {styles.dropdown}
+                        setMonth={setMonth}
+                    />
                     <TextInput
-                        onChangeText={setBudgetCat}
-                        value={budgetCat}
+                        onChangeText={setCategory}
+                        value={Category}
                         placeholder={'Enter the budget category'}
                         style={styles.budgetInput}
                     />
@@ -88,6 +101,12 @@ export const EditBudgetScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+    dropdown: {
+        width: Dimensions.get('window').width*0.7, 
+        padding: 10,
+        borderRadius: 10,
+        margin: 10
+    },
     container: {
         flex: 1, 
         alignItems: 'center'
@@ -96,7 +115,7 @@ const styles = StyleSheet.create({
         position: 'absolute', 
         flexDirection: 'column',
         padding: 10,
-        alignItems: 'center'
+        alignItems: 'stretch',
     }, 
     budgetInput: {
         width: Dimensions.get('window').width*0.7, 
