@@ -12,24 +12,26 @@ import {
     Keyboard,
 } from 'react-native';
 import { db, auth } from '../firebase';
-import { query, collection, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import { query, collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { monthName } from '../functions/monthName';
-import MonthDropdown from '../Components/MonthDropdown';
+import { MonthDropdown } from '../Components/MonthDropdown';
 
 export const EditBudgetScreen = ({ navigation }) => {
 
     const [date, setDate] = useState(new Date());
-    const [month, setMonth] = useState(date.getMonth() + 1);
-    const currMonth = `${date.getMonth() + 1}`;
+    const [currMonth, setMonth] = useState(date.getMonth()+1);
 
     const [budget, setBudget] = useState(0);
-    const [Category, setCategory] = useState('');
+    const [category, setCategory] = useState("");
 
     const thisUserID = auth.currentUser.uid;
 
+    var catPlaceHolder = 'Enter the budget category';
+
     const onSubmitHandler = async () => {
-        if (Category.length === 0) {
-            showRes('Budget Category cannot be empty!');
+
+        if (category.length === 0) {
+            showRes('Budget category cannot be empty!');
             return;
         } else if (budget === 0) {
             showRes('Amount cannot be 0!');
@@ -38,12 +40,14 @@ export const EditBudgetScreen = ({ navigation }) => {
 
         try {
 
-            const q = collection(db, "users", `${thisUserID}` , "budgets", `${date.getFullYear()}`, month);
+            const q = collection(db, "users", `${thisUserID}` , "budgets", `${date.getFullYear()}`, `${currMonth}`);
+            
             const budgetRef = await addDoc(q , {
-                date: `${monthName(month)}`, 
-                category: Category,
-                amount: budget
-            });
+                date: `${currMonth}`, 
+                category: category.toLocaleLowerCase(),
+                amount: parseInt(budget), 
+                expenses: 0,
+            })
 
             console.log('completed', budgetRef.id);
 
@@ -69,14 +73,15 @@ export const EditBudgetScreen = ({ navigation }) => {
         >
             <SafeAreaView style={styles.container}>
                 <View style={styles.formContainer}>
+                    <Text>{date.getFullYear()}</Text>
                     <MonthDropdown
                         style = {styles.dropdown}
                         setMonth={setMonth}
                     />
                     <TextInput
                         onChangeText={setCategory}
-                        value={Category}
-                        placeholder={'Enter the budget category'}
+                        value={category}
+                        placeholder={catPlaceHolder}
                         style={styles.budgetInput}
                     />
                     <TextInput

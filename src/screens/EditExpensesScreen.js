@@ -18,7 +18,7 @@ export const EditExpensesScreen = ({ navigation, year, month }) => {
         await addDoc(collection(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`), {
             date: object.date,
             description: object.description,
-            amount: object.amount,
+            amount: parseInt(object.amount),
             category: object.category
         })
     }
@@ -40,7 +40,7 @@ export const EditExpensesScreen = ({ navigation, year, month }) => {
                 placeholder='Amount'
                 keyboardType='numeric'
                 onChangeText={setAmount}
-                value={amount}>
+                value={amount.toString()}>
             </TextInput>
             <CategoryPicker 
                 category={category}

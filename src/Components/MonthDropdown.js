@@ -21,7 +21,7 @@ const data = [
     { label: `${monthName(firstMonth + 11)}`, value: `${firstMonth + 11}` },
   ];
 
-  const DropdownComponent = ({setMonth}) => {
+  export const MonthDropdown = ({setMonth}) => {
     const [value, setValue] = useState(new Date().getMonth()+1);
     const [isFocus, setIsFocus] = useState(false);
 
@@ -69,8 +69,6 @@ const data = [
       </View>
     );
   };
-
-  export default DropdownComponent;
 
   const styles = StyleSheet.create({
     container: {
