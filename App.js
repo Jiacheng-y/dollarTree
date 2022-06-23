@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthScreen } from './src/screens/AuthScreen';
 import { BudgetScreen } from './src/screens/BudgetScreen';
-import { HomeScreen } from './src/screens/HomeScreen';
+import { InsightsScreen } from './src/screens/InsightsScreen';
 import { ExpensesScreen } from './src/screens/ExpensesScreen';
 import { EditBudgetScreen } from './src/screens/EditBudgetScreen';
 import { EditExpensesScreen } from './src/screens/EditExpensesScreen';
@@ -41,8 +41,8 @@ const Tabs = () => {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === 'Home') {
-            iconName = "home"
+          if (route.name === 'Insights') {
+            iconName = " "
           } else if (route.name === 'Budget') {
             iconName = "money-check";
           } else if (route.name === 'Expenses') {
@@ -56,7 +56,7 @@ const Tabs = () => {
         tabBarInactiveTintColor: 'gray',
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Insights" component={InsightsScreen} />
       <Tab.Screen name="Budget" component={BudgetNavigator} 
         options={{ headerShown: false }}/>
       <Tab.Screen name="Expenses" component={ExpensesNavigator} 
