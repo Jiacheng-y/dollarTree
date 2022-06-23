@@ -5,7 +5,7 @@ import { collection, addDoc } from "firebase/firestore";
 import { DatePicker } from "../Components/DatePicker";
 import { CategoryPicker } from "../Components/CategoryPicker";
 
-export const EditExpensesScreen = ({ navigation, year, month }) => {
+export const EditExpensesScreen = ({ navigation}) => {
     const [date, setDate] = useState(new Date());
     const formattedDate = `${date.getDate()}` + "/" + `${date.getMonth() + 1}` + "/" + `${date.getFullYear()}`;
     const [amount, setAmount] = useState(0);
@@ -45,8 +45,8 @@ export const EditExpensesScreen = ({ navigation, year, month }) => {
             <CategoryPicker 
                 category={category}
                 setCategory={setCategory}
-                year={year}
-                month={month}
+                year={date.getFullYear()}
+                month={date.getMonth() + 1}
             />
             <Pressable
                 style={styles.button}
