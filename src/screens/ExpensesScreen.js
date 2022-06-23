@@ -6,9 +6,9 @@ import { ExpenseEntry } from '../Components/ExpenseEntry';
 import { MonthPicker } from "../Components/MonthPicker";
 
 export const ExpensesScreen = ({ navigation }) => {
-    const [time, setTime] = useState([new Date().getMonth() + 1, new Date().getFullYear()]); 
-    const month = time[0];
-    const year = time[1];
+    const [time, setTime] = useState([new Date().getFullYear(), new Date().getMonth() + 1]); 
+    const year = time[0];
+    const month = time[1];
     const [list, setList] = useState([]);
 
     const thisUserID = auth.currentUser.uid;
@@ -37,6 +37,9 @@ export const ExpensesScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
+            <MonthPicker
+                setTime={setTime}
+            />
             <FlatList
                 data={list}
                 renderItem={({item}) => (
@@ -53,9 +56,6 @@ export const ExpensesScreen = ({ navigation }) => {
                 }}>
                 <Text style={{fontSize: 20}}>Add Expense</Text>
             </Pressable>
-            <MonthPicker
-                setTime={setTime}
-            />
         </SafeAreaView>
     )
 }
