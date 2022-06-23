@@ -3,7 +3,7 @@ import React from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 
 export const Item = (props) => {
-    const { data, onDelete } = props;
+    const { data, navigation, onDelete } = props;
 
     const DeleteIcon = () => (
         <TouchableOpacity onPress={() => onDelete(data.id)}>
@@ -14,7 +14,8 @@ export const Item = (props) => {
     return (
         <View style={[styles.container, styles.containerShadow]}>
             <Text style={styles.taskText}>{data.category}</Text>
-            <Text style={styles.taskText}>{data.amount}</Text>
+            <Text style={styles.taskText}>Budget: {data.amount}</Text>
+            <Text style={styles.taskText}>Spent: {data.expenses}</Text>
             <DeleteIcon />
         </View>
     );

@@ -11,7 +11,7 @@ const data = [
     { label: `${currYear - 2}`, value: `${currYear - 2}` },
   ];
 
-  const DropdownComponent = ({setYear}) => {
+  export const YearPicker = ({setYear}) => {
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
 
@@ -45,7 +45,7 @@ const data = [
           onBlur={() => setIsFocus(false)}
           onChange={item => {
             setYear(item.value)
-            setValue([]);
+            setValue(item.value);
             setIsFocus(false);
           }}
           renderLeftIcon={() => (
@@ -59,8 +59,6 @@ const data = [
       </View>
     );
   };
-
-  export default DropdownComponent;
 
   const styles = StyleSheet.create({
     container: {
