@@ -52,7 +52,7 @@ export const ExpensesScreen = ({ navigation }) => {
             <Pressable
                 style={styles.button}
                 onPress={() => { 
-                    navigation.navigate('Add Expenses', year, month);
+                    navigation.navigate('Add Expenses');
                 }}>
                 <Text style={{fontSize: 20}}>Add Expense</Text>
             </Pressable>
