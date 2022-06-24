@@ -17,7 +17,7 @@ import { query, collection, onSnapshot, addDoc, deleteDoc, doc, orderBy, runTran
 import { Item } from '../Components/Item';
 import { Platform } from 'react-native-web';
 import { MonthDropdown } from "../Components/MonthDropdown";
-import { YearPicker } from "../Components/YearPicker";
+// import { YearPicker } from "../Components/YearPicker";
 
 export const BudgetScreen = ({ navigation }) => {
 
