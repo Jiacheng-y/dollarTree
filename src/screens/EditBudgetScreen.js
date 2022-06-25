@@ -12,7 +12,7 @@ import {
     Keyboard,
 } from 'react-native';
 import { db, auth } from '../firebase';
-import { query, collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { query, collection, onSnapshot, addDoc, runTransaction, doc, updateDoc, where, getDocs } from 'firebase/firestore';
 import { monthName } from '../functions/monthName';
 import { MonthDropdown } from '../Components/MonthDropdown';
 
@@ -49,6 +49,8 @@ export const EditBudgetScreen = ({ navigation }) => {
                 expenses: 0,
             })
 
+            //findExpense(category, budgetRef.id);
+
             console.log('completed', budgetRef.id);
 
             clearForm();
@@ -65,6 +67,40 @@ export const EditBudgetScreen = ({ navigation }) => {
         setCategory('');
         Keyboard.dismiss();
     };
+
+    const findExpense = async (cat, id) => {
+        let sum = 0;
+        const expenseCollection = collection(db, "users", `${auth.currentUser.uid}` , "Expenses", `${date.getFullYear()}`, `${currMonth}`);
+        const expenseQ = query(expenseCollection, where("category", "==", `${cat}`));
+        const budgetDocRef = doc(collection(db, "users", `${thisUserID}` , "budgets", `${date.getFullYear()}`, `${currMonth}`), id);
+        const expenseDocs = await getDocs(expenseQ); 
+
+        expenseDocs.forEach( (document) => {
+            console.log(document.data().description)
+            console.log(document.data().amount)
+            sum = sum + document.data().amount;
+        } );
+
+        try {
+            const newExpense = await runTransaction(db, async (transaction) => {
+                const sfDoc = await transaction.get(budgetDocRef);
+                if (!sfDoc.exists()) {
+                  throw "Document does not exist!";
+                }
+            
+                const newExpenses = sfDoc.data().expenses + sum;
+                console.log("sum")
+                console.log(sum)
+                console.log("read")
+                console.log(sfDoc.data())
+                transaction.update(budgetDocRef, { expenses: newExpenses });
+              });
+        } catch(e) {
+            console.log(e);
+        }
+
+        return sum;
+    }
 
     return (
         <KeyboardAvoidingView

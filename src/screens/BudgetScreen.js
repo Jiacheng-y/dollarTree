@@ -14,10 +14,10 @@ import {
 } from 'react-native';
 import { db, auth } from '../firebase';
 import { query, collection, onSnapshot, addDoc, deleteDoc, doc, orderBy, runTransaction, where, getDocs, updateDoc } from 'firebase/firestore';
-import { Item } from '../Components/Item';
 import { Platform } from 'react-native-web';
-import { MonthDropdown } from "../Components/MonthDropdown";
-// import { YearPicker } from "../Components/YearPicker";
+import { MonthDropdown } from '../Components/MonthDropdown';
+import { YearDropdown } from '../Components/YearDropdown';
+import { Item } from '../Components/Item';
 
 export const BudgetScreen = ({ navigation }) => {
 
@@ -45,82 +45,8 @@ export const BudgetScreen = ({ navigation }) => {
 
         return () => {
             subscriber();
-            expenseListener();
         }
     }, [month, year]);
-
-    const expenseListener = async () => {
-        const expenseCollection = collection(db, "users", `${auth.currentUser.uid}` , "Expenses", `${year}`, `${month}`);
-        const q = collection(db, "users", `${auth.currentUser.uid}` , "budgets", `${year}`, `${month}`)
-
-        const expenseSub = onSnapshot(query(expenseCollection), (snapshot) => {
-            snapshot.docChanges().forEach( async (change) => {
-                if (change.type === "added") {
-                    console.log("New expense: ", change.doc.data());
-                    
-                    //firebase transaction function
-
-                    try {
-                        await runTransaction(db, async (transaction) => {
-                            console.log(change.doc.category);
-                            const budgetDocsRef = query(q, where("category", "==", `${change.doc.category}`));
-                            console.log(budgetDocsRef.type);
-                            const budgetDocs = await getDocs(budgetDocsRef);
-                            console.log(budgetDocs.size);
-                            budgetDocs.forEach( async (document) => {
-                                const doc = await transaction.get(document);
-                                if (!doc.exists()) {
-                                    throw "Document does not exist!";
-                                }
-
-                                const newExpenses = doc.data().expenses + change.doc.amount;
-                                transaction.update(doc, { expenses: newExpenses });
-                            })
-                        });
-                        console.log("Transaction successfully committed!");
-                    } catch (e) {
-                        console.log("Transaction failed: ", e);
-                    }
-                    
-                }
-                if (change.type === "modified") {
-                    //currently not allowed
-                    console.log("Modified exepense: ", change.doc.data());
-                }
-                if (change.type === "removed") {
-                    console.log("Removed expense: ", change.doc.data());
-
-                    //firebase transaction function
-                    try {
-                        await runTransaction(db, async (transaction) => {
-                            const budgetDocsRef = query(q, where("category", "==", `${change.doc.category}`))
-                            console.log(change.doc.category);
-                            console.log(budgetDocsRef.type);
-                            const budgetDocs = await getDocs(budgetDocsRef);
-                            console.log(budgetDocs.size);
-                            budgetDocs.forEach( async (document) => {
-                                console.log("transaction")
-                                const doc = await transaction.get(document);
-                                
-                                if (!doc.exists()) {
-                                    throw "Document does not exist!";
-                                }
-
-                                const newExpenses = doc.data().expenses - change.doc.amount;
-                                transaction.update(doc, { expenses: newExpenses });
-                            })
-                        });
-                        console.log("Transaction successfully committed!");
-                    } catch (e) {
-                        console.log("Transaction failed: ", e);
-                    }
-                }
-            });
-
-            return expenseSub;
-        });
-        
-    }
 
     const onDeleteHandler = async (id) => {
         try {
@@ -142,7 +68,7 @@ export const BudgetScreen = ({ navigation }) => {
                         style = {styles.dropdown}
                         setMonth={setMonth}
                     />
-                <YearPicker
+                <YearDropdown
                     style = {styles.dropdown}
                     setYear={setYear}
                 />
@@ -152,6 +78,7 @@ export const BudgetScreen = ({ navigation }) => {
                         renderItem={({ item, index }) => (
                             <Item 
                                 data={item}
+                                year={year}
                                 key={index}
                                 navigation={navigation}
                                 onDelete={onDeleteHandler}
