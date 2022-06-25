@@ -1,7 +1,8 @@
-import { SafeAreaView, Pressable, Text, StyleSheet, View } from 'react-native';
+import { SafeAreaView, Pressable, Text, StyleSheet, View, ScrollView } from 'react-native';
 import React, { useState } from 'react';
 import { MonthPicker } from '../Components/MonthPicker'; 
 import { CategoryExpenses } from '../Components/DataVisualisation/CategoryExpenses';
+import { ExpensePie } from '../Components/DataVisualisation/ExpensePie';
 import { signOutEmailPassword } from './AuthScreen';
 
 export const InsightsScreen = ({ navigation }) => {
@@ -10,20 +11,25 @@ export const InsightsScreen = ({ navigation }) => {
     const month = time[1]; // the user's selected month to be displayed
 
     return (
-        <SafeAreaView style={{backgroundColor: 'white', flex: 1, padding: 80, alignItems: "center"}}>
-           <MonthPicker
-                setTime={setTime}
-            /> 
-            <CategoryExpenses 
-                year={year}
-                month={month}
-            />
-            <Pressable 
-                style={styles.logOut}
-                onPress={signOutEmailPassword}>
-                <Text style={{color: 'white'}}>Log Out</Text>
-            </Pressable>
-        </SafeAreaView>
+        <ScrollView>
+            <SafeAreaView style={{backgroundColor: 'white', flex: 1, padding: 80, alignItems: "center"}}>
+            <MonthPicker
+                    setTime={setTime}
+                /> 
+                <CategoryExpenses 
+                    year={year}
+                    month={month}
+                />
+                <ExpensePie
+                    year={year}
+                    month={month}/>
+                <Pressable 
+                    style={styles.logOut}
+                    onPress={signOutEmailPassword}>
+                    <Text style={{color: 'white'}}>Log Out</Text>
+                </Pressable>
+            </SafeAreaView>
+        </ScrollView>
     );
 };
 
