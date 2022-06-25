@@ -1,4 +1,4 @@
-import { VictoryBar, VictoryChart, VictoryAxis } from 'victory-native';
+import { VictoryBar, VictoryChart, VictoryAxis, TextSize } from 'victory-native';
 import React, { useState, useEffect } from 'react';
 import { monthName } from "../../functions/monthName";
 import { query, collection, getDocs, onSnapshot, where } from "firebase/firestore";
@@ -63,10 +63,11 @@ export const CategoryExpenses = ({year, month}) => {
     return (
         <SafeAreaView>
             <Text style={styles.description}>
-                1. Compare changes in your total expenses across previous 2 months in your chosen category
+                Compare category expenses across months
             </Text>
              <CategoryPicker 
-                style={styles.category}
+                containerStyle={styles.category}
+                textStyle={{color: "#eef5ff"}}
                 category={chosenCategory}
                 setCategory={setChosenCategory}
                 year={year}
@@ -77,6 +78,7 @@ export const CategoryExpenses = ({year, month}) => {
                     data={data}
                     alignment="start"
                     barRatio={0.5}
+                    style={{ data: { fill: "#284f8f" } }}
                 />
             </VictoryChart>
         </SafeAreaView>
@@ -85,6 +87,13 @@ export const CategoryExpenses = ({year, month}) => {
 
 const styles = StyleSheet.create({
     description: {
-        padding: 20
+        marginHorizontal: 30,
+        marginVertical: 30,
+        fontSize: 16
     },
+    category: {
+        marginHorizontal: 30, 
+        width: 150,
+        backgroundColor: "#284f8f"
+    }
 });
