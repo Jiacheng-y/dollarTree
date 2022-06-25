@@ -42,7 +42,7 @@ const Tabs = () => {
           let iconName;
 
           if (route.name === 'Insights') {
-            iconName = " "
+            iconName = "chart-line"
           } else if (route.name === 'Budget') {
             iconName = "money-check";
           } else if (route.name === 'Expenses') {

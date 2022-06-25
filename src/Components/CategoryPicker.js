@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { db, auth } from "../firebase";
 import { collection, query, onSnapshot } from "firebase/firestore";
 
-export const CategoryPicker = ({category, setCategory, year, month}) => {
+export const CategoryPicker = ({category, setCategory, year, month, containerStyle, textStyle}) => {
     useEffect(() => {
         const q = query(collection(db, "users", `${auth.currentUser.uid}`, "budgets", `${year}`, `${month}`));
         const unsubscribe = onSnapshot(q, (snapshot) => {  
@@ -29,6 +29,9 @@ export const CategoryPicker = ({category, setCategory, year, month}) => {
             items={items}
             setOpen={setOpen}
             setValue={setCategory}
+            style={containerStyle}
+            dropDownContainerStyle={containerStyle}
+            placeholderStyle={textStyle}
         />
     );
 }

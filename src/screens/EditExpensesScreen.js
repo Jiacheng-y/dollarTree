@@ -47,6 +47,8 @@ export const EditExpensesScreen = ({ navigation}) => {
                 setCategory={setCategory}
                 year={date.getFullYear()}
                 month={date.getMonth() + 1}
+                containerStyle={styles.categoryPicker}
+                textStyle={{color: "black"}}
             />
             <Pressable
                 style={styles.button}
@@ -83,6 +85,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginHorizontal: 33,
+        marginVertical: 10
+    },
+    categoryPicker: {
+        width: 350,
+        alignSelf: "center",
         marginVertical: 10
     }
 })

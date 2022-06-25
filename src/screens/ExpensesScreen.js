@@ -54,7 +54,7 @@ export const ExpensesScreen = ({ navigation }) => {
                 onPress={() => { 
                     navigation.navigate('Add Expenses');
                 }}>
-                <Text style={{fontSize: 20}}>Add Expense</Text>
+                <Text style={{fontSize: 20, color: "#eef5ff"}}>Add Expense</Text>
             </Pressable>
         </SafeAreaView>
     )
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     button: {
         height: 55,
         width: 150,
-        backgroundColor: '#eef5ff',
+        backgroundColor: '#284f8f',
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
