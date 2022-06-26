@@ -1,29 +1,36 @@
 import { useState } from "react";
 import { Dropdown } from 'react-native-element-dropdown'; 
+import { monthName } from '../../Functions/monthName';
 import { StyleSheet, Text, View } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const currYear = new Date().getFullYear(); 
+const firstMonth = 1; 
 
 const data = [
-    { label: `${currYear}`, value: `${currYear}` },
-    { label: `${currYear - 1}`, value: `${currYear - 1}` },
-    { label: `${currYear - 2}`, value: `${currYear - 2}` },
+    { label: `${monthName(firstMonth)}`, value: firstMonth },
+    { label: `${monthName(firstMonth + 1)}`, value: firstMonth + 1 },
+    { label: `${monthName(firstMonth + 2)}`, value: firstMonth + 2 },
+    { label: `${monthName(firstMonth + 3)}`, value: firstMonth + 3 },
+    { label: `${monthName(firstMonth + 4)}`, value: firstMonth + 4 },
+    { label: `${monthName(firstMonth + 5)}`, value: firstMonth + 5 },
+    { label: `${monthName(firstMonth + 6)}`, value: firstMonth + 6 },
+    { label: `${monthName(firstMonth + 7)}`, value: firstMonth + 7 },
+    { label: `${monthName(firstMonth + 8)}`, value: firstMonth + 8 },
+    { label: `${monthName(firstMonth + 9)}`, value: firstMonth + 9 },
+    { label: `${monthName(firstMonth + 10)}`, value: firstMonth + 10 },
+    { label: `${monthName(firstMonth + 11)}`, value: firstMonth + 11 },
   ];
 
-  export const YearDropdown = ({setYear}) => {
-    const [value, setValue] = useState(null);
+  export const MonthDropdown = ({setMonth}) => {
+    const [value, setValue] = useState(new Date().getMonth() + 1);
     const [isFocus, setIsFocus] = useState(false);
 
     const renderLabel = () => {
-      if (value || isFocus) {
-        return (
-          <Text style={[styles.label, isFocus && { color: 'blue' }]}>
-            Year
-          </Text>
-        );
-      }
-      return null;
+      return (
+        <Text style={[styles.label, isFocus && { color: 'blue' }]}>
+          Month
+        </Text>
+      );
     };
 
     return (
@@ -33,18 +40,17 @@ const data = [
           style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
-          inputSearchStyle={styles.inputSearchStyle}
           iconStyle={styles.iconStyle}
           data={data}
           maxHeight={300}
           labelField="label"
           valueField="value"
-          placeholder={!isFocus ? 'Select Year' : '...'}
+          placeholder={!isFocus ? 'Select Month' : '...'}
           value={value}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           onChange={item => {
-            setYear(item.value)
+            setMonth(item.value);
             setValue(item.value);
             setIsFocus(false);
           }}
@@ -62,7 +68,7 @@ const data = [
 
   const styles = StyleSheet.create({
     container: {
-      backgroundColor: 'white',
+      backgroundColor: '#E3EEEB',
       padding: 16,
     },
     dropdown: {
@@ -77,7 +83,7 @@ const data = [
     },
     label: {
       position: 'absolute',
-      backgroundColor: 'white',
+      backgroundColor: '#E3EEEB',
       left: 22,
       top: 8,
       zIndex: 999,
@@ -93,9 +99,5 @@ const data = [
     iconStyle: {
       width: 20,
       height: 20,
-    },
-    inputSearchStyle: {
-      height: 40,
-      fontSize: 16,
     },
   });

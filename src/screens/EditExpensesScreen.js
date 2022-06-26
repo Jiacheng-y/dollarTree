@@ -1,9 +1,9 @@
 import { SafeAreaView, Text, StyleSheet, TextInput, Pressable } from "react-native";
 import React, { useState } from 'react';
-import { db, auth } from "../firebase";
+import { db, auth } from "../Firebase";
 import { collection, addDoc } from "firebase/firestore";
-import { DatePicker } from "../Components/DatePicker";
-import { CategoryPicker } from "../Components/CategoryPicker";
+import { DatePicker } from "../Components/Pickers/DatePicker";
+import { CategoryPicker } from "../Components/Pickers/CategoryPicker";
 
 export const EditExpensesScreen = ({ navigation}) => {
     const [date, setDate] = useState(new Date());
@@ -47,8 +47,6 @@ export const EditExpensesScreen = ({ navigation}) => {
                 setCategory={setCategory}
                 year={date.getFullYear()}
                 month={date.getMonth() + 1}
-                containerStyle={styles.categoryPicker}
-                textStyle={{color: "black"}}
             />
             <Pressable
                 style={styles.button}
@@ -59,7 +57,7 @@ export const EditExpensesScreen = ({ navigation}) => {
                     setDate(new Date());
                     navigation.navigate('Expenses');
                 }}>
-                <Text style={{fontSize: 20}}>Add</Text>
+                <Text style={{fontSize: 18, color: "white"}}>Add</Text>
             </Pressable>
         </SafeAreaView>
     );
@@ -67,30 +65,25 @@ export const EditExpensesScreen = ({ navigation}) => {
 
 const styles = StyleSheet.create({
     inputBox: {
-        marginTop: 10,
+        margin: 10,
         backgroundColor: '#eef5ff',
-        height: 55,
+        height: 50,
         width: 350,
         alignSelf: 'center',
         borderRadius: 10,
-        fontSize: 20,
+        fontSize: 18,
         padding: 15, 
         borderColor: 'black'
     },
     button: {
-        height: 55,
-        width: 150,
-        backgroundColor: '#eef5ff',
+        height: 50,
+        width: 350,
+        backgroundColor: '#1f5ff3',
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        marginHorizontal: 33,
-        marginVertical: 10
-    },
-    categoryPicker: {
-        width: 350,
-        alignSelf: "center",
-        marginVertical: 10
+        alignSelf: 'center',
+        marginTop: 10
     }
 })
 

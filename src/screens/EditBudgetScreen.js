@@ -11,10 +11,10 @@ import {
     ToastAndroid,
     Keyboard,
 } from 'react-native';
-import { db, auth } from '../firebase';
+import { db, auth } from '../Firebase';
 import { query, collection, onSnapshot, addDoc, runTransaction, doc, updateDoc, where, getDocs } from 'firebase/firestore';
-import { monthName } from '../functions/monthName';
-import { MonthDropdown } from '../Components/MonthDropdown';
+import { monthName } from '../Functions/monthName';
+import { MonthDropdown } from '../Components/Pickers/MonthDropdown';
 
 export const EditBudgetScreen = ({ navigation }) => {
 
@@ -26,7 +26,7 @@ export const EditBudgetScreen = ({ navigation }) => {
 
     const thisUserID = auth.currentUser.uid;
 
-    var catPlaceHolder = 'Enter the budget category';
+    var catPlaceHolder = 'Category';
 
     const onSubmitHandler = async () => {
 
@@ -109,7 +109,7 @@ export const EditBudgetScreen = ({ navigation }) => {
         >
             <SafeAreaView style={styles.container}>
                 <View style={styles.formContainer}>
-                    <Text>{date.getFullYear()}</Text>
+                    <Text style={styles.year}>{date.getFullYear()}</Text>
                     <MonthDropdown
                         style = {styles.dropdown}
                         setMonth={setMonth}
@@ -124,7 +124,7 @@ export const EditBudgetScreen = ({ navigation }) => {
                         keyboardType='numeric'
                         onChangeText={setBudget}
                         value={budget.toString()}
-                        placeholder={'Enter budget amount'}
+                        placeholder={'Amount'}
                         style={styles.budgetInput}
                     />
                     <Pressable
@@ -142,6 +142,10 @@ export const EditBudgetScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+    year: {
+        fontSize: 18,
+        alignSelf: 'center'
+    },
     dropdown: {
         width: Dimensions.get('window').width*0.7, 
         padding: 10,
@@ -150,7 +154,7 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1, 
-        alignItems: 'center'
+        alignItems: 'center',
     }, 
     formContainer: {
         position: 'absolute', 
@@ -159,12 +163,14 @@ const styles = StyleSheet.create({
         alignItems: 'stretch',
     }, 
     budgetInput: {
-        width: Dimensions.get('window').width*0.7, 
+        height: 50,
+        width: 350, 
         padding: 10,
         borderRadius: 10,
         //borderWidth: 1,
         backgroundColor: '#eef5ff',
-        margin: 10
+        margin: 10,
+        fontSize: 18
     }, 
     button: {
         width: Dimensions.get('window').width*0.7, 
@@ -173,10 +179,13 @@ const styles = StyleSheet.create({
         margin: 10, 
         backgroundColor: '#2962ff',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        height: 50,
+        width: 350,
     }, 
     buttonText: {
-        color: 'white'
+        color: 'white',
+        fontSize: 18
     }
 })
 

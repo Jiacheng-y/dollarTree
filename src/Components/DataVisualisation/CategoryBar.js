@@ -1,12 +1,13 @@
-import { VictoryBar, VictoryChart, VictoryAxis, TextSize } from 'victory-native';
+import { VictoryBar, VictoryChart } from 'victory-native';
 import React, { useState, useEffect } from 'react';
-import { monthName } from "../../functions/monthName";
+import { monthName } from "../../Functions/monthName";
 import { query, collection, getDocs, onSnapshot, where } from "firebase/firestore";
-import { db, auth } from "../../firebase";
-import { SafeAreaView, Text, StyleSheet } from "react-native";
-import { CategoryPicker } from "../CategoryPicker";
+import { db, auth } from "../../Firebase";
+import { SafeAreaView, Text, StyleSheet, View } from "react-native";
+import { CategoryPicker } from "../Pickers/CategoryPicker";
+import { monthNumber } from '../../Functions/monthNumber';
 
-export const CategoryExpenses = ({year, month}) => {
+export const CategoryBar = ({year, month}) => {
     const [chosenCategory, setChosenCategory] = useState(null);
     const [data, setData] = useState([]);
     const thisUserID = auth.currentUser.uid;
@@ -62,12 +63,13 @@ export const CategoryExpenses = ({year, month}) => {
 
     return (
         <SafeAreaView>
-            <Text style={styles.description}>
-                Compare category expenses across months
-            </Text>
+            <View style={{backgroundColor: "#eef5ff"}}>
+                <Text style={styles.description}>
+                    compare category expenses across months
+                </Text>
+            </View>
+            
              <CategoryPicker 
-                containerStyle={styles.category}
-                textStyle={{color: "#eef5ff"}}
                 category={chosenCategory}
                 setCategory={setChosenCategory}
                 year={year}
@@ -79,6 +81,7 @@ export const CategoryExpenses = ({year, month}) => {
                     alignment="start"
                     barRatio={0.5}
                     style={{ data: { fill: "#284f8f" } }}
+                    sortKey={item => monthNumber(item.x)} 
                 />
             </VictoryChart>
         </SafeAreaView>
@@ -89,11 +92,7 @@ const styles = StyleSheet.create({
     description: {
         marginHorizontal: 30,
         marginVertical: 30,
-        fontSize: 16
+        fontSize: 18,
+        alignSelf: "center",
     },
-    category: {
-        marginHorizontal: 30, 
-        width: 150,
-        backgroundColor: "#284f8f"
-    }
 });

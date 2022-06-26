@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
-import { DisplayExpenses } from './DisplayExpenses';
+import { DisplayExpenses } from '../DisplayExpenses';
 
-export const Item = (props) => {
+export const BudgetEntry = (props) => {
     const { data, year, onDelete } = props;
 
     const DeleteIcon = () => (

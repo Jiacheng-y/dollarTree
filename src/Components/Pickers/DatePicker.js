@@ -11,7 +11,7 @@ export const DatePicker = ({date, setDate}) => {
                 style={styles.button}
                 onPress={() => setToDisplay(true)}
             >
-                <Text style={{fontSize: 20}}>Date</Text>
+                <Text style={{fontSize: 18, color: "#a9a9a9"}}>Date</Text>
             </Pressable>
             { toDisplay && 
                 <DateTimePicker
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         width: 150
     },
     button: {
-        height: 55,
+        height: 50,
         width: 150,
         backgroundColor: '#eef5ff',
         borderRadius: 10,

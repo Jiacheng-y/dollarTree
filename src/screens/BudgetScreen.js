@@ -12,12 +12,12 @@ import {
     ToastAndroid,
     Keyboard,
 } from 'react-native';
-import { db, auth } from '../firebase';
+import { db, auth } from '../Firebase';
 import { query, collection, onSnapshot, addDoc, deleteDoc, doc, orderBy, runTransaction, where, getDocs, updateDoc } from 'firebase/firestore';
 import { Platform } from 'react-native-web';
-import { MonthDropdown } from '../Components/MonthDropdown';
-import { YearDropdown } from '../Components/YearDropdown';
-import { Item } from '../Components/Item';
+import { MonthDropdown } from '../Components/Pickers/MonthDropdown';
+import { YearDropdown } from '../Components/Pickers/YearDropdown';
+import { BudgetEntry } from '../Components/Entries/BudgetEntry';
 
 export const BudgetScreen = ({ navigation }) => {
 
@@ -76,7 +76,7 @@ export const BudgetScreen = ({ navigation }) => {
                     <FlatList
                         data={budgetList}
                         renderItem={({ item, index }) => (
-                            <Item 
+                            <BudgetEntry
                                 data={item}
                                 year={year}
                                 key={index}
@@ -89,7 +89,7 @@ export const BudgetScreen = ({ navigation }) => {
                     />
                 </View>
                 <Pressable
-                    onPress={() => navigation.navigate('EditBudget')}
+                    onPress={() => navigation.navigate('Add Budget')}
                     android_ripple={{ color : 'white' }}
                     style={styles.button}
                 >
@@ -112,8 +112,7 @@ const styles = StyleSheet.create({
         margin: 10
     },
     listContainer: {
-        flex: 1, 
-        padding: 5, 
+        flex: 1,
     }, 
     list: {
         overflow: 'scroll'
@@ -123,10 +122,10 @@ const styles = StyleSheet.create({
         position: 'absolute',
         height: 50, 
         width: Dimensions.get('window').width*0.9, 
-        backgroundColor: '#2962ff', 
+        backgroundColor: '#1f5ff3', 
         borderRadius: 10, 
         padding : 5,
-        margin: 10,
+        alignSelf: 'center',
         justifyContent: 'center', 
         alignItems: 'center'
     }, 

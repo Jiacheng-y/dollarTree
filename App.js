@@ -1,15 +1,15 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AuthScreen } from './src/screens/AuthScreen';
-import { BudgetScreen } from './src/screens/BudgetScreen';
-import { InsightsScreen } from './src/screens/InsightsScreen';
-import { ExpensesScreen } from './src/screens/ExpensesScreen';
-import { EditBudgetScreen } from './src/screens/EditBudgetScreen';
-import { EditExpensesScreen } from './src/screens/EditExpensesScreen';
+import { AuthScreen } from './src/Screens/AuthScreen';
+import { BudgetScreen } from './src/Screens/BudgetScreen'
+import { InsightsScreen } from './src/Screens/InsightsScreen';
+import { ExpensesScreen } from './src/Screens/ExpensesScreen';
+import { EditBudgetScreen } from './src/Screens/EditBudgetScreen';
+import { EditExpensesScreen } from './src/Screens/EditExpensesScreen';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Provider } from 'react-redux';
-import { store } from './src/store';
+import { store } from './src/Store';
 import React, { useState } from 'react';
 
 export default App = () => {
@@ -73,7 +73,7 @@ const BudgetNavigator = () => {
               component={BudgetScreen}
           />
           <Stack.Screen
-              name="EditBudget"
+              name="Add Budget"
               component={EditBudgetScreen}
           />
         </Stack.Navigator>

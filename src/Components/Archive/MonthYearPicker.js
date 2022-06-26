@@ -1,9 +1,12 @@
+// Dropdown menu to select both the year and the month
+// Not currently in use
+
 import DropDownPicker from 'react-native-dropdown-picker';
 import React, { useState } from 'react';
-import { monthName } from '../functions/monthName';
+import { monthName } from '../../functions/monthName';
 import { StyleSheet } from 'react-native';
 
-export const MonthPicker = ({setTime}) => {
+export const MonthYearPicker = ({setTime}) => {
     const firstMonth = 1;
     const currentYear = new Date().getFullYear();;
 
@@ -31,7 +34,7 @@ export const MonthPicker = ({setTime}) => {
 
     return (
         <DropDownPicker
-            placeholder='Select Year & Month'
+            placeholder={value[0] == null ? 'Select Year & Month' : value[0] + "" + value[1]}
             categorySelectable={false}
             multiple={true}
             min={2}
@@ -47,7 +50,7 @@ export const MonthPicker = ({setTime}) => {
             }}
             style={styles.container}
             dropDownContainerStyle={styles.container}
-            placeholderStyle={{color: "#eef5ff"}}
+            placeholderStyle={{color: "black", fontSize: 17}}
             mode='BADGE'
         />
     );
@@ -59,7 +62,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         alignSelf: 'center',
         marginTop: 20,
-        borderColor: "black",
-        backgroundColor: "#284f8f"
+        borderColor: "#a8a8a8",
+        backgroundColor: "white"
     }
 })

@@ -1,14 +1,15 @@
-import { SafeAreaView, StyleSheet, FlatList, Pressable, Text } from "react-native";
+import { SafeAreaView, StyleSheet, FlatList, Pressable, Text, Dimensions } from "react-native";
 import React, { useState, useEffect } from 'react';
-import { db, auth } from "../firebase";
+import { db, auth } from "../Firebase";
 import { query, collection, doc, onSnapshot, deleteDoc } from "firebase/firestore";
-import { ExpenseEntry } from '../Components/ExpenseEntry';
-import { MonthPicker } from "../Components/MonthPicker";
+import { ExpenseEntry } from '../Components/Entries/ExpenseEntry';
+import { MonthDropdown } from "../Components/Pickers/MonthDropdown";
+import { YearDropdown } from "../Components/Pickers/YearDropdown";
 
 export const ExpensesScreen = ({ navigation }) => {
-    const [time, setTime] = useState([new Date().getFullYear(), new Date().getMonth() + 1]); 
-    const year = time[0];
-    const month = time[1];
+    const [year, setYear] = useState(new Date().getFullYear()); 
+    const [month, setMonth] = useState(new Date().getMonth() + 1); 
+
     const [list, setList] = useState([]);
 
     const thisUserID = auth.currentUser.uid;
@@ -37,8 +38,11 @@ export const ExpensesScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
-            <MonthPicker
-                setTime={setTime}
+            <MonthDropdown
+                setMonth={setMonth}
+            />
+            <YearDropdown
+                setYear={setYear}
             />
             <FlatList
                 data={list}
@@ -62,13 +66,13 @@ export const ExpensesScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     button: {
-        height: 55,
-        width: 150,
-        backgroundColor: '#284f8f',
+        height: 50,
+        width: Dimensions.get('window').width*0.9,
+        backgroundColor: '#1f5ff3',
         borderRadius: 10,
+        padding: 5,
         justifyContent: 'center',
         alignItems: 'center',
-        marginHorizontal: 33,
-        marginVertical: 10
-    }
+        alignSelf: 'center'
+    },
 })
