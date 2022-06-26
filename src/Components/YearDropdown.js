@@ -11,7 +11,7 @@ const data = [
     { label: `${currYear - 2}`, value: `${currYear - 2}` },
   ];
 
-  export const YearPicker = ({setYear}) => {
+  export const YearDropdown = ({setYear}) => {
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
 

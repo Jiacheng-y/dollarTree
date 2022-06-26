@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
+import { DisplayExpenses } from './DisplayExpenses';
 
 export const Item = (props) => {
-    const { data, navigation, onDelete } = props;
+    const { data, year, onDelete } = props;
 
     const DeleteIcon = () => (
         <TouchableOpacity onPress={() => onDelete(data.id)}>
@@ -15,7 +16,7 @@ export const Item = (props) => {
         <View style={[styles.container, styles.containerShadow]}>
             <Text style={styles.taskText}>{data.category}</Text>
             <Text style={styles.taskText}>Budget: {data.amount}</Text>
-            <Text style={styles.taskText}>Spent: {data.expenses}</Text>
+            <DisplayExpenses year={year} month={data.date} category={data.category} />
             <DeleteIcon />
         </View>
     );
