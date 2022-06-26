@@ -5,6 +5,7 @@ import { query, collection, getDocs, onSnapshot, where } from "firebase/firestor
 import { db, auth } from "../../Firebase";
 import { SafeAreaView, Text, StyleSheet, View } from "react-native";
 import { CategoryPicker } from "../Pickers/CategoryPicker";
+import { monthNumber } from '../../Functions/monthNumber';
 
 export const CategoryBar = ({year, month}) => {
     const [chosenCategory, setChosenCategory] = useState(null);
@@ -80,6 +81,7 @@ export const CategoryBar = ({year, month}) => {
                     alignment="start"
                     barRatio={0.5}
                     style={{ data: { fill: "#284f8f" } }}
+                    sortKey={item => monthNumber(item.x)} 
                 />
             </VictoryChart>
         </SafeAreaView>
