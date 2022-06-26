@@ -1,8 +1,8 @@
-import { VictoryPie } from 'victory-native';
+import { TextSize, VictoryPie } from 'victory-native';
 import React, { useState, useEffect } from 'react';
 import { query, collection, getDocs, onSnapshot, where } from "firebase/firestore";
-import { db, auth } from "../../firebase";
-import { SafeAreaView, Text, StyleSheet } from "react-native";
+import { db, auth } from "../../Firebase";
+import { SafeAreaView, Text, StyleSheet, View } from "react-native";
 
 export const ExpensePie = ({year, month}) => {
     const [data, setData] = useState([]);
@@ -54,10 +54,13 @@ export const ExpensePie = ({year, month}) => {
     }, [month, year]);
 
     return (
-        <SafeAreaView>
-            <Text style={styles.description}>
-                2. Compare your spending across categories
-            </Text>
+        <SafeAreaView style={{marginTop: 10}}>
+            <View style={{backgroundColor: "#eef5ff"}}>
+                <Text style={styles.description}>
+                    compare your spending across categories
+                </Text>
+            </View>
+            
             <VictoryPie
             data = {data}
             colorScale={['#52C6D8', '#3EA2C3', '#2D7EAF','#1E5C9B','#123E86','#O82372']} />
@@ -67,6 +70,9 @@ export const ExpensePie = ({year, month}) => {
 
 const styles = StyleSheet.create({
     description: {
-        padding: 20
+        marginHorizontal: 30,
+        marginVertical: 30,
+        fontSize: 18,
+        alignSelf: "center"
     },
 });

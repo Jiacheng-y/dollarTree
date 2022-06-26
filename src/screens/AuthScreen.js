@@ -7,7 +7,7 @@ import {
     signOut
 } from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore'; 
-import { auth, db } from '../firebase';
+import { auth, db } from '../Firebase';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons'; 
 
