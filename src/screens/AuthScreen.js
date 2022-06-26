@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, TextInput, Pressable, Text, Keyboard, StyleSheet, View } from 'react-native';
+import { TextInput, Pressable, Text, Keyboard, StyleSheet, View } from 'react-native';
 import { 
     signInWithEmailAndPassword, 
     createUserWithEmailAndPassword, 
@@ -8,6 +8,8 @@ import {
 } from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore'; 
 import { auth, db } from '../firebase';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Foundation } from '@expo/vector-icons'; 
 
 export const AuthScreen = ({setAuthState}) => {
     const [inputEmail, setInputEmail] = useState('');
@@ -55,31 +57,59 @@ export const AuthScreen = ({setAuthState}) => {
     }
 
     return (
-        <SafeAreaView style={{alignItems: "center"}}>
-            <Text style={styles.header}>
-                Enter dollarTree
-            </Text>
+        <View style={{flex: 1}}>
+            <View style = {styles.headerContainer}> 
+                <Foundation 
+                    name="trees" 
+                    size={120} 
+                    color="#eef5ff" 
+                    style={{alignSelf: "center"}}
+                />
+                <Text style={styles.header}>
+                    dollarTree
+                </Text>
+            </View>
 
-            <View style={{width: 350}}>
+            <View style={styles.infoContainer}>
                 <Text style={styles.entryName}>Email</Text>
-                <TextInput
-                    style={styles.entryBox}
-                    placeholder='Email'
-                    value={inputEmail}
-                    onChangeText={setInputEmail}
-                />
+
+                <View style={styles.entryContainer}>
+                    <MaterialIcons 
+                        name="email"
+                        size={30}
+                        color="grey"
+                        style={{marginHorizontal: 15}}
+                    />
+                    <TextInput
+                        style={styles.entryBox}
+                        placeholder='Enter Email'
+                        value={inputEmail}
+                        onChangeText={setInputEmail}
+                    />
+                </View>
+
                 <Text style={styles.entryName}>Password</Text>
-                <TextInput
-                    secureTextEntry={true}
-                    style={styles.entryBox}
-                    placeholder='Password'
-                    value={inputPassword}
-                    onChangeText={setInputPassword}
-                />
+
+                <View style={styles.entryContainer}>
+                    <MaterialIcons 
+                        name="lock"
+                        size={30}
+                        color="grey"
+                        style={{marginHorizontal: 15}}
+                    />
+                    <TextInput
+                        secureTextEntry={true}
+                        style={styles.entryBox}
+                        placeholder='Enter Password'
+                        value={inputPassword}
+                        onChangeText={setInputPassword}
+                    />
+                </View>
+
                 <Text style={styles.footnote}>At least 6 characters</Text>
              </View>
 
-             <View style={{flexDirection: 'row'}}>
+             <View style={styles.buttonContainer}>
                 <Pressable 
                     style={styles.button}
                     onPress={() => {
@@ -90,6 +120,7 @@ export const AuthScreen = ({setAuthState}) => {
                     }}>
                     <Text style={styles.buttonText}>Log In</Text>
                 </Pressable>
+
                 <Pressable 
                     style={styles.button}
                     onPress={() => {
@@ -98,41 +129,73 @@ export const AuthScreen = ({setAuthState}) => {
                         setInputEmail('');
                         setInputPassword('');
                     }}>
+
                     <Text style={styles.buttonText}>Sign Up</Text>
                 </Pressable>
             </View>
             
             <Text style={styles.errorMessage}>{errorMessage}</Text>
-        </SafeAreaView>
+        </View>
     )
 }
 
+// possible colour schemes: 
+// #284f8f
+// #1b3d81
+// #0a64bc
+
 const styles = StyleSheet.create({
+    headerContainer: {
+        backgroundColor: '#1f5ff3',
+        height: 200,
+        justifyContent: 'center',
+        flex: 1.75,
+    },
     header: {
-        fontSize: 45, 
-        marginVertical: 30
+        fontSize: 35, 
+        alignSelf: 'center',
+        fontWeight: 'bold',
+        color: '#eef5ff'
+    },
+    infoContainer: {
+        width: 350,
+        alignSelf: 'center',
+        flex: 2, 
+        justifyContent: 'center'
     },
     entryName: {
         fontSize: 20,
         marginVertical: 15
     }, 
+    entryContainer: {
+        width: 350,
+        backgroundColor: '#eef5ff',
+        flexDirection: 'row',
+        borderRadius: 10,
+        height: 55,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     entryBox: {
         backgroundColor: '#eef5ff',
         height: 55,
-        width: 350,
-        borderRadius: 10,
+        width: 280,
         fontSize: 20,
-        padding: 15
     },
     footnote: {
         fontSize: 15,
         marginTop: 5,
         marginBottom: 45
     },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        flex: 1.5
+    },
     button: {
         height: 55,
         width: 150,
-        backgroundColor: '#2962ff',
+        backgroundColor: '#1f5ff3',
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
@@ -140,7 +203,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontSize: 20, 
-        color: 'white', 
+        color: '#eef5ff', 
         fontWeight: 'bold'
     },
     errorMessage: {

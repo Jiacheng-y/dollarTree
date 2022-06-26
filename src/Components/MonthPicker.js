@@ -1,6 +1,7 @@
 import DropDownPicker from 'react-native-dropdown-picker';
 import React, { useState } from 'react';
 import { monthName } from '../functions/monthName';
+import { StyleSheet } from 'react-native';
 
 export const MonthPicker = ({setTime}) => {
     const firstMonth = 1;
@@ -44,6 +45,21 @@ export const MonthPicker = ({setTime}) => {
                 setTime(value);
                 setValue([]);
             }}
+            style={styles.container}
+            dropDownContainerStyle={styles.container}
+            placeholderStyle={{color: "#eef5ff"}}
+            mode='BADGE'
         />
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        width: 380,
+        marginHorizontal: 20,
+        alignSelf: 'center',
+        marginTop: 20,
+        borderColor: "black",
+        backgroundColor: "#284f8f"
+    }
+})
