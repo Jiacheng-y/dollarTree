@@ -16,10 +16,9 @@ import { query, collection, onSnapshot, addDoc, runTransaction, doc, updateDoc, 
 import { monthName } from '../Functions/monthName';
 import { MonthDropdown } from '../Components/Pickers/MonthDropdown';
 
-export const EditBudgetScreen = ({ navigation }) => {
+export const EditBudgetScreen = ({ navigation, year, month }) => {
 
     const [date, setDate] = useState(new Date());
-    const [currMonth, setMonth] = useState(date.getMonth()+1);
 
     const [budget, setBudget] = useState(0);
     const [category, setCategory] = useState("");
@@ -40,10 +39,10 @@ export const EditBudgetScreen = ({ navigation }) => {
 
         try {
 
-            const q = collection(db, "users", `${thisUserID}` , "budgets", `${date.getFullYear()}`, `${currMonth}`);
+            const q = collection(db, "users", `${thisUserID}` , "budgets", `${date.getFullYear()}`, `${month}`);
             
             const budgetRef = await addDoc(q , {
-                date: `${currMonth}`, 
+                date: `${month}`, 
                 category: category,
                 amount: parseInt(budget), 
                 expenses: 0,
@@ -68,39 +67,39 @@ export const EditBudgetScreen = ({ navigation }) => {
         Keyboard.dismiss();
     };
 
-    const findExpense = async (cat, id) => {
-        let sum = 0;
-        const expenseCollection = collection(db, "users", `${auth.currentUser.uid}` , "Expenses", `${date.getFullYear()}`, `${currMonth}`);
-        const expenseQ = query(expenseCollection, where("category", "==", `${cat}`));
-        const budgetDocRef = doc(collection(db, "users", `${thisUserID}` , "budgets", `${date.getFullYear()}`, `${currMonth}`), id);
-        const expenseDocs = await getDocs(expenseQ); 
+    // const findExpense = async (cat, id) => {
+    //     let sum = 0;
+    //     const expenseCollection = collection(db, "users", `${auth.currentUser.uid}` , "Expenses", `${date.getFullYear()}`, `${month}`);
+    //     const expenseQ = query(expenseCollection, where("category", "==", `${cat}`));
+    //     const budgetDocRef = doc(collection(db, "users", `${thisUserID}` , "budgets", `${date.getFullYear()}`, `${month}`), id);
+    //     const expenseDocs = await getDocs(expenseQ); 
 
-        expenseDocs.forEach( (document) => {
-            console.log(document.data().description)
-            console.log(document.data().amount)
-            sum = sum + document.data().amount;
-        } );
+    //     expenseDocs.forEach( (document) => {
+    //         console.log(document.data().description)
+    //         console.log(document.data().amount)
+    //         sum = sum + document.data().amount;
+    //     } );
 
-        try {
-            const newExpense = await runTransaction(db, async (transaction) => {
-                const sfDoc = await transaction.get(budgetDocRef);
-                if (!sfDoc.exists()) {
-                  throw "Document does not exist!";
-                }
+    //     try {
+    //         const newExpense = await runTransaction(db, async (transaction) => {
+    //             const sfDoc = await transaction.get(budgetDocRef);
+    //             if (!sfDoc.exists()) {
+    //               throw "Document does not exist!";
+    //             }
             
-                const newExpenses = sfDoc.data().expenses + sum;
-                console.log("sum")
-                console.log(sum)
-                console.log("read")
-                console.log(sfDoc.data())
-                transaction.update(budgetDocRef, { expenses: newExpenses });
-              });
-        } catch(e) {
-            console.log(e);
-        }
+    //             const newExpenses = sfDoc.data().expenses + sum;
+    //             console.log("sum")
+    //             console.log(sum)
+    //             console.log("read")
+    //             console.log(sfDoc.data())
+    //             transaction.update(budgetDocRef, { expenses: newExpenses });
+    //           });
+    //     } catch(e) {
+    //         console.log(e);
+    //     }
 
-        return sum;
-    }
+    //     return sum;
+    // }
 
     return (
         <KeyboardAvoidingView
@@ -110,10 +109,6 @@ export const EditBudgetScreen = ({ navigation }) => {
             <SafeAreaView style={styles.container}>
                 <View style={styles.formContainer}>
                     <Text style={styles.year}>{date.getFullYear()}</Text>
-                    <MonthDropdown
-                        style = {styles.dropdown}
-                        setMonth={setMonth}
-                    />
                     <TextInput
                         onChangeText={setCategory}
                         value={category}
