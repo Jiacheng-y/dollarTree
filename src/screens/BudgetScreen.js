@@ -89,7 +89,7 @@ export const BudgetScreen = ({ navigation }) => {
                     />
                 </View>
                 <Pressable
-                    onPress={() => navigation.navigate('Add Budget', year, month)}
+                    onPress={() => navigation.navigate('Add Budget', {year: year, month: month})}
                     android_ripple={{ color : 'white' }}
                     style={styles.button}
                 >

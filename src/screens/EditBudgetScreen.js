@@ -16,9 +16,11 @@ import { query, collection, onSnapshot, addDoc, runTransaction, doc, updateDoc, 
 import { monthName } from '../Functions/monthName';
 import { MonthDropdown } from '../Components/Pickers/MonthDropdown';
 
-export const EditBudgetScreen = ({ navigation, year, month }) => {
+export const EditBudgetScreen = ({ route, navigation }) => {
 
     const [date, setDate] = useState(new Date());
+    const year = route.params.year
+    const month = route.params.month
 
     const [budget, setBudget] = useState(0);
     const [category, setCategory] = useState("");
