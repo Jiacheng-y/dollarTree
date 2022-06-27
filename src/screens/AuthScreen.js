@@ -108,33 +108,36 @@ export const AuthScreen = ({setAuthState}) => {
 
                 <Text style={styles.footnote}>At least 6 characters</Text>
              </View>
-
-             <View style={styles.buttonContainer}>
-                <Pressable 
-                    style={styles.button}
-                    onPress={() => {
-                        logInEmailPassword(inputEmail, inputPassword);
-                        Keyboard.dismiss;
-                        setInputEmail('');
-                        setInputPassword('');
-                    }}>
-                    <Text style={styles.buttonText}>Log In</Text>
-                </Pressable>
-
-                <Pressable 
-                    style={styles.button}
-                    onPress={() => {
-                        signUpEmailPassword(inputEmail, inputPassword);
-                        Keyboard.dismiss;
-                        setInputEmail('');
-                        setInputPassword('');
-                    }}>
-
-                    <Text style={styles.buttonText}>Sign Up</Text>
-                </Pressable>
-            </View>
             
-            <Text style={styles.errorMessage}>{errorMessage}</Text>
+            <View style={styles.submitContainer}>
+                <View style={styles.buttonContainer}>
+                    <Pressable 
+                        style={styles.button}
+                        onPress={() => {
+                            logInEmailPassword(inputEmail, inputPassword);
+                            Keyboard.dismiss;
+                            setInputEmail('');
+                            setInputPassword('');
+                        }}>
+                        <Text style={styles.buttonText}>Log In</Text>
+                    </Pressable>
+
+                    <Pressable 
+                        style={styles.button}
+                        onPress={() => {
+                            signUpEmailPassword(inputEmail, inputPassword);
+                            Keyboard.dismiss;
+                            setInputEmail('');
+                            setInputPassword('');
+                        }}>
+
+                        <Text style={styles.buttonText}>Sign Up</Text>
+                    </Pressable>
+                </View>
+        
+                <Text style={styles.errorMessage}>{errorMessage}</Text>
+            </View>
+
         </View>
     )
 }
@@ -187,10 +190,13 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginBottom: 45
     },
+    submitContainer: {
+        flex: 1.7
+    },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
-        flex: 1.5
+        height: 55
     },
     button: {
         height: 55,
@@ -199,7 +205,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        marginHorizontal: 15
+        marginHorizontal: 15,
     },
     buttonText: {
         fontSize: 20, 
@@ -208,9 +214,10 @@ const styles = StyleSheet.create({
     },
     errorMessage: {
         fontSize: 20,
-        marginTop: 25,
         fontWeight: 'bold',
-        color: 'red'
+        color: 'red',
+        alignSelf: 'center',
+        marginTop: 15
     }
 })
 

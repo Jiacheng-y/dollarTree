@@ -6,7 +6,7 @@ export const DatePicker = ({date, setDate}) => {
     const [toDisplay, setToDisplay] = useState(false);
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{flexDirection: "row", alignItems: 'center'}}>
             <Pressable
                 style={styles.button}
                 onPress={() => setToDisplay(true)}
@@ -29,8 +29,7 @@ export const DatePicker = ({date, setDate}) => {
 
 const styles = StyleSheet.create({
     picker: {
-        alignSelf: "center", 
-        width: 150
+        width: 150,
     },
     button: {
         height: 50,
@@ -39,7 +38,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        marginHorizontal: 33,
+        marginLeft: 33,
         marginVertical: 10
     }
 })
