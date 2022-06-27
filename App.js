@@ -11,6 +11,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { Provider } from 'react-redux';
 import { store } from './src/Store';
 import React, { useState } from 'react';
+import TreeScreen from './src/Screens/TreeScreen';
 
 export default App = () => {
   return (
@@ -42,11 +43,13 @@ const Tabs = () => {
           let iconName;
 
           if (route.name === 'Insights') {
-            iconName = "chart-line"
+            iconName = "chart-line";
           } else if (route.name === 'Budget') {
             iconName = "money-check";
           } else if (route.name === 'Expenses') {
-            iconName = "dollar-sign"
+            iconName = "dollar-sign";
+          } else if (route.name === 'Tree') {
+            iconName = "tree";
           }
 
           // You can return any component that you like here!
@@ -61,6 +64,7 @@ const Tabs = () => {
       <Tab.Screen name="Expenses" component={ExpensesNavigator} 
         options={{ headerShown: false }}/>
       <Tab.Screen name="Insights" component={InsightsScreen} />
+      <Tab.Screen name="Tree" component={TreeScreen} />
     </Tab.Navigator>
     );
 };
