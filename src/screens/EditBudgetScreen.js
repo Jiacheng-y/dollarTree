@@ -110,7 +110,6 @@ export const EditBudgetScreen = ({ route, navigation }) => {
         >
             <SafeAreaView style={styles.container}>
                 <View style={styles.formContainer}>
-                    <Text style={styles.year}>{date.getFullYear()}</Text>
                     <TextInput
                         onChangeText={setCategory}
                         value={category}
