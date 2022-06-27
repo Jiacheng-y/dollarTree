@@ -44,7 +44,7 @@ export const EditBudgetScreen = ({ navigation }) => {
             
             const budgetRef = await addDoc(q , {
                 date: `${currMonth}`, 
-                category: category.toLocaleLowerCase(),
+                category: category,
                 amount: parseInt(budget), 
                 expenses: 0,
             })

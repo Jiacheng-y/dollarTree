@@ -56,9 +56,9 @@ const Tabs = () => {
         tabBarInactiveTintColor: 'gray',
       })}
     >
-      <Tab.Screen name="Insights" component={InsightsScreen} />
       <Tab.Screen name="Budget" component={BudgetNavigator} 
         options={{ headerShown: false }}/>
+      <Tab.Screen name="Insights" component={InsightsScreen} />
       <Tab.Screen name="Expenses" component={ExpensesNavigator} 
         options={{ headerShown: false }}/>
     </Tab.Navigator>

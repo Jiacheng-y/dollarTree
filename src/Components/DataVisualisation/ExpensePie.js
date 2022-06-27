@@ -40,7 +40,9 @@ export const ExpensePie = ({year, month}) => {
             const newData = [];
 
             snapshot.forEach((doc) => {
-                newData.push({ x: doc.data().category , y: doc.data().expenses }); 
+                if (doc.data().expenses > 0) {
+                    newData.push({ x: doc.data().category , y: doc.data().expenses }); 
+                }
             })
 
             setData(newData);
