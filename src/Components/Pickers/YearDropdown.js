@@ -6,9 +6,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 const currYear = new Date().getFullYear(); 
 
 const data = [
-    { label: `${currYear}`, value: `${currYear}` },
-    { label: `${currYear - 1}`, value: `${currYear - 1}` },
-    { label: `${currYear - 2}`, value: `${currYear - 2}` },
+    { label: currYear, value: currYear },
+    { label: currYear - 1, value: currYear - 1 },
+    { label: currYear - 2, value: currYear - 2 },
   ];
 
   export const YearDropdown = ({setYear}) => {
