@@ -1,6 +1,6 @@
 import { SafeAreaView, Text, StyleSheet, TextInput, Pressable } from "react-native";
 import React, { useEffect, useState } from 'react';
-import { db, auth } from "../Firebase";
+import { db, auth } from "../../Firebase";
 import { collection, query, onSnapshot, where, runTransaction, getDocs, doc, getDoc, increment, updateDoc } from "firebase/firestore";
 
 export const displayExpenses = (year, month, category) => {

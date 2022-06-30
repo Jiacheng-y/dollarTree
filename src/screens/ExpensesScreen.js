@@ -1,7 +1,7 @@
 import { SafeAreaView, StyleSheet, FlatList, Pressable, Text, Dimensions } from "react-native";
 import React, { useState, useEffect } from 'react';
 import { db, auth } from "../Firebase";
-import { query, collection, doc, onSnapshot, deleteDoc } from "firebase/firestore";
+import { query, collection, doc, onSnapshot, deleteDoc, getDoc, getDocs, updateDoc, where } from "firebase/firestore";
 import { ExpenseEntry } from '../Components/Entries/ExpenseEntry';
 import { MonthDropdown } from "../Components/Pickers/MonthDropdown";
 import { YearDropdown } from "../Components/Pickers/YearDropdown";
@@ -33,7 +33,22 @@ export const ExpensesScreen = ({ navigation }) => {
     }, [month, year]);
 
     const deleteItem = async (id) => {
-        await deleteDoc(doc(db, "users", `${thisUserID}`, "Expenses", `${year}`, `${month}`, `${id}`));
+        try {
+            const toDeleteDoc = await getDoc(doc(db, "users", `${thisUserID}`, "Expenses", `${year}`, `${month}`, `${id}`));
+            const deleteAmount = toDeleteDoc.data().amount;
+            const deleteCategory = toDeleteDoc.data().category;
+            
+            const q = query(collection(db, "users", `${thisUserID}`, "budgets", `${year}`, `${month}`), where("category", "==", deleteCategory));
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach(async (doc) => {
+                 const newExpense = parseInt(doc.data().expenses) - deleteAmount;
+                 await updateDoc(doc.ref, { expenses: newExpense }); 
+            });
+            
+            await deleteDoc(toDeleteDoc.ref);
+        } catch (error) {
+            console.log(error);
+        } 
     }
 
     return (

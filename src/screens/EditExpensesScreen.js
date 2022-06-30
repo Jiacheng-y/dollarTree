@@ -1,7 +1,7 @@
 import { SafeAreaView, Text, StyleSheet, TextInput, Pressable } from "react-native";
 import React, { useState } from 'react';
 import { db, auth } from "../Firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, updateDoc, query, getDocs, where } from "firebase/firestore";
 import { DatePicker } from "../Components/Pickers/DatePicker";
 import { CategoryPicker } from "../Components/Pickers/CategoryPicker";
 
@@ -15,12 +15,24 @@ export const EditExpensesScreen = ({ navigation}) => {
     const thisUserID = auth.currentUser.uid;
 
     const addItem = async (object) => {
-        await addDoc(collection(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`), {
-            date: object.date,
-            description: object.description,
-            amount: parseInt(object.amount),
-            category: object.category
-        })
+        try {
+            await addDoc(collection(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`), {
+                date: object.date,
+                description: object.description,
+                amount: parseInt(object.amount),
+                category: object.category
+            }); 
+    
+            const q = query(collection(db, "users", `${thisUserID}`, "budgets", `${date.getFullYear()}`, `${date.getMonth() + 1}`), where("category", "==", object.category));
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach(async (doc) => {
+                 const newExpense = parseInt(doc.data().expenses) + parseInt(object.amount);
+                 await updateDoc(doc.ref, { expenses: newExpense });
+                 
+            });
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
