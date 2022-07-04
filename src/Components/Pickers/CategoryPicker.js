@@ -11,9 +11,11 @@ export const CategoryPicker = ({category, setCategory, year, month}) => {
         const unsubscribe = onSnapshot(q, (snapshot) => {  
             const newItems = [{label: 'Others', value: 'Others'}];
             snapshot.forEach((doc) => {
-                newItems.push(
+                if (doc.data().category != "Others") {
+                  newItems.push(
                     {label: doc.data().category, value: doc.data().category}
-                ); 
+                  ); 
+                }
             })
             setItems(newItems);
         })
