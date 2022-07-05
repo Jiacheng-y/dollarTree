@@ -42,7 +42,7 @@ export const CategoryPicker = ({category, setCategory, year, month}) => {
                 selectedTextStyle={styles.selectedTextStyle}
                 iconStyle={styles.iconStyle}
                 data={items}
-                maxHeight={300}
+                maxHeight={200}
                 labelField="label"
                 valueField="value"
                 placeholder={!isFocus ? 'Select Category' : '...'}
