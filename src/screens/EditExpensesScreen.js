@@ -1,9 +1,13 @@
-import { SafeAreaView, Text, StyleSheet, TextInput, Pressable } from "react-native";
+import { Text, StyleSheet, TextInput, Pressable, View, ImageBackground, Dimensions, Platform, StatusBar } from "react-native";
 import React, { useState } from 'react';
 import { db, auth } from "../Firebase";
-import { collection, addDoc, updateDoc, query, getDocs, where, setDoc, doc } from "firebase/firestore";
+import { collection, addDoc, updateDoc, query, getDocs, where} from "firebase/firestore";
 import { DatePicker } from "../Components/Pickers/DatePicker";
 import { CategoryPicker } from "../Components/Pickers/CategoryPicker";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { EvilIcons } from '@expo/vector-icons'; 
+import { MaterialIcons } from '@expo/vector-icons';
+import { IOSStatusBar } from "../Components/IOSStatusBar";
 
 export const EditExpensesScreen = ({ navigation}) => {
     const [date, setDate] = useState(new Date());
@@ -19,7 +23,7 @@ export const EditExpensesScreen = ({ navigation}) => {
             await addDoc(collection(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`), {
                 date: object.date,
                 description: object.description,
-                amount: parseInt(object.amount),
+                amount: parseFloat(parseFloat(object.amount).toFixed(2)),
                 category: object.category
             }); 
     
@@ -31,12 +35,12 @@ export const EditExpensesScreen = ({ navigation}) => {
                     date: `${date.getMonth() + 1}`, 
                     category: object.category,
                     amount: 0, 
-                    expenses: parseInt(object.amount)
+                    expenses: parseFloat(parseFloat(object.amount).toFixed(2))
                 }); 
             }
 
             querySnapshot.forEach(async (doc) => {
-                 const newExpense = parseInt(doc.data().expenses) + parseInt(object.amount);
+                 const newExpense = doc.data().expenses + parseFloat(parseFloat(object.amount).toFixed(2));
                  await updateDoc(doc.ref, { expenses: newExpense });
                  
             });
@@ -46,66 +50,131 @@ export const EditExpensesScreen = ({ navigation}) => {
     }
 
     return (
-        <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
-            <DatePicker 
-                date={date}
-                setDate={setDate}
-            />
-            <TextInput
-                style={styles.inputBox}
-                onChangeText={setDescription}
-                value={description}
-                placeholder='Description'>
-            </TextInput>
-            <TextInput
-                style={styles.inputBox}
-                placeholder='Amount'
-                keyboardType='numeric'
-                onChangeText={setAmount}
-                value={amount.toString()}>
-            </TextInput>
-            <CategoryPicker 
-                category={category}
-                setCategory={setCategory}
-                year={date.getFullYear()}
-                month={date.getMonth() + 1}
-            />
-            <Pressable
-                style={styles.button}
-                onPress={() => { 
-                    addItem({date: formattedDate, description: description, amount: amount, category: category});
-                    setDescription('');
-                    setAmount('');
-                    setDate(new Date());
-                    navigation.navigate('Expenses');
-                }}>
-                <Text style={{fontSize: 18, color: "white"}}>Add</Text>
-            </Pressable>
-        </SafeAreaView>
+        <View style={{backgroundColor: 'white', flex: 1,}}>
+            { Platform.OS === 'ios' 
+                ? <IOSStatusBar color="#0F3091" opacity={0.93} />
+                : <StatusBar backgroundColor="#0F3091"/>
+            }
+
+            <View style={styles.image}>
+                <Text style={styles.header}>Add</Text>
+                <Text style={styles.header}>Transaction</Text>
+            </View>
+
+            <View style={{flex: 6}}> 
+                <View style={[styles.container, {marginTop: 15}]}> 
+                    <MaterialCommunityIcons 
+                        name="calendar-month-outline" 
+                        size={25} 
+                        style={styles.dateIcon}
+                    />
+                    <DatePicker 
+                        date={date}
+                        setDate={setDate}
+                    />
+                </View>
+                
+                <View style={styles.container}> 
+                    <EvilIcons 
+                        name="pencil" 
+                        size={40} 
+                        color="black" 
+                        style={styles.descriptionIcon} 
+                    /> 
+                    <TextInput
+                        style={styles.inputBox}
+                        onChangeText={setDescription}
+                        value={description}
+                        placeholder='Description'>
+                    </TextInput>
+                </View>
+                
+                <View style={styles.container}>
+                    <MaterialIcons 
+                        name="attach-money" 
+                        size={27} 
+                        color="black" 
+                        style={styles.amountIcon} 
+                    />
+                    <TextInput
+                        style={styles.inputBox}
+                        placeholder='Amount'
+                        keyboardType='numeric'
+                        onChangeText={setAmount}
+                        value={amount.toString()}>
+                    </TextInput>
+                </View>
+
+                <CategoryPicker 
+                    category={category}
+                    setCategory={setCategory}
+                    year={date.getFullYear()}
+                    month={date.getMonth() + 1}
+                />
+
+                <Pressable
+                    style={styles.button}
+                    onPress={() => { 
+                        addItem({date: formattedDate, description: description, amount: amount, category: category});
+                        setDescription('');
+                        setAmount('');
+                        setDate(new Date());
+                        navigation.navigate('Expenses');
+                    }}>
+                    <Text style={{fontSize: 20, color: "white", fontWeight: 'bold'}}>+    Add</Text>
+                </Pressable>
+            </View>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
+    image: {
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: "#0F3091",
+        opacity: 0.93
+    },
+    header: {
+        fontSize: 25,
+        alignSelf: 'center',
+        color: 'white',
+        fontWeight: 'bold'
+    },
     inputBox: {
-        margin: 10,
-        backgroundColor: '#eef5ff',
         height: 50,
         width: 350,
-        alignSelf: 'center',
         borderRadius: 10,
-        fontSize: 18,
-        padding: 15, 
-        borderColor: 'black'
+        fontSize: 20,
     },
     button: {
-        height: 50,
-        width: 350,
-        backgroundColor: '#1f5ff3',
+        height: 60,
+        width: Dimensions.get('window').width - 65,
+        backgroundColor: "#0F3091",
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'center',
-        marginTop: 10
+        marginTop: 15,
+        opacity: 0.93
+    }, 
+    container: {
+        flexDirection: 'row',
+        height: 50,
+        alignItems: 'center',
+        marginBottom: 15
+    },
+    dateIcon: {
+        marginLeft: 35,
+        marginRight: 14
+    }, 
+    descriptionIcon: {
+        marginLeft: 30,
+        marginRight: 10
+    },
+    amountIcon: {
+        marginLeft: 35,
+        marginRight: 19
     }
 })
 

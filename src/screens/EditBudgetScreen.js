@@ -46,7 +46,7 @@ export const EditBudgetScreen = ({ route, navigation }) => {
             const budgetRef = await addDoc(q , {
                 date: `${month}`, 
                 category: category,
-                amount: parseInt(budget), 
+                amount: parseFloat(parseFloat(budget).toFixed(2)),
                 expenses: 0,
             })
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextInput, Pressable, Text, Keyboard, StyleSheet, View } from 'react-native';
+import { TextInput, Pressable, Text, Keyboard, StyleSheet, View, StatusBar } from 'react-native';
 import { 
     signInWithEmailAndPassword, 
     createUserWithEmailAndPassword, 
@@ -10,6 +10,7 @@ import { setDoc, doc } from 'firebase/firestore';
 import { auth, db } from '../Firebase';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons'; 
+import { IOSStatusBar } from '../Components/IOSStatusBar';
 
 export const AuthScreen = ({setAuthState}) => {
     const [inputEmail, setInputEmail] = useState('');
@@ -58,6 +59,10 @@ export const AuthScreen = ({setAuthState}) => {
 
     return (
         <View style={{flex: 1}}>
+            { Platform.OS === 'ios' 
+                ? <IOSStatusBar color="#0F3091" />
+                : <StatusBar backgroundColor="#0F3091"/>
+            }
             <View style = {styles.headerContainer}> 
                 <Foundation 
                     name="trees" 
@@ -149,7 +154,7 @@ export const AuthScreen = ({setAuthState}) => {
 
 const styles = StyleSheet.create({
     headerContainer: {
-        backgroundColor: '#1f5ff3',
+        backgroundColor: '#0F3091',
         height: 200,
         justifyContent: 'center',
         flex: 1.75,
@@ -201,7 +206,7 @@ const styles = StyleSheet.create({
     button: {
         height: 55,
         width: 150,
-        backgroundColor: '#1f5ff3',
+        backgroundColor: '#0F3091',
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',

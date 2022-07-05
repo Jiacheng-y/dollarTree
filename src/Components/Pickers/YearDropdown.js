@@ -32,7 +32,7 @@ const data = [
           selectedTextStyle={styles.selectedTextStyle}
           iconStyle={styles.iconStyle}
           data={data}
-          maxHeight={300}
+          maxHeight={200}
           labelField="label"
           valueField="value"
           placeholder={!isFocus ? 'Select Year' : '...'}
@@ -48,7 +48,7 @@ const data = [
             <MaterialCommunityIcons 
                 style={styles.icon}
                 name="calendar-month-outline" 
-                size={20} 
+                size={25} 
                 color={isFocus ? "blue" : "black"} />
           )}
         />
@@ -58,11 +58,11 @@ const data = [
 
   const styles = StyleSheet.create({
     container: {
-      backgroundColor: '#E3EEEB',
+      backgroundColor: '#eef5ff',
       padding: 16,
     },
     dropdown: {
-      height: 50,
+      height: 65,
       borderColor: 'gray',
       borderWidth: 0.5,
       borderRadius: 8,
@@ -73,22 +73,23 @@ const data = [
     },
     label: {
       position: 'absolute',
-      backgroundColor: '#E3EEEB',
+      backgroundColor: '#eef5ff',
       left: 22,
-      top: 8,
+      top: 5,
       zIndex: 999,
       paddingHorizontal: 8,
-      fontSize: 14,
+      fontSize: 18,
+      fontWeight: 'bold'
     },
     placeholderStyle: {
-      fontSize: 16,
+      fontSize: 20,
     },
     selectedTextStyle: {
-      fontSize: 16,
+      fontSize: 20,
     },
     iconStyle: {
-      width: 20,
-      height: 20,
+      width: 25,
+      height: 25,
     },
     inputSearchStyle: {
       height: 40,

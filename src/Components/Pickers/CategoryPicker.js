@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { db, auth } from "../../Firebase";
 import { collection, query, onSnapshot } from "firebase/firestore";
 import { Dropdown } from 'react-native-element-dropdown';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, Dimensions } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
 export const CategoryPicker = ({category, setCategory, year, month}) => {
@@ -57,7 +57,7 @@ export const CategoryPicker = ({category, setCategory, year, month}) => {
                     <MaterialIcons 
                         style={styles.icon}
                         name="category" 
-                        size={20} 
+                        size={22} 
                         color={isFocus ? "blue" : "black"} />
                 )}
                 />
@@ -71,8 +71,8 @@ const styles = StyleSheet.create({
         padding: 16,
       },
       dropdown: {
-        height: 50,
-        width: 350,
+        height: 60,
+        width: Dimensions.get('window').width - 65,
         borderColor: 'gray',
         borderWidth: 0.5,
         borderRadius: 8,
@@ -86,19 +86,19 @@ const styles = StyleSheet.create({
         position: 'absolute',
         backgroundColor: 'white',
         left: 38,
-        top: 8,
+        top: 5,
         zIndex: 999,
         paddingHorizontal: 8,
-        fontSize: 14,
+        fontSize: 18,
       },
       placeholderStyle: {
-        fontSize: 16,
+        fontSize: 20,
       },
       selectedTextStyle: {
-        fontSize: 16,
+        fontSize: 20,
       },
       iconStyle: {
-        width: 20,
-        height: 20,
+        width: 25,
+        height: 25,
       },
 })

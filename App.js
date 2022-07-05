@@ -12,6 +12,7 @@ import { Provider } from 'react-redux';
 import { store } from './src/Store';
 import React, { useState } from 'react';
 import TreeScreen from './src/Screens/TreeScreen';
+import { SetDateScreen } from './src/Screens/SetDateScreen';
 
 export default App = () => {
   return (
@@ -90,10 +91,17 @@ const ExpensesNavigator = () => {
           <Stack.Screen
               name="Expenses"
               component={ExpensesScreen}
+              options={{ headerShown: false }}
           />
           <Stack.Screen
               name="Add Expenses"
               component={EditExpensesScreen}
+              options={{ headerShown: false }}
+          />
+          <Stack.Screen
+              name="Select Month and Year"
+              component={SetDateScreen}
+              options={{ headerShown: false }}
           />
         </Stack.Navigator>
   );

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { SafeAreaView, StyleSheet, Pressable, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, Pressable, Text, View, ImageBackgroundComponent } from "react-native";
 
 export const DatePicker = ({date, setDate}) => {
     const [toDisplay, setToDisplay] = useState(false);
@@ -11,7 +11,7 @@ export const DatePicker = ({date, setDate}) => {
                 style={styles.button}
                 onPress={() => setToDisplay(true)}
             >
-                <Text style={{fontSize: 18, color: "#a9a9a9"}}>Date</Text>
+                <Text style={{fontSize: 20, color: "#a9a9a9"}}>Date</Text>
             </Pressable>
             { toDisplay && 
                 <DateTimePicker
@@ -30,16 +30,14 @@ export const DatePicker = ({date, setDate}) => {
 const styles = StyleSheet.create({
     picker: {
         width: 150,
+        marginLeft: 20
     },
     button: {
         height: 50,
-        width: 150,
-        backgroundColor: '#eef5ff',
         borderRadius: 10,
         justifyContent: 'center',
-        alignItems: 'center',
-        marginLeft: 33,
-        marginVertical: 10
+        marginVertical: 10,
+        marginLeft: 5,
     }
 })
 
