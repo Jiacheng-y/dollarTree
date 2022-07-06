@@ -64,7 +64,8 @@ const Tabs = () => {
         options={{ headerShown: false }}/>
       <Tab.Screen name="Expenses" component={ExpensesNavigator} 
         options={{ headerShown: false }}/>
-      <Tab.Screen name="Insights" component={InsightsScreen} />
+      <Tab.Screen name="Insights" component={InsightsNavigator}
+        options={{ headerShown: false }}/>
       <Tab.Screen name="Tree" component={TreeScreen} />
     </Tab.Navigator>
     );
@@ -96,6 +97,23 @@ const ExpensesNavigator = () => {
           <Stack.Screen
               name="Add Expenses"
               component={EditExpensesScreen}
+              options={{ headerShown: false }}
+          />
+          <Stack.Screen
+              name="Select Month and Year"
+              component={SetDateScreen}
+              options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+  );
+};
+
+const InsightsNavigator = () => {
+  return (
+    <Stack.Navigator>
+          <Stack.Screen
+              name="Insights"
+              component={InsightsScreen}
               options={{ headerShown: false }}
           />
           <Stack.Screen

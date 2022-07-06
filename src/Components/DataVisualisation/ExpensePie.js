@@ -1,13 +1,13 @@
-import { TextSize, VictoryPie } from 'victory-native';
+import { VictoryPie } from 'victory-native';
 import React, { useState, useEffect } from 'react';
-import { query, collection, getDocs, onSnapshot, where } from "firebase/firestore";
+import { query, collection, onSnapshot } from "firebase/firestore";
 import { db, auth } from "../../Firebase";
-import { SafeAreaView, Text, StyleSheet, View } from "react-native";
+import { SafeAreaView, Text, StyleSheet, View, Dimensions } from "react-native";
 
 export const ExpensePie = ({year, month}) => {
     const [data, setData] = useState([]);
+    const [edge, setEdge] = useState(false);
     const thisUserID = auth.currentUser.uid;
-    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
 
@@ -39,6 +39,12 @@ export const ExpensePie = ({year, month}) => {
         const unsubscribe = onSnapshot(budget, async (snapshot) => {
             const newData = [];
 
+            if (snapshot.empty) {
+                setEdge(true);
+            } else {
+                setEdge(false);
+            }
+
             snapshot.forEach((doc) => {
                 if (doc.data().expenses > 0) {
                     newData.push({ x: doc.data().category , y: doc.data().expenses }); 
@@ -56,25 +62,56 @@ export const ExpensePie = ({year, month}) => {
     }, [month, year]);
 
     return (
-        <SafeAreaView style={{marginTop: 10}}>
-            <View style={{backgroundColor: "#eef5ff"}}>
+        <SafeAreaView style={styles.container}>
+            <View style={{}}>
                 <Text style={styles.description}>
-                    compare your spending across categories
+                  Expenses Breakdown
                 </Text>
             </View>
+            {
+                edge 
+                ? 
+                <View>
+                    <Text style={styles.edge}>No categories added</Text>
+                </View>
+                :   
+                <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                    <VictoryPie
+                        data = {data}
+                        colorScale={['#52C6D8', '#3EA2C3', '#2D7EAF','#1E5C9B','#123E86','#O82372']}
+                        innerRadius={({ datum }) => 35}
+                        height={250}
+                        width={Dimensions.get('window').width - 50}
+                        style={{
+                            labels: { fontSize: 15 },
+                        }}
+                    />
+                </View>
+            }
             
-            <VictoryPie
-            data = {data}
-            colorScale={['#52C6D8', '#3EA2C3', '#2D7EAF','#1E5C9B','#123E86','#O82372']} />
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     description: {
-        marginHorizontal: 30,
-        marginVertical: 30,
+        fontSize: 20,
+        fontWeight: 'bold', 
+        marginLeft: 20,
+        marginTop: 20
+    }, 
+    container: {
+        backgroundColor: 'white',
+        marginHorizontal: 25,
+        marginTop: 25,
+        borderRadius: 8,
+    }, 
+    edge: {
         fontSize: 18,
-        alignSelf: "center"
-    },
+        fontStyle: 'italic',
+        marginLeft: 20,
+        marginTop: 10,
+        marginBottom: 25,
+        color: 'grey'
+    }
 });

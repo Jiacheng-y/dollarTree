@@ -1,43 +1,56 @@
-import { SafeAreaView, Pressable, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
+import { Pressable, Text, StyleSheet, ScrollView, Dimensions, Platform, View, ImageBackground } from 'react-native';
 import React, { useState } from 'react';
-import { CategoryBar } from '../Components/DataVisualisation/CategoryBar';
 import { ExpensePie } from '../Components/DataVisualisation/ExpensePie';
 import { signOutEmailPassword } from './AuthScreen';
-import { MonthDropdown } from '../Components/Pickers/MonthDropdown';
-import { YearDropdown } from '../Components/Pickers/YearDropdown';
+import { IOSStatusBar } from '../Components/IOSStatusBar';
+import { monthName } from '../Functions/monthName';
+import { ThreeMonth } from '../Components/DataVisualisation/ThreeMonth';
 
 export const InsightsScreen = ({ navigation }) => {
     const [year, setYear] = useState(new Date().getFullYear()); // the user's selected year to be displayed
     const [month, setMonth] = useState(new Date().getMonth() + 1); // the user's selected month to be displayed
 
     return (
-        <ScrollView>
-            <SafeAreaView style={{backgroundColor: 'white'}}>
-                <MonthDropdown 
-                    setMonth={setMonth}
-                />
-                <YearDropdown
-                    setYear={setYear}
-                />
+        <View style={{backgroundColor: 'white', flex: 1}}>
+            { Platform.OS === 'ios' 
+                ? <IOSStatusBar color="#0F3091"/>
+                : <StatusBar backgroundColor="#0F3091"/>
+            }
+            <ImageBackground
+                    source={require("../Images/ExpensesBackground.png")}
+                    resizeMode="cover"
+                    style={styles.image}
+            >
+                <View style={{flexDirection: 'row', marginTop: 20}}>
+                    <Text style={styles.date}>{monthName(month) + " " + year + " Insights"}</Text>
+                    <Pressable
+                        style={styles.dateButton}
+                        onPress={() => { 
+                            navigation.navigate('Select Month and Year', { setMonth: setMonth, setYear: setYear, next: 'Insights' });
+                        }}>
+                        <Text style={{fontSize: 15, color: "black"}}>Change</Text>
+                    </Pressable>
+                </View>
 
-                
-                <ExpensePie
-                    year={year}
-                    month={month}
-                />
-                <CategoryBar
-                    year={year}
-                    month={month}
-                />
-                
-                
-                <Pressable 
+                <ScrollView>
+                    <ExpensePie
+                        year={year}
+                        month={month}
+                    />
+                    <ThreeMonth
+                        year={year}
+                        month={month}
+                    /> 
+                </ScrollView>
+
+                {/* Log Out Button */}
+                {/* <Pressable 
                     style={styles.logOut}
                     onPress={signOutEmailPassword}>
                     <Text style={{color: 'white', fontSize: 20}}>Log Out</Text>
-                </Pressable>
-            </SafeAreaView>
-        </ScrollView>
+                </Pressable> */}
+            </ImageBackground>
+        </View>
     );
 };
 
@@ -51,5 +64,24 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'center',
-    }
+    },
+    date: {
+        color: 'white',
+        fontSize: 28,
+        marginLeft: 25,
+        marginBottom: 10
+    }, 
+    dateButton: {
+        backgroundColor: 'white',
+        marginLeft: 10,
+        alignSelf: 'center',
+        borderRadius: 8,
+        padding: 5,
+        opacity: 0.6,
+        marginBottom: 10
+        //opacity: controlOpacity(null)
+    },
+    image: {
+        flex: 1
+    },
 });

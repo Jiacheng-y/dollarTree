@@ -1,40 +1,40 @@
 export const monthNumber = (name) => {
     var number;
     switch(name) {
-        case "January":
+        case "Jan":
             number = 1;
             break;
-        case "February":
+        case "Feb":
             number = 2;
             break;
-        case "March":
+        case "Mar":
             number = 3;
             break;
-        case "April":
+        case "Apr":
             number = 4;
             break;
         case "May":
             number = 5;
             break;
-        case "June":
+        case "Jun":
             number = 6;
             break;
-        case "July":
+        case "Jul":
             number = 7;
             break;
-        case "August":
+        case "Aug":
             number = 8;
             break;
-        case "September":
+        case "Sep":
             number = 9;
             break;
-        case "October":
+        case "Oct":
             number = 10;
             break;
-        case "November":
+        case "Nov":
             number = 11;
             break;
-        case "December":
+        case "Dec":
             number = 12;
             break;
     }

@@ -11,8 +11,7 @@ const data = [
     { label: currYear - 2, value: currYear - 2 },
   ];
 
-  export const YearDropdown = ({setYear}) => {
-    const [value, setValue] = useState(new Date().getFullYear());
+  export const YearDropdown = ({value, setValue}) => {
     const [isFocus, setIsFocus] = useState(false);
 
     const renderLabel = () => {
@@ -40,7 +39,6 @@ const data = [
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           onChange={item => {
-            setYear(item.value)
             setValue(item.value);
             setIsFocus(false);
           }}

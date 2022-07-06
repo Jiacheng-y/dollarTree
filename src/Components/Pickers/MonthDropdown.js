@@ -21,8 +21,7 @@ const data = [
     { label: `${monthName(firstMonth + 11)}`, value: firstMonth + 11 },
   ];
 
-  export const MonthDropdown = ({setMonth}) => {
-    const [value, setValue] = useState(new Date().getMonth() + 1);
+  export const MonthDropdown = ({value, setValue}) => {
     const [isFocus, setIsFocus] = useState(false);
 
     const renderLabel = () => {
@@ -50,7 +49,6 @@ const data = [
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           onChange={item => {
-            setMonth(item.value);
             setValue(item.value);
             setIsFocus(false);
           }}

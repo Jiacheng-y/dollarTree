@@ -1,10 +1,13 @@
 import { View, StyleSheet, Dimensions, Text, Pressable, StatusBar, Platform } from 'react-native';
+import React, { useState } from 'react';
 import { IOSStatusBar } from '../Components/IOSStatusBar';
 import { MonthDropdown } from "../Components/Pickers/MonthDropdown";
 import { YearDropdown } from "../Components/Pickers/YearDropdown";
 
 export const SetDateScreen = ({ navigation, route }) => {
-    const { setMonth, setYear } = route.params;
+    const { setMonth, setYear, next } = route.params;
+    const [monthPickerValue, setMonthPickerValue] = useState(new Date().getMonth() + 1);
+    const [yearPickerValue, setYearPickerValue] = useState(new Date().getFullYear());
 
     return (
         <View style={{flex: 1}}>
@@ -15,15 +18,19 @@ export const SetDateScreen = ({ navigation, route }) => {
             <View style={styles.container}> 
                 {/* <Text style={styles.header}>Select Month and Year</Text> */}
                 <MonthDropdown
-                    setMonth={setMonth}
+                    setValue={setMonthPickerValue}
+                    value={monthPickerValue}
                 />
                 <YearDropdown
-                    setYear={setYear}
+                    setValue={setYearPickerValue}
+                    value={yearPickerValue}
                 />
                 <Pressable
                     style={styles.doneButton}
                     onPress={() => { 
-                        navigation.navigate('Expenses');
+                        navigation.navigate(next);
+                        setMonth(monthPickerValue);
+                        setYear(yearPickerValue);
                     }}
                 >
                     <Text style={{fontSize: 20, color: "white", fontWeight: 'bold'}}>Done</Text>

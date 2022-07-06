@@ -17,6 +17,9 @@ export const CategoryPicker = ({category, setCategory, year, month}) => {
                   ); 
                 }
             })
+            newItems.sort((a, b) => {
+              return a.value.localeCompare(b.value); 
+            });
             setItems(newItems);
         })
         return () => { unsubscribe(); }
@@ -67,7 +70,6 @@ export const CategoryPicker = ({category, setCategory, year, month}) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'white',
         padding: 16,
       },
       dropdown: {

@@ -5,6 +5,7 @@ import { query, collection, doc, onSnapshot, deleteDoc, getDoc, getDocs, updateD
 import { ExpenseEntry } from '../Components/Entries/ExpenseEntry';
 import { monthName } from "../Functions/monthName";
 import { IOSStatusBar } from "../Components/IOSStatusBar";
+import { FontAwesome } from '@expo/vector-icons'; 
 
 export const ExpensesScreen = ({ navigation }) => {
     const [year, setYear] = useState(new Date().getFullYear()); 
@@ -74,6 +75,7 @@ export const ExpensesScreen = ({ navigation }) => {
                 ? <IOSStatusBar color="#0F3091"/>
                 : <StatusBar backgroundColor="#0F3091"/>
             }
+
             <ImageBackground
                 source={require("../Images/ExpensesBackground.png")}
                 resizeMode="cover"
@@ -85,7 +87,7 @@ export const ExpensesScreen = ({ navigation }) => {
                     <Pressable
                         style={styles.dateButton}
                         onPress={() => { 
-                            navigation.navigate('Select Month and Year', { setMonth: setMonth, setYear: setYear });
+                            navigation.navigate('Select Month and Year', { setMonth: setMonth, setYear: setYear, next: 'Expenses' });
                         }}>
                         <Text style={{fontSize: 15, color: "black"}}>Change</Text>
                     </Pressable>
@@ -110,7 +112,19 @@ export const ExpensesScreen = ({ navigation }) => {
                         </ExpenseEntry>
                     )} 
                     style={styles.listContainer}
-                    ListEmptyComponent={<Text style={styles.emptyList}>Click the button to start adding expenses!</Text>}
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    ListEmptyComponent={
+                        <View style={{alignItems: 'center', justifyContent: 'center', flexGrow: 1}}>
+                            <Text style={styles.emptyList}>No expenses added</Text>
+                            <Text style={styles.emptyList}>Click to start</Text>
+                            <FontAwesome 
+                                name="hand-pointer-o" 
+                                size={45} 
+                                color="gray" 
+                                style={{marginTop: 20}}
+                            />
+                        </View>
+                    }
                     //onPressIn={()  => controlOpacity(0.1)}
                 />
                 
@@ -129,7 +143,7 @@ export const ExpensesScreen = ({ navigation }) => {
 // }
 
 // background gradient darkest: #0F3091, lightest: #9DC6FF
-// potential color: #1f4e83
+// potential color: #1f4e83, #284f8f, #3551a3
 
 const styles = StyleSheet.create({
     button: {
@@ -152,7 +166,7 @@ const styles = StyleSheet.create({
     },
     date: {
         color: 'white',
-        fontSize: 30,
+        fontSize: 28,
         marginLeft: 25,
     }, 
     dateButton: {
@@ -179,11 +193,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     emptyList: {
-        alignSelf: 'center',
-        marginTop: 10,
-        fontWeight: 'bold',
-        color: "black", 
-        fontSize: 17
+        fontStyle: 'italic',
+        color: "gray", 
+        fontSize: 17,
+        marginTop: 10
     }
 })
 
