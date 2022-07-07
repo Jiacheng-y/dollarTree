@@ -1,7 +1,7 @@
 import { Text, StyleSheet, TextInput, Pressable, View, Dimensions, Platform, StatusBar } from "react-native";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { db, auth } from "../Firebase";
-import { collection, addDoc, updateDoc, query, getDocs, where, setDoc, getDoc, doc} from "firebase/firestore";
+import { collection, updateDoc, query, getDocs, where, setDoc, getDoc, doc} from "firebase/firestore";
 import { DatePicker } from "../Components/Pickers/DatePicker";
 import { CategoryPicker } from "../Components/Pickers/CategoryPicker";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -9,7 +9,8 @@ import { EvilIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { IOSStatusBar } from "../Components/IOSStatusBar";
 
-export const EditExpensesScreen = ({ navigation}) => {
+export const ChangeExpensesScreen = ({ navigation, route }) => {
+    const { data } = route.params;
     const [date, setDate] = useState(new Date());
     const formattedDate = `${date.getDate()}` + "/" + `${date.getMonth() + 1}` + "/" + `${date.getFullYear()}`;
     const [amount, setAmount] = useState(0);
@@ -18,9 +19,20 @@ export const EditExpensesScreen = ({ navigation}) => {
     
     const thisUserID = auth.currentUser.uid;
 
-    const addItem = async (object) => {
+    useEffect(() => {
+        const arr = data.date.split("/");
+        console.log(data.date)
+        console.log(arr);
+        const unformattedOgDate = new Date(arr[2], arr[1] - 1, arr[0]);
+        setDate(unformattedOgDate);
+        setDescription(data.description);
+        setAmount(data.amount.toFixed(2));
+        setCategory(data.category);
+    }, [data]);
+
+    const changeItem = async (object) => {
         try {
-            await addDoc(collection(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`), {
+            await updateDoc(doc(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`, `${data.id}`), {
                 date: object.date,
                 description: object.description,
                 amount: parseFloat(parseFloat(object.amount).toFixed(2)),
@@ -29,31 +41,31 @@ export const EditExpensesScreen = ({ navigation}) => {
     
             const q = query(collection(db, "users", `${thisUserID}`, "budgets", `${date.getFullYear()}`, `${date.getMonth() + 1}`), where("category", "==", object.category));
             const querySnapshot = await getDocs(q);
-            
-            if (querySnapshot.empty) {
-                await addDoc(collection(db, "users", `${thisUserID}`, "budgets", `${date.getFullYear()}`, `${date.getMonth() + 1}`), {
-                    date: `${date.getMonth() + 1}`, 
-                    category: object.category,
-                    amount: 0, 
-                    expenses: parseFloat(parseFloat(object.amount).toFixed(2))
-                }); 
-            }
 
             querySnapshot.forEach(async (doc) => {
-                 const newExpense = doc.data().expenses + parseFloat(parseFloat(object.amount).toFixed(2));
+                // if category was changed, add expense to new category
+                var newExpense;
+                if (object.category != data.category) {
+                    newExpense = doc.data().expenses + parseFloat(parseFloat(object.amount).toFixed(2));
+                } else {
+                    newExpense = parseFloat((doc.data().expenses - data.amount + parseFloat(parseFloat(object.amount).toFixed(2))).toFixed(2));
+                }
                  await updateDoc(doc.ref, { expenses: newExpense });
-                 
             });
 
             const docRef = doc(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`, "Total");
             const docSnap = await getDoc(docRef); 
-            if (docSnap.exists()) {
-                await setDoc(docRef, {
-                    total: parseFloat(parseFloat(object.amount).toFixed(2)) + docSnap.data().total 
-                });
-            } else {
-                await setDoc(docRef, {
-                    total: parseFloat(parseFloat(object.amount).toFixed(2))
+            await updateDoc(docRef, {
+                total: docSnap.data().total - data.amount + parseFloat(parseFloat(object.amount).toFixed(2))
+            });
+
+            // if category was changed, deduct expense from old category
+            if (object.category != data.category) {
+                const ogCat = query(collection(db, "users", `${thisUserID}`, "budgets", `${date.getFullYear()}`, `${date.getMonth() + 1}`), where("category", "==", data.category));
+                const ogCatSnapshot = await getDocs(ogCat);
+                ogCatSnapshot.forEach(async (doc) => {
+                    const newExpense = parseFloat((doc.data().expenses - data.amount).toFixed(2));
+                    await updateDoc(doc.ref, { expenses: newExpense });  
                 });
             }
         } catch (error) {
@@ -69,7 +81,7 @@ export const EditExpensesScreen = ({ navigation}) => {
             }
 
             <View style={styles.image}>
-                <Text style={styles.header}>Add</Text>
+                <Text style={styles.header}>Edit</Text>
                 <Text style={styles.header}>Transaction</Text>
             </View>
 
@@ -83,7 +95,7 @@ export const EditExpensesScreen = ({ navigation}) => {
                     <DatePicker 
                         date={date}
                         setDate={setDate}
-                        placeHolder="Date"
+                        placeHolder={formattedDate}
                     />
                 </View>
                 
@@ -128,13 +140,13 @@ export const EditExpensesScreen = ({ navigation}) => {
                 <Pressable
                     style={styles.button}
                     onPress={() => { 
-                        addItem({date: formattedDate, description: description, amount: amount, category: category});
+                        changeItem({date: formattedDate, description: description, amount: amount, category: category});
                         setDescription('');
                         setAmount('');
                         setDate(new Date());
                         navigation.navigate('Expenses');
                     }}>
-                    <Text style={{fontSize: 20, color: "white", fontWeight: 'bold'}}>+    Add</Text>
+                    <Text style={{fontSize: 20, color: "white", fontWeight: 'bold'}}>+    Change</Text>
                 </Pressable>
             </View>
         </View>
@@ -190,4 +202,3 @@ const styles = StyleSheet.create({
         marginRight: 19
     }
 })
-

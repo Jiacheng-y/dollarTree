@@ -25,9 +25,9 @@ export const ExpensesScreen = ({ navigation }) => {
                 if (doc.id != "Total") {
                     items.push({
                         id: doc.id,
-                        amount: "$" + doc.data().amount.toFixed(2),
+                        amount: doc.data().amount,
                         category: doc.data().category,
-                        date: doc.data().date.split("/")[0] + " " + monthName(parseInt(doc.data().date.split("/")[1])),
+                        date: doc.data().date,
                         description: doc.data().description
                     }); 
                 }
