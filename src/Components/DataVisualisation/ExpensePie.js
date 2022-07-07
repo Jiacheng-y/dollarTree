@@ -78,7 +78,7 @@ export const ExpensePie = ({year, month}) => {
                 <View style={{alignItems: 'center', justifyContent: 'center'}}>
                     <VictoryPie
                         data = {data}
-                        colorScale={['#52C6D8', '#3EA2C3', '#2D7EAF','#1E5C9B','#123E86','#O82372']}
+                        colorScale={['#52C6D8', '#3EA2C3', '#2D7EAF','#1E5C9B','#123E86']}
                         innerRadius={({ datum }) => 35}
                         height={250}
                         width={Dimensions.get('window').width - 50}

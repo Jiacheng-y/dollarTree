@@ -1,7 +1,7 @@
 import { Text, StyleSheet, TextInput, Pressable, View, ImageBackground, Dimensions, Platform, StatusBar } from "react-native";
 import React, { useState } from 'react';
 import { db, auth } from "../Firebase";
-import { collection, addDoc, updateDoc, query, getDocs, where} from "firebase/firestore";
+import { collection, addDoc, updateDoc, query, getDocs, where, setDoc, getDoc, doc} from "firebase/firestore";
 import { DatePicker } from "../Components/Pickers/DatePicker";
 import { CategoryPicker } from "../Components/Pickers/CategoryPicker";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -44,6 +44,18 @@ export const EditExpensesScreen = ({ navigation}) => {
                  await updateDoc(doc.ref, { expenses: newExpense });
                  
             });
+
+            const docRef = doc(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`, "Total");
+            const docSnap = await getDoc(docRef); 
+            if (docSnap.exists()) {
+                await setDoc(docRef, {
+                    total: parseFloat(parseFloat(object.amount).toFixed(2)) + docSnap.data().total 
+                });
+            } else {
+                await setDoc(docRef, {
+                    total: parseFloat(parseFloat(object.amount).toFixed(2))
+                });
+            }
         } catch (error) {
             console.log(error);
         }
