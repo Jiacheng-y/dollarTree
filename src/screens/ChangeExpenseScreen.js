@@ -21,8 +21,6 @@ export const ChangeExpensesScreen = ({ navigation, route }) => {
 
     useEffect(() => {
         const arr = data.date.split("/");
-        console.log(data.date)
-        console.log(arr);
         const unformattedOgDate = new Date(arr[2], arr[1] - 1, arr[0]);
         setDate(unformattedOgDate);
         setDescription(data.description);
