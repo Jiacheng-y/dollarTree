@@ -19,10 +19,6 @@ export const ThreeMonth = ({year, month}) => {
             >
             </CategoryBar>
 
-            <View style={styles.container}>
-                 <Text>Placeholder</Text>
-            </View>
-
         </ScrollView>
     );
 }
