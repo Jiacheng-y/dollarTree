@@ -62,7 +62,6 @@ export const ExpensesScreen = ({ navigation }) => {
             const querySnapshot = await getDocs(q);
             querySnapshot.forEach(async (doc) => {
                  const newExpense = parseFloat((doc.data().expenses - deleteAmount).toFixed(2));
-                 console.log("newBudget" + newExpense)
                  await updateDoc(doc.ref, { expenses: newExpense }); 
             });
 

@@ -1,10 +1,13 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Pressable } from 'react-native';
 import React from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 export const BudgetEntry = (props) => {
-    const { data, onDelete } = props;
+    const { data, onDelete, year, month } = props;
     const proportion = (data.expenses / data.amount).toFixed(2); 
+
+    const navigation = useNavigation();
 
     const DeleteIcon = () => (
         <TouchableOpacity onPress={() => onDelete(data.id)}>
@@ -13,7 +16,16 @@ export const BudgetEntry = (props) => {
     );
 
     return (
-        <View style={styles.container}>
+        <Pressable 
+            style={styles.container}
+            onPress={() => {
+                navigation.navigate("Change Budget", {
+                    data: data,
+                    year: year,
+                    month: month
+                })
+            }}
+        >
             <View style={styles.info}>
                 <Text style={styles.category}>{data.category}</Text>
                 <View style={styles.amounts}>
@@ -38,7 +50,7 @@ export const BudgetEntry = (props) => {
                 ? <Text style={styles.footnote}>You can spend ${(data.amount - data.expenses).toFixed(2)} more</Text>
                 : <Text style={styles.footnote}>You have overspent by ${(data.expenses - data.amount).toFixed(2)}</Text>
             }
-        </View>
+        </Pressable>
     );
 };
 
