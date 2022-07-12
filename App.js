@@ -78,11 +78,18 @@ const BudgetNavigator = () => {
           <Stack.Screen
               name="Budget"
               component={BudgetScreen}
+              options={{ headerShown: false }}
           />
           <Stack.Screen
               name="Add Budget"
               component={EditBudgetScreen}
+              options={{ headerShown: false }}
           />
+          <Stack.Screen
+              name="Select Month and Year"
+              component={SetDateScreen}
+              options={{ headerShown: false }}
+          />  
         </Stack.Navigator>
   );
 };

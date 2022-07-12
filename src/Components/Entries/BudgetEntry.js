@@ -3,49 +3,96 @@ import React from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 
 export const BudgetEntry = (props) => {
-    const { data, year, onDelete } = props;
+    const { data, onDelete } = props;
+    const proportion = (data.expenses / data.amount).toFixed(2); 
 
     const DeleteIcon = () => (
         <TouchableOpacity onPress={() => onDelete(data.id)}>
-            <MaterialIcons name="delete" size={28} color="#407BFF" />
+            <MaterialIcons name="delete" size={28} color="#0F3091" />
         </TouchableOpacity>
     );
 
     return (
-        <View style={[styles.container, styles.containerShadow]}>
-            <Text style={styles.taskText}>{data.category}</Text>
-            <Text style={styles.taskText}>Budget: {data.amount}</Text>
-            <Text style={styles.taskText}>Spent: {data.expenses}</Text>
-            <DeleteIcon />
+        <View style={styles.container}>
+            <View style={styles.info}>
+                <Text style={styles.category}>{data.category}</Text>
+                <View style={styles.amounts}>
+                    {
+                        proportion <= 1
+                        ? <Text style={[styles.expenses, { color: "#0F3091" }]}>${data.expenses.toFixed(2)}</Text>
+                        : <Text style={[styles.expenses, { color: "#e95d5d" }]}>${data.expenses.toFixed(2)}</Text>
+                    }
+                    <Text style={styles.budget}>/${data.amount.toFixed(2)}</Text>
+                </View>
+                <DeleteIcon />
+            </View>
+            <View style={styles.progressBar}>
+                {
+                    proportion <= 1
+                    ? <View style={[styles.spent, {flex: proportion}]}/>
+                    : <View style={styles.overspent}/>
+                }
+            </View>
+            {
+                proportion <= 1
+                ? <Text style={styles.footnote}>You can spend ${(data.amount - data.expenses).toFixed(2)} more</Text>
+                : <Text style={styles.footnote}>You have overspent by ${(data.expenses - data.amount).toFixed(2)}</Text>
+            }
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#daebfa',
-        flexDirection: 'row',
-        marginHorizontal: 14,
         marginVertical: 10,
-        paddingVertical: 10,
-        paddingHorizontal: 6,
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        borderRadius: 4,
-        padding: 5,
+        marginHorizontal: 1,
+        paddingVertical: 5,
+        paddingHorizontal: 10,
     },
-    containerShadow: {
-        shadowColor: '#171717',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        elevation: 5,
-    },
-    taskText: {
-        fontWeight: 'bold',
+    info: {
+        flexDirection: 'row',
         flex: 1,
-        flexWrap: 'wrap',
-        marginRight: 10,
     },
+    category: {
+        flex: 3,
+        fontWeight: 'bold',
+        fontSize: 17,
+        alignSelf: 'center'
+    }, 
+    expenses: {
+        fontWeight: 'bold',
+        fontSize: 15
+    },
+    budget: {
+        fontSize: 15,
+        color: 'grey'
+    }, 
+    amounts: {
+        flex: 2,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+    },
+    progressBar: {
+        height: 15,
+        borderRadius: 8,
+        marginTop: 5,
+        flex: 1,
+        flexDirection: 'row',
+        backgroundColor: '#D3D3D3',
+    },
+    spent: {
+        backgroundColor: '#0F3091',
+        borderRadius: 8
+    },
+    overspent: {
+        backgroundColor: '#e95d5d',
+        borderRadius: 8,
+        flex: 1
+    },
+    footnote: {
+        marginTop: 10,
+        fontSize: 13,
+        fontStyle: 'italic'
+    }
 });

@@ -3,21 +3,19 @@ import {
     StyleSheet,
     Text,
     View,
-    SafeAreaView,
-    TextInput,
-    KeyboardAvoidingView,
     Pressable,
     Dimensions,
+    ImageBackground,
+    StatusBar,
+    Platform,
     FlatList,
-    ToastAndroid,
-    Keyboard,
 } from 'react-native';
 import { db, auth } from '../Firebase';
 import { query, collection, onSnapshot, addDoc, deleteDoc, doc, orderBy, runTransaction, where, getDocs, updateDoc } from 'firebase/firestore';
-import { Platform } from 'react-native-web';
-import { MonthDropdown } from '../Components/Pickers/MonthDropdown';
-import { YearDropdown } from '../Components/Pickers/YearDropdown';
 import { BudgetEntry } from '../Components/Entries/BudgetEntry';
+import { IOSStatusBar } from '../Components/IOSStatusBar';
+import { monthName } from '../Functions/monthName';
+import { FontAwesome } from '@expo/vector-icons'; 
 
 export const BudgetScreen = ({ navigation }) => {
 
@@ -25,8 +23,10 @@ export const BudgetScreen = ({ navigation }) => {
     const date = new Date();
     const [month, setMonth] = useState(date.getMonth() + 1);
     const [year, setYear] = useState(date.getFullYear());
+    const [budget, setBudget] = useState(0);
 
     useEffect(() => {
+        var newBudget = 0;
         const q = collection(db, "users", `${auth.currentUser.uid}` , "budgets", `${year}`, `${month}`);
         const budgetQuery = query(q, orderBy("amount", "desc"));
 
@@ -38,9 +38,11 @@ export const BudgetScreen = ({ navigation }) => {
                     id: doc.id, 
                     ... doc.data()
                 });
+                newBudget += doc.data().amount;
             });
 
             setBudgetList([...budgets]);
+            setBudget(newBudget);
         });
 
         return () => {
@@ -60,77 +62,121 @@ export const BudgetScreen = ({ navigation }) => {
     };
 
     return (
-        <KeyboardAvoidingView
-        style={{backgroundColor: 'white', flex: 1}}
-        behaviour={Platform.OS === 'ios' ? 'padding' : null}>
-            <SafeAreaView style={styles.container}>
-                <MonthDropdown
-                        style = {styles.dropdown}
-                        setMonth={setMonth}
-                    />
-                <YearDropdown
-                    style = {styles.dropdown}
-                    setYear={setYear}
-                />
-                <View style={styles.listContainer}>
-                    <FlatList
-                        data={budgetList}
-                        renderItem={({ item, index }) => (
-                            <BudgetEntry
-                                data={item}
-                                year={year}
-                                key={index}
-                                navigation={navigation}
-                                onDelete={onDeleteHandler}
-                            />
-                        )}
-                        style={styles.list}
-                        showsVerticalScrollIndicator={false}
-                    />
+        <View style={{backgroundColor: 'white', flex: 1}}>
+            { Platform.OS === 'ios' 
+                ? <IOSStatusBar color="#0F3091"/>
+                : <StatusBar backgroundColor="#0F3091"/>
+            }
+
+            <ImageBackground
+                source={require("../Images/ExpensesBackground.png")}
+                resizeMode="cover"
+                style={styles.image}
+            >
+
+                <View style={{flexDirection: 'row', marginTop: 20}}>
+                    <Text style={styles.date}>{monthName(month) + " " + year + " Budget"}</Text>
+                    <Pressable
+                        style={styles.dateButton}
+                        onPress={() => { 
+                            navigation.navigate('Select Month and Year', { setMonth: setMonth, setYear: setYear, next: 'Budget' });
+                        }}>
+                        <Text style={{fontSize: 15, color: "black"}}>Change</Text>
+                    </Pressable>
                 </View>
+                
+                <Text style={styles.budget}>{"$" + budget.toFixed(2)}</Text>
+
                 <Pressable
-                    onPress={() => navigation.navigate('Add Budget', {year: year, month: month})}
-                    android_ripple={{ color : 'white' }}
                     style={styles.button}
-                >
-                    <Text style={styles.buttonText}>Add Budget</Text>
+                    onPress={() => { 
+                        navigation.navigate('Add Budget', {year: year, month: month});
+                    }}>
+                    <Text style={styles.buttonText}>+    Add Budget</Text>
                 </Pressable>
-            </SafeAreaView>
-        </KeyboardAvoidingView>
+
+                <FlatList
+                    data={budgetList}
+                    showsVerticalScrollIndicator={false}
+                    renderItem={({item}) => (
+                        <BudgetEntry
+                                data={item}
+                                onDelete={onDeleteHandler}
+                        />
+                    )} 
+                    style={styles.listContainer}
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    ListEmptyComponent={
+                        <View style={{alignItems: 'center', justifyContent: 'center', flexGrow: 1}}>
+                            <Text style={styles.emptyList}>No budget added</Text>
+                            <Text style={styles.emptyList}>Click to start</Text>
+                            <FontAwesome 
+                                name="hand-pointer-o" 
+                                size={45} 
+                                color="gray" 
+                                style={{marginTop: 20}}
+                            />
+                        </View>
+                    }
+                    //onPressIn={()  => controlOpacity(0.1)}
+                />
+
+            </ImageBackground>
+        </View>
     );
 };
 
-
 const styles = StyleSheet.create({
-    container: {
-        flex: 1, 
-        flexDirection: 'column'
+    button: {
+        height: 50,
+        width: Dimensions.get('window').width - 50,
+        backgroundColor: 'white',
+        borderRadius: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+    },
+    buttonText: {
+        fontSize: 20, 
+        color: "#0F3091", 
+        alignSelf: 'center', 
+        fontWeight: 'bold'
+    },
+    image: {
+        flex: 1
+    },
+    date: {
+        color: 'white',
+        fontSize: 28,
+        marginLeft: 25,
     }, 
-    header: {
-        fontSize: 45,  
-        textAlign: 'left', 
-        margin: 10
+    dateButton: {
+        backgroundColor: 'white',
+        marginLeft: 10,
+        alignSelf: 'center',
+        borderRadius: 8,
+        padding: 5,
+        opacity: 0.6,
+        //opacity: controlOpacity(null)
     },
     listContainer: {
-        flex: 1,
+        marginHorizontal: 25,
+        marginTop: 10,
+        marginBottom: 20,
+        backgroundColor: 'white',
+        borderRadius: 8,
     }, 
-    list: {
-        overflow: 'scroll'
-    }, 
-    button: {
-        bottom: 0,
-        position: 'absolute',
-        height: 50, 
-        width: Dimensions.get('window').width*0.9, 
-        backgroundColor: '#1f5ff3', 
-        borderRadius: 10, 
-        padding : 5,
-        alignSelf: 'center',
-        justifyContent: 'center', 
-        alignItems: 'center'
-    }, 
-    buttonText: {
-        fontSize: 20,
-        color: 'white'
+    budget: {
+        color: 'white',
+        fontSize: 40,
+        marginLeft: 25,
+        marginVertical: 10,
+        fontWeight: 'bold',
+    },
+    emptyList: {
+        fontStyle: 'italic',
+        color: "gray", 
+        fontSize: 17,
+        marginTop: 10
     }
 })

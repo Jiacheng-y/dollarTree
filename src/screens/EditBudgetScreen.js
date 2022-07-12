@@ -3,18 +3,17 @@ import {
     StyleSheet,
     Text,
     View,
-    SafeAreaView,
     TextInput,
-    KeyboardAvoidingView,
     Pressable,
     Dimensions,
-    ToastAndroid,
+    Platform,
+    StatusBar,
     Keyboard,
 } from 'react-native';
 import { db, auth } from '../Firebase';
 import { query, collection, onSnapshot, addDoc, runTransaction, doc, updateDoc, where, getDocs } from 'firebase/firestore';
-import { monthName } from '../Functions/monthName';
-import { MonthDropdown } from '../Components/Pickers/MonthDropdown';
+import { IOSStatusBar } from '../Components/IOSStatusBar';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export const EditBudgetScreen = ({ route, navigation }) => {
 
@@ -104,84 +103,101 @@ export const EditBudgetScreen = ({ route, navigation }) => {
     // }
 
     return (
-        <KeyboardAvoidingView
-            style={{ backgroundColor: 'white', padding: 20, flex: 1 }}
-            behavior={Platform.OS === 'ios' ? 'padding' : null}
-        >
-            <SafeAreaView style={styles.container}>
-                <View style={styles.formContainer}>
-                    <TextInput
-                        onChangeText={setCategory}
-                        value={category}
-                        placeholder={catPlaceHolder}
-                        style={styles.budgetInput}
-                    />
-                    <TextInput
-                        keyboardType='numeric'
-                        onChangeText={setBudget}
-                        value={budget.toString()}
-                        placeholder={'Amount'}
-                        style={styles.budgetInput}
-                    />
-                    <Pressable
-                        onPress={onSubmitHandler}
-                        android_ripple={{ color: 'white' }}
-                        style={styles.button}
-                    >
-                        <Text style={styles.buttonText}>Add</Text>
-                    </Pressable>
-                </View>
-            </SafeAreaView>
-        </KeyboardAvoidingView>
+        <View style={{backgroundColor: 'white', flex: 1}}>
+            { Platform.OS === 'ios' 
+                ? <IOSStatusBar color="#0F3091" opacity={0.93} />
+                : <StatusBar backgroundColor="#0F3091"/>
+            }
+
+            <View style={styles.image}>
+                <Text style={styles.header}>Add</Text>
+                <Text style={styles.header}>Budget</Text>
+            </View>
+
+            <View style={styles.container}> 
+                <MaterialIcons 
+                    style={styles.categoryIcon}
+                    name="category" 
+                    size={25} 
+                    color="black" />
+                <TextInput
+                    style={styles.inputBox}
+                    onChangeText={setCategory}
+                    value={category}
+                    placeholder={catPlaceHolder}>
+                </TextInput>
+            </View>
+                
+            <View style={styles.container}>
+                <MaterialIcons 
+                    name="attach-money" 
+                    size={27} 
+                    color="black" 
+                    style={styles.amountIcon} 
+                />
+                <TextInput
+                    style={styles.inputBox}
+                    placeholder='Amount'
+                    keyboardType='numeric'
+                    onChangeText={setBudget}
+                    value={budget.toString()}>
+                </TextInput>
+            </View>
         
+            <Pressable
+                style={styles.button}
+                onPress={onSubmitHandler}
+                android_ripple={{ color: 'white' }} >
+                <Text style={{fontSize: 20, color: "white", fontWeight: 'bold'}}>+    Add</Text>
+            </Pressable>
+
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
-    year: {
-        fontSize: 18,
-        alignSelf: 'center'
-    },
-    dropdown: {
-        width: Dimensions.get('window').width*0.7, 
-        padding: 10,
-        borderRadius: 10,
-        margin: 10
-    },
-    container: {
-        flex: 1, 
-        alignItems: 'center',
-    }, 
-    formContainer: {
-        position: 'absolute', 
-        flexDirection: 'column',
-        padding: 10,
-        alignItems: 'stretch',
-    }, 
-    budgetInput: {
-        height: 50,
-        width: 350, 
-        padding: 10,
-        borderRadius: 10,
-        //borderWidth: 1,
-        backgroundColor: '#eef5ff',
-        margin: 10,
-        fontSize: 18
-    }, 
-    button: {
-        width: Dimensions.get('window').width*0.7, 
-        padding: 10, 
-        borderRadius: 10, 
-        margin: 10, 
-        backgroundColor: '#2962ff',
-        alignItems: 'center',
+    image: {
+        height: 120,
         justifyContent: 'center',
+        backgroundColor: "#0F3091",
+        opacity: 0.93
+    },
+    header: {
+        fontSize: 25,
+        alignSelf: 'center',
+        color: 'white',
+        fontWeight: 'bold'
+    },
+    inputBox: {
         height: 50,
         width: 350,
+        borderRadius: 10,
+        fontSize: 20,
+    },
+    button: {
+        height: 60,
+        width: Dimensions.get('window').width - 65,
+        backgroundColor: "#0F3091",
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        opacity: 0.93,
+        marginTop: 15
     }, 
-    buttonText: {
-        color: 'white',
-        fontSize: 18
+    container: {
+        flexDirection: 'row',
+        height: 50,
+        alignItems: 'center',
+        marginTop: 15
+    },
+    categoryIcon: {
+        marginLeft: 35,
+        marginRight: 10
+    },
+    amountIcon: {
+        marginLeft: 35,
+        marginRight: 19
     }
 })
 

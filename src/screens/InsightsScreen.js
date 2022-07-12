@@ -6,6 +6,7 @@ import { IOSStatusBar } from '../Components/IOSStatusBar';
 import { monthName } from '../Functions/monthName';
 import { ThreeMonth } from '../Components/DataVisualisation/ThreeMonth';
 import { TopSpending } from '../Components/DataVisualisation/TopSpending';
+import { AverageSpent } from '../Components/DataVisualisation/AverageSpent';
 
 export const InsightsScreen = ({ navigation }) => {
     const [year, setYear] = useState(new Date().getFullYear()); // the user's selected year to be displayed
@@ -34,6 +35,10 @@ export const InsightsScreen = ({ navigation }) => {
                 </View>
 
                 <ScrollView>
+                    {/* <AverageSpent
+                        year={year}
+                        month={month}
+                    /> */}
                     <TopSpending
                         year={year}
                         month={month}
