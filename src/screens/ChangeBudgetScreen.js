@@ -25,7 +25,7 @@ export const ChangeBudgetScreen = ({ navigation, route }) => {
                 const querySnapshot = await getDocs(q);
                 var newExpense = 0;
                 querySnapshot.forEach((doc) => {
-                    newExpense += doc.data().expenses;
+                    newExpense += doc.data().amount;
                 });
                 await updateDoc(docRef, { expenses: newExpense });
             }
