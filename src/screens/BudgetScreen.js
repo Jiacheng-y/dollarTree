@@ -26,13 +26,12 @@ export const BudgetScreen = ({ navigation }) => {
     const [budget, setBudget] = useState(0);
 
     useEffect(() => {
-        var newBudget = 0;
         const q = collection(db, "users", `${auth.currentUser.uid}` , "budgets", `${year}`, `${month}`);
         const budgetQuery = query(q, orderBy("amount", "desc"));
 
         const subscriber = onSnapshot(budgetQuery, (snapshot) => {
+            var newBudget = 0;
             const budgets = [];
-
             snapshot.forEach(doc => {
                 budgets.push({
                     id: doc.id, 

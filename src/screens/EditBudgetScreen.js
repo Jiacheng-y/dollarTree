@@ -192,12 +192,12 @@ const styles = StyleSheet.create({
         marginTop: 15
     },
     categoryIcon: {
-        marginLeft: 35,
-        marginRight: 10
+        marginLeft: 33,
+        marginRight: 12
     },
     amountIcon: {
         marginLeft: 35,
-        marginRight: 19
+        marginRight: 10
     }
 })
 
