@@ -41,8 +41,7 @@ export const EditExpensesScreen = ({ navigation}) => {
 
             querySnapshot.forEach(async (doc) => {
                  const newExpense = doc.data().expenses + parseFloat(parseFloat(object.amount).toFixed(2));
-                 await updateDoc(doc.ref, { expenses: newExpense });
-                 
+                 await updateDoc(doc.ref, { expenses: newExpense });  
             });
 
             const docRef = doc(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`, "Total");

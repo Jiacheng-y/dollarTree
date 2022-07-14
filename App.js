@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthScreen } from './src/Screens/AuthScreen';
-import { BudgetScreen } from './src/Screens/BudgetScreen'
+import { BudgetScreen } from './src/Screens/BudgetScreen';
 import { InsightsScreen } from './src/Screens/InsightsScreen';
 import { ExpensesScreen } from './src/Screens/ExpensesScreen';
 import { EditBudgetScreen } from './src/Screens/EditBudgetScreen';

@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         marginBottom: 20,
         marginTop: 10,
-        fontSize: 18,
+        fontSize: 17,
         fontStyle: 'italic'
     }
 });

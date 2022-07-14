@@ -5,7 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 
 export const BudgetEntry = (props) => {
     const { data, onDelete, year, month } = props;
-    const proportion = (data.expenses / data.amount).toFixed(2); 
+    const proportion = (data.amount == 0
+                        ? (data.expenses == 0 ? 1 : 2)
+                        : (data.expenses / data.amount).toFixed(2)); 
 
     const navigation = useNavigation();
 

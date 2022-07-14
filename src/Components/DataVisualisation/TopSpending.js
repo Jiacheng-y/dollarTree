@@ -32,7 +32,6 @@ export const TopSpending = ({year, month}) => {
                         : b.y - a.y;
             });
             setData(newData);
-            console.log(data);
         });
         const docRef = doc(db, "users", `${thisUserID}`, "Expenses", `${year}`, `${month}`, "Total");
         const expenses = onSnapshot(docRef, (document) => {
