@@ -1,7 +1,7 @@
 import { SafeAreaView, Text, StyleSheet, TextInput, Pressable } from "react-native";
 import React, { useState } from 'react';
 import { db, auth } from "../Firebase";
-import { collection, addDoc, updateDoc, query, getDocs, where } from "firebase/firestore";
+import { collection, addDoc, updateDoc, query, getDocs, where, setDoc, doc } from "firebase/firestore";
 import { DatePicker } from "../Components/Pickers/DatePicker";
 import { CategoryPicker } from "../Components/Pickers/CategoryPicker";
 
@@ -25,6 +25,16 @@ export const EditExpensesScreen = ({ navigation}) => {
     
             const q = query(collection(db, "users", `${thisUserID}`, "budgets", `${date.getFullYear()}`, `${date.getMonth() + 1}`), where("category", "==", object.category));
             const querySnapshot = await getDocs(q);
+            
+            if (querySnapshot.empty) {
+                await addDoc(collection(db, "users", `${thisUserID}`, "budgets", `${date.getFullYear()}`, `${date.getMonth() + 1}`), {
+                    date: `${date.getMonth() + 1}`, 
+                    category: object.category,
+                    amount: 0, 
+                    expenses: parseInt(object.amount)
+                }); 
+            }
+
             querySnapshot.forEach(async (doc) => {
                  const newExpense = parseInt(doc.data().expenses) + parseInt(object.amount);
                  await updateDoc(doc.ref, { expenses: newExpense });
