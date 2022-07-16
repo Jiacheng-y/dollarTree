@@ -143,7 +143,7 @@ export const EditExpensesScreen = ({ navigation}) => {
 
 const styles = StyleSheet.create({
     image: {
-        flex: 1,
+        height: 120,
         justifyContent: 'center',
         backgroundColor: "#0F3091",
         opacity: 0.93
