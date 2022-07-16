@@ -101,6 +101,8 @@ export const BudgetScreen = ({ navigation }) => {
                         <BudgetEntry
                                 data={item}
                                 onDelete={onDeleteHandler}
+                                year={year}
+                                month={month}
                         />
                     )} 
                     style={styles.listContainer}

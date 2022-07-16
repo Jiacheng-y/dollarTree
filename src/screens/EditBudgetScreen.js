@@ -40,13 +40,21 @@ export const EditBudgetScreen = ({ route, navigation }) => {
 
         try {
 
-            const q = collection(db, "users", `${thisUserID}` , "budgets", `${date.getFullYear()}`, `${month}`);
+            const budgetCollection = collection(db, "users", `${thisUserID}` , "budgets", `${date.getFullYear()}`, `${month}`);
             
-            const budgetRef = await addDoc(q , {
+            const expenseCollection = query(collection(db, "users", `${thisUserID}`, "Expenses", `${year}`, `${month}`), where("category", "==", category));
+            const querySnapshot = await getDocs(expenseCollection);
+            var newExpense = 0;
+            querySnapshot.forEach((doc) => {
+                newExpense += doc.data().amount;
+            });
+
+            console.log(newExpense)
+            const budgetRef = await addDoc(budgetCollection, {
                 date: `${month}`, 
                 category: category,
                 amount: parseFloat(parseFloat(budget).toFixed(2)),
-                expenses: 0,
+                expenses: newExpense,
             })
 
             //findExpense(category, budgetRef.id);
