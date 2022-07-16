@@ -1,16 +1,19 @@
-import { SafeAreaView, StyleSheet, FlatList, Pressable, Text, Dimensions } from "react-native";
+import { StyleSheet, FlatList, Pressable, Text, Dimensions, ImageBackground, View, StatusBar } from "react-native";
 import React, { useState, useEffect } from 'react';
 import { db, auth } from "../Firebase";
 import { query, collection, doc, onSnapshot, deleteDoc, getDoc, getDocs, updateDoc, where } from "firebase/firestore";
 import { ExpenseEntry } from '../Components/Entries/ExpenseEntry';
-import { MonthDropdown } from "../Components/Pickers/MonthDropdown";
-import { YearDropdown } from "../Components/Pickers/YearDropdown";
+import { monthName } from "../Functions/monthName";
+import { IOSStatusBar } from "../Components/IOSStatusBar";
+import { FontAwesome } from '@expo/vector-icons'; 
 
 export const ExpensesScreen = ({ navigation }) => {
     const [year, setYear] = useState(new Date().getFullYear()); 
     const [month, setMonth] = useState(new Date().getMonth() + 1); 
 
     const [list, setList] = useState([]);
+
+    const [expenses, setExpenses] = useState(3); 
 
     const thisUserID = auth.currentUser.uid;
 
@@ -21,13 +24,28 @@ export const ExpensesScreen = ({ navigation }) => {
             snapshot.forEach((doc) => {
                 items.push({
                     id: doc.id,
-                    ... doc.data()
+                    amount: "$" + doc.data().amount.toFixed(2),
+                    category: doc.data().category,
+                    date: doc.data().date.split("/")[0] + " " + monthName(parseInt(doc.data().date.split("/")[1])),
+                    description: doc.data().description
                 }); 
             })
             items.sort((a, b) => {
                 return parseInt(a.date.split("/")[0]) - parseInt(b.date.split("/")[0]);
             });
             setList(items);
+        });
+        return () => { unsubscribe(); }
+    }, [month, year]);
+
+    useEffect(() => {
+        const q = query(collection(db, "users", `${thisUserID}`, "budgets", `${year}`, `${month}`));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            var newExpenses = 0; 
+            snapshot.forEach((doc) => {
+                newExpenses += doc.data().expenses; 
+            })
+            setExpenses(newExpenses); 
         });
         return () => { unsubscribe(); }
     }, [month, year]);
@@ -41,7 +59,7 @@ export const ExpensesScreen = ({ navigation }) => {
             const q = query(collection(db, "users", `${thisUserID}`, "budgets", `${year}`, `${month}`), where("category", "==", deleteCategory));
             const querySnapshot = await getDocs(q);
             querySnapshot.forEach(async (doc) => {
-                 const newExpense = parseInt(doc.data().expenses) - deleteAmount;
+                 const newExpense = doc.data().expenses - deleteAmount;
                  await updateDoc(doc.ref, { expenses: newExpense }); 
             });
             
@@ -50,44 +68,137 @@ export const ExpensesScreen = ({ navigation }) => {
             console.log(error);
         } 
     }
-
+    
     return (
-        <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
-            <MonthDropdown
-                setMonth={setMonth}
-            />
-            <YearDropdown
-                setYear={setYear}
-            />
-            <FlatList
-                data={list}
-                renderItem={({item}) => (
-                    <ExpenseEntry
-                        data={item}
-                        onDelete={deleteItem}>
-                    </ExpenseEntry>
-                )} 
-            />
-            <Pressable
-                style={styles.button}
-                onPress={() => { 
-                    navigation.navigate('Add Expenses');
-                }}>
-                <Text style={{fontSize: 20, color: "#eef5ff"}}>Add Expense</Text>
-            </Pressable>
-        </SafeAreaView>
+        <View style={{backgroundColor: 'white', flex: 1}}>
+            { Platform.OS === 'ios' 
+                ? <IOSStatusBar color="#0F3091"/>
+                : <StatusBar backgroundColor="#0F3091"/>
+            }
+
+            <ImageBackground
+                source={require("../Images/ExpensesBackground.png")}
+                resizeMode="cover"
+                style={styles.image}
+            >
+
+                <View style={{flexDirection: 'row', marginTop: 20}}>
+                    <Text style={styles.date}>{monthName(month) + " " + year + " Expenses"}</Text>
+                    <Pressable
+                        style={styles.dateButton}
+                        onPress={() => { 
+                            navigation.navigate('Select Month and Year', { setMonth: setMonth, setYear: setYear, next: 'Expenses' });
+                        }}>
+                        <Text style={{fontSize: 15, color: "black"}}>Change</Text>
+                    </Pressable>
+                </View>
+                
+                <Text style={styles.expenses}>{"$" + expenses.toFixed(2)}</Text>
+
+                <Pressable
+                    style={styles.button}
+                    onPress={() => { 
+                        navigation.navigate('Add Expenses');
+                    }}>
+                    <Text style={styles.buttonText}>+    Add Expense</Text>
+                </Pressable>
+
+                <FlatList
+                    data={list}
+                    renderItem={({item}) => (
+                        <ExpenseEntry
+                            data={item}
+                            onDelete={deleteItem}>
+                        </ExpenseEntry>
+                    )} 
+                    style={styles.listContainer}
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    ListEmptyComponent={
+                        <View style={{alignItems: 'center', justifyContent: 'center', flexGrow: 1}}>
+                            <Text style={styles.emptyList}>No expenses added</Text>
+                            <Text style={styles.emptyList}>Click to start</Text>
+                            <FontAwesome 
+                                name="hand-pointer-o" 
+                                size={45} 
+                                color="gray" 
+                                style={{marginTop: 20}}
+                            />
+                        </View>
+                    }
+                    //onPressIn={()  => controlOpacity(0.1)}
+                />
+                
+            </ImageBackground>
+        </View>
     )
 }
+
+// const controlOpacity = (intensity) => {
+//     const [opacity, setOpacity] = useState(1);
+//     if (intensity == null) {
+//         return opacity;
+//     } else {
+//         setOpacity(intensity);
+//     }
+// }
+
+// background gradient darkest: #0F3091, lightest: #9DC6FF
+// potential color: #1f4e83, #284f8f, #3551a3
 
 const styles = StyleSheet.create({
     button: {
         height: 50,
-        width: Dimensions.get('window').width*0.9,
-        backgroundColor: '#1f5ff3',
-        borderRadius: 10,
-        padding: 5,
+        width: Dimensions.get('window').width - 50,
+        backgroundColor: 'white',
+        borderRadius: 8,
         justifyContent: 'center',
         alignItems: 'center',
-        alignSelf: 'center'
+        alignSelf: 'center',
     },
+    buttonText: {
+        fontSize: 20, 
+        color: "#0F3091", 
+        alignSelf: 'center', 
+        fontWeight: 'bold'
+    },
+    image: {
+        flex: 1
+    },
+    date: {
+        color: 'white',
+        fontSize: 28,
+        marginLeft: 25,
+    }, 
+    dateButton: {
+        backgroundColor: 'white',
+        marginLeft: 10,
+        alignSelf: 'center',
+        borderRadius: 8,
+        padding: 5,
+        opacity: 0.6,
+        //opacity: controlOpacity(null)
+    },
+    listContainer: {
+        marginHorizontal: 25,
+        marginTop: 10,
+        marginBottom: 20,
+        backgroundColor: 'white',
+        borderRadius: 8,
+    }, 
+    expenses: {
+        color: 'white',
+        fontSize: 40,
+        marginLeft: 25,
+        marginVertical: 10,
+        fontWeight: 'bold',
+    },
+    emptyList: {
+        fontStyle: 'italic',
+        color: "gray", 
+        fontSize: 17,
+        marginTop: 10
+    }
 })
+
+// further enhancements: 
+// image background loads slower

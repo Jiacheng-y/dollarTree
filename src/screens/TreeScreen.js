@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, StyleSheet, Text, View, StatusBar, Image } from 'react-native';
+import { Dimensions, StyleSheet, StatusBar} from 'react-native';
 import Matter from "matter-js";
 import { GameEngine } from "react-native-game-engine";
 import Money from '../Components/Game/Money';

@@ -12,6 +12,7 @@ import { Provider } from 'react-redux';
 import { store } from './src/Store';
 import React, { useState } from 'react';
 import TreeScreen from './src/Screens/TreeScreen';
+import { SetDateScreen } from './src/Screens/SetDateScreen';
 
 export default App = () => {
   return (
@@ -63,7 +64,8 @@ const Tabs = () => {
         options={{ headerShown: false }}/>
       <Tab.Screen name="Expenses" component={ExpensesNavigator} 
         options={{ headerShown: false }}/>
-      <Tab.Screen name="Insights" component={InsightsScreen} />
+      <Tab.Screen name="Insights" component={InsightsNavigator}
+        options={{ headerShown: false }}/>
       <Tab.Screen name="Tree" component={TreeScreen} />
     </Tab.Navigator>
     );
@@ -90,10 +92,34 @@ const ExpensesNavigator = () => {
           <Stack.Screen
               name="Expenses"
               component={ExpensesScreen}
+              options={{ headerShown: false }}
           />
           <Stack.Screen
               name="Add Expenses"
               component={EditExpensesScreen}
+              options={{ headerShown: false }}
+          />
+          <Stack.Screen
+              name="Select Month and Year"
+              component={SetDateScreen}
+              options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+  );
+};
+
+const InsightsNavigator = () => {
+  return (
+    <Stack.Navigator>
+          <Stack.Screen
+              name="Insights"
+              component={InsightsScreen}
+              options={{ headerShown: false }}
+          />
+          <Stack.Screen
+              name="Select Month and Year"
+              component={SetDateScreen}
+              options={{ headerShown: false }}
           />
         </Stack.Navigator>
   );

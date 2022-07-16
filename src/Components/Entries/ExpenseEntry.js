@@ -5,16 +5,22 @@ import { MaterialIcons } from '@expo/vector-icons';
 export const ExpenseEntry = ({data, onDelete}) => {
     const DeleteIcon = () => (
         <TouchableOpacity onPress={() => onDelete(data.id)}>
-            <MaterialIcons name="delete" size={28} color="#407BFF" />
+            <MaterialIcons name="delete" size={28} color="#0F3091" />
         </TouchableOpacity>
     );
 
     return (
-        <View style={[styles.container, styles.containerShadow]}>
-            <Text style={styles.taskText}>{data.date}</Text>
-            <Text style={styles.taskText}>{data.description}</Text>
-            <Text style={styles.taskText}>{data.amount}</Text>
-            <Text style={styles.taskText}>{data.category}</Text>
+        <View style={styles.container}>
+            <View style={{flex: 3}}>
+                <Text style={styles.description}>{data.description}</Text>
+                <Text style={styles.category}>{data.category}</Text>
+            </View>
+            
+            <View style={{flex: 1}}>
+                <Text style={styles.amount}>{data.amount}</Text>
+                <Text style={styles.date}>{data.date}</Text>
+            </View>
+            
             <DeleteIcon /> 
         </View>
     );
@@ -23,28 +29,26 @@ export const ExpenseEntry = ({data, onDelete}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#daebfa',
         flexDirection: 'row',
-        marginHorizontal: 14,
         marginVertical: 10,
-        paddingVertical: 10,
-        paddingHorizontal: 6,
+        marginHorizontal: 1,
+        paddingVertical: 5,
+        paddingHorizontal: 10,
         alignItems: 'center',
-        justifyContent: 'space-between',
-        borderRadius: 4,
-        padding: 5,
     },
-    containerShadow: {
-        shadowColor: '#171717',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        elevation: 5,
+    category: {
+        fontStyle: 'italic',
+        fontSize: 15,
     },
-    taskText: {
+    description: {
         fontWeight: 'bold',
-        flex: 1,
-        flexWrap: 'wrap',
-        marginRight: 10,
+        fontSize: 17
+    }, 
+    amount: {
+        fontSize: 17,
+        fontWeight: 'bold',
+    },
+    date: {
+        fontSize: 15
     },
 });
