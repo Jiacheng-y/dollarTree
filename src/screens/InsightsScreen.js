@@ -8,6 +8,7 @@ import { ThreeMonth } from '../Components/DataVisualisation/ThreeMonth';
 import { TopSpending } from '../Components/DataVisualisation/TopSpending';
 import { AverageSpent } from '../Components/DataVisualisation/AverageSpent';
 
+
 export const InsightsScreen = ({ navigation }) => {
     const [year, setYear] = useState(new Date().getFullYear()); // the user's selected year to be displayed
     const [month, setMonth] = useState(new Date().getMonth() + 1); // the user's selected month to be displayed
@@ -35,10 +36,10 @@ export const InsightsScreen = ({ navigation }) => {
                 </View>
 
                 <ScrollView>
-                    {/* <AverageSpent
+                    <AverageSpent
                         year={year}
                         month={month}
-                    /> */}
+                    />
                     <TopSpending
                         year={year}
                         month={month}
@@ -53,12 +54,12 @@ export const InsightsScreen = ({ navigation }) => {
                     /> 
                 </ScrollView>
 
-                {/* Log Out Button */}
                 {/* <Pressable 
                     style={styles.logOut}
                     onPress={signOutEmailPassword}>
                     <Text style={{color: 'white', fontSize: 20}}>Log Out</Text>
                 </Pressable> */}
+
             </ImageBackground>
         </View>
     );

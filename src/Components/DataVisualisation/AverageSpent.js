@@ -1,106 +1,158 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet} from "react-native";
-import { query, collection, onSnapshot, where, getDocs } from "firebase/firestore";
+import { query, collection, onSnapshot, getDocs } from "firebase/firestore";
 import { db, auth } from "../../Firebase";
+import { monthName } from "../../Functions/monthName";
 
 export const AverageSpent = ({month, year}) => {
     const [date, setDate] = useState(new Date());
-    const formattedDate = `${date.getDate()}` + "/" + `${date.getMonth() + 1}` + "/" + `${date.getFullYear()}`;
-    const [average, setAverage] = useState(0);
-    const [thisMonth, setThisMonth] = useState(0);
-    const [cumulated, setCumulated] = useState(false);
+    const [currentExpense, setCurrentExpense] = useState(0);
+    const [averagePastExpense, setAveragePastExpense] = useState(0);
     const thisUserID = auth.currentUser.uid;
+    var month1Month, month1Year, month2Month, month2Year;
 
     useEffect(() => {
         setInterval(() => {
-            if (new Date() != date) {
+            if (new Date().getDate() != date.getDate()) {
                 setDate(new Date());
             }
         }, 1000)
     }, []);
 
     useEffect(() => {
+         // to handle edge cases (January and February)
+         switch(month) {
+            case 1:
+                month1Year = year - 1;
+                month1Month = 12;
+                month2Year = year - 1;
+                month2Month = 11;
+                break;
+            case 2:
+                month1Year = year;
+                month1Month = 1;
+                month2Year = year - 1;
+                month2Month = 12;
+                break;
+            default:
+                month1Year = year;
+                month1Month = month - 1;
+                month2Year = year;
+                month2Month = month - 2;
+        }
+    }, [month, year])
+    
+    // can be optimised 
+    useEffect(() => {
         const helper = async () => {
-            var month1Year, month1Month, month2Year, month2Month;
-            const averageValues = [0, 0];
-            // to handle edge cases (January and February)
-            switch(month) {
-                case 1:
-                    month1Year = year - 1;
-                    month1Month = 12;
-                    month2Year = year - 1;
-                    month2Month = 11;
-                    break;
-                case 2:
-                    month1Year = year;
-                    month1Month = 1;
-                    month2Year = year - 1;
-                    month2Month = 12;
-                    break;
-                default:
-                    month1Year = year;
-                    month1Month = month - 1;
-                    month2Year = year;
-                    month2Month = month - 2;
+            const target = date.getDate();
+            var yearVar = month1Year;
+            var monthVar = month1Month;
+            var amounts = [];
+            for (var i = 0; i < 2; i++) {
+                var expense = 0;
+                const q = query(collection(db, "users", `${thisUserID}`, "Expenses", `${yearVar}`, `${monthVar}`));
+                const querySnapshot = await getDocs(q);
+                querySnapshot.forEach((doc) => {
+                    if (doc.id != "Total" && parseInt(doc.data().date.split("/")[0]) <= target) {
+                        expense += doc.data().amount;
+                    }
+                });
+                amounts.push(expense);
+                yearVar = month2Year;
+                monthVar = month2Month;
             }
-            let monthVar = month1Month;
-            let yearVar = month1Year;
-            for (var i = 0; i < 3; i++) {
-                if (!cumulated) {
-                    setCumulated(true);
-                    // cumulate
-                    const q = query(collection(db, "users", `${thisUserID}`, "Expenses", `${yearVar}`, `${monthVar}`));
-                    const querySnapshot = await getDocs(q);
-                    querySnapshot.forEach((doc) => {
-                        if (doc.data().date.split[0] < date.getDate()) {
-                            averageValues[i] += doc.data().expenses;
-                        }
-                    });
-                } 
-                const q = query(collection(db, "users", `${thisUserID}`, "Expenses", `${year}`, `${month}`), where("date", "==", formattedDate));
-                if (monthVar == thisMonth) {
-                    const unsubscribe = onSnapshot(q, (snapshot) => {
-                        var totalExpenses;
-                        snapshot.forEach((doc) => {
-                            totalExpenses += doc.data().expenses;
-                            setThisMonth(totalExpenses);
-                        })
-                    });
-                    return () => { unsubscribe(); }
-                } else {
-                    const querySnapshot = await getDocs(q);
-                    querySnapshot.forEach((doc) => {
-                        monthVar += doc.data().expenses;
-                    });
-                }
-                monthVar = i == 0 ? month2 : i == 1 ? month3 : thisMonth;
-            }
-            setAverage(((month1 + month2 + month3) / 3).toFixed(2));
+            setAveragePastExpense((amounts[0] + amounts[1]) / 2);
+            const current = query(collection(db, "users", `${thisUserID}`, "Expenses", `${year}`, `${month}`));
+            const unsubscribe = onSnapshot(current, (snapshot) => {
+                var newExpense = 0;
+                snapshot.forEach((doc) => {
+                    if (doc.id != "Total" && parseInt(doc.data().date.split("/")[0]) <= target) {
+                        newExpense += doc.data().amount;
+                    }
+                })
+                setCurrentExpense(newExpense);
+            })
+            return () => { unsubscribe(); }
         }
         helper();
-        // 
-    }, [date, month, year])
+    }, [date, month, year]);
 
     return (
         <View style={styles.container}>
-            <Text style={styles.description}>Amount Spent Up Till Today</Text>
-            <Text style={styles.description}>{average}</Text>
-            <Text style={styles.description}>{thisMonth}</Text>
-        </View>
+            <Text style={styles.banner}>So Far This Month...</Text>
+            {
+                currentExpense < averagePastExpense
+                ? <Text style={styles.info}>You have spent less than usual</Text>
+                : currentExpense == averagePastExpense
+                ? <Text style={styles.info}>You have spent as per usual</Text>
+                : <Text style={styles.info}>You have spent more than usual</Text>
+            }
+            <View style={styles.amountSection}>
+                <View style={styles.section}>
+                    <Text style={styles.amount}>${averagePastExpense.toFixed(2)}</Text>
+                    <Text style={styles.footnote}>Avg. spending</Text>
+                    <Text style={styles.footnote}>up to this point</Text>
+                </View>
+                <View style={styles.separator}>
+
+                </View>
+                <View style={styles.section}>
+                    <Text style={styles.amount}>${currentExpense.toFixed(2)}</Text>
+                    <Text style={styles.footnote}>{monthName(month)} spending</Text>
+                    <Text style={styles.footnote}>up to this point</Text>
+                </View>
+            </View>
+            
+            
+        </View> 
     );
 }
 
 const styles = StyleSheet.create({
-    description: {
+    amount: {
         fontSize: 20,
-        fontWeight: 'bold', 
-        marginLeft: 20,
-        marginTop: 20,
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        marginBottom: 5,
+        color: '#0F3091'
     }, 
     container: {
         backgroundColor: 'white',
         marginHorizontal: 25,
         marginTop: 25,
         borderRadius: 8,
+        flex: 1,
     }, 
+    amountSection: {
+        flexDirection: 'row',
+        flex: 1,
+        marginBottom: 20
+    },
+    footnote: {
+        fontSize: 15,
+    }, 
+    section: {
+        alignItems: 'center',
+        flex: 1,
+    }, 
+    banner: {
+        marginTop: 20,
+        marginLeft: 20,
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 5
+    },
+    info: {
+        marginLeft: 20,
+        marginBottom: 25,
+        fontSize: 17,
+        fontStyle: 'italic'
+    },
+    separator: {
+        backgroundColor: '#D3D3D3',
+        flex: 0.01,
+        height: 50,
+        alignSelf: 'center'
+    }
 });

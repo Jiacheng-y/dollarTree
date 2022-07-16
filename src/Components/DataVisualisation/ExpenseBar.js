@@ -145,13 +145,13 @@ const styles = StyleSheet.create({
     description: {
         marginLeft: 20,
         marginTop: 10,
-        fontSize: 18,
+        fontSize: 17,
         fontStyle: 'italic'
     },
     footnote: {
         marginLeft: 20,
         marginTop: 10,
-        fontSize: 16,
+        fontSize: 15,
         fontStyle: 'italic',
         color: 'gray',
     }
