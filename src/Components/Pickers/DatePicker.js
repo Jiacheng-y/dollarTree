@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { SafeAreaView, StyleSheet, Pressable, Text, View, ImageBackgroundComponent } from "react-native";
 
-export const DatePicker = ({date, setDate}) => {
+export const DatePicker = ({date, setDate, placeHolder}) => {
     const [toDisplay, setToDisplay] = useState(false);
 
     return (
@@ -11,7 +11,7 @@ export const DatePicker = ({date, setDate}) => {
                 style={styles.button}
                 onPress={() => setToDisplay(true)}
             >
-                <Text style={{fontSize: 20, color: "#a9a9a9"}}>Date</Text>
+                <Text style={{fontSize: 20, color: "#a9a9a9"}}>{placeHolder}</Text>
             </Pressable>
             { toDisplay && 
                 <DateTimePicker

@@ -1,6 +1,8 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Pressable } from 'react-native';
 import React from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { monthName } from '../../Functions/monthName';
 
 export const ExpenseEntry = ({data, onDelete}) => {
     const DeleteIcon = () => (
@@ -9,20 +11,29 @@ export const ExpenseEntry = ({data, onDelete}) => {
         </TouchableOpacity>
     );
 
+    const navigation = useNavigation();
+
     return (
-        <View style={styles.container}>
+        <Pressable 
+            style={styles.container}
+            onPress={() => {
+                navigation.navigate("Change Expenses", {
+                    data: data
+                })
+            }}
+        >
             <View style={{flex: 3}}>
                 <Text style={styles.description}>{data.description}</Text>
                 <Text style={styles.category}>{data.category}</Text>
             </View>
             
             <View style={{flex: 1}}>
-                <Text style={styles.amount}>{data.amount}</Text>
-                <Text style={styles.date}>{data.date}</Text>
+                <Text style={styles.amount}>{"$" + data.amount.toFixed(2)}</Text>
+                <Text style={styles.date}>{data.date.split("/")[0] + " " + monthName(parseInt(data.date.split("/")[1]))}</Text>
             </View>
             
             <DeleteIcon /> 
-        </View>
+        </Pressable>
     );
 }
 

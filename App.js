@@ -13,6 +13,7 @@ import { store } from './src/Store';
 import React, { useState } from 'react';
 import TreeScreen from './src/Screens/TreeScreen';
 import { SetDateScreen } from './src/Screens/SetDateScreen';
+import { ChangeExpensesScreen } from './src/Screens/ChangeExpenseScreen';
 
 export default App = () => {
   return (
@@ -102,6 +103,11 @@ const ExpensesNavigator = () => {
           <Stack.Screen
               name="Select Month and Year"
               component={SetDateScreen}
+              options={{ headerShown: false }}
+          />
+          <Stack.Screen
+              name="Change Expenses"
+              component={ChangeExpensesScreen}
               options={{ headerShown: false }}
           />
         </Stack.Navigator>
