@@ -1,25 +1,18 @@
 import { VictoryBar, VictoryChart, VictoryAxis } from 'victory-native';
 import React, { useState, useEffect } from 'react';
 import { monthName } from "../../Functions/monthName";
-import { query, collection, getDocs, onSnapshot, where } from "firebase/firestore";
+import { onSnapshot, doc, getDoc } from "firebase/firestore";
 import { db, auth } from "../../Firebase";
 import { SafeAreaView, Text, StyleSheet, View, Dimensions} from "react-native";
-import { CategoryPicker } from "../Pickers/CategoryPicker";
 import { monthNumber } from '../../Functions/monthNumber';
 
-export const CategoryBar = ({year, month}) => {
-    const [chosenCategory, setChosenCategory] = useState(null);
+export const ExpenseBar = ({year, month}) => {
     const [data, setData] = useState([]);
     const [edge, setEdge] = useState(false); // when all 3 month's expenses are $0
     const thisUserID = auth.currentUser.uid;
-
-    // forget chosen category when a new month or year is selected
+    
     useEffect(() => {
-        setChosenCategory(null);
-    }, [month, year])
-
-    useEffect(() => {
-        const q = query(collection(db, "users", `${thisUserID}`, "budgets", `${year}`, `${month}`), where("category", "==", `${chosenCategory}`));
+        const docRef = doc(db, "users", `${thisUserID}`, "Expenses", `${year}`, `${month}`, "Total");
         var month1Year, month1Month, month2Year, month2Month;
         // to handle edge cases (January and February)
         switch(month) {
@@ -41,43 +34,46 @@ export const CategoryBar = ({year, month}) => {
                 month2Year = year;
                 month2Month = month - 2;
         }
-        const unsubscribe = onSnapshot(q, async (snapshot) => {
+        const unsubscribe = onSnapshot(docRef, async (document) => {
             const newData = [];
             var monthVar = month1Month;
             var yearVar = month1Year;
             for (var i = 0; i < 2; i++) {
-                const q2 = query(collection(db, "users", `${thisUserID}`, "budgets", `${yearVar}`, `${monthVar}`), where("category", "==", `${chosenCategory}`));
-                const querySnapshot = await getDocs(q2);
-                if (querySnapshot.empty) {
+                const docRef = doc(db, "users", `${thisUserID}`, "Expenses", `${yearVar}`, `${monthVar}`, "Total");
+                const docSnap = await getDoc(docRef);
+                if (!docSnap.exists()) {
                     newData.push(
                         { 
                             x: monthName(monthVar).substring(0, 3),
                             y: 0
                         }
                     ); 
-                }
-                querySnapshot.forEach((doc) => {
+                } else {
                     newData.push(
                         { 
                             x: monthName(monthVar).substring(0, 3),
-                            y: doc.data().expenses
+                            y: docSnap.data().total
                         }
                     ); 
-                });
+                }
                 monthVar = month2Month;
                 yearVar = month2Year;
             }
-            if (snapshot.empty) {
+            if (!document.exists()) {
                 newData.push(
                     { 
                         x: monthName(month).substring(0, 3),
                         y: 0
                     }
                 ); 
+            } else {
+                newData.push(
+                    { 
+                        x: monthName(month).substring(0, 3),
+                        y: document.data().total
+                    }
+                ); 
             }
-            snapshot.forEach((doc) => {
-                newData.push({ x: monthName(month).substring(0, 3), y: doc.data().expenses }); 
-            })
             setData(newData);
             if ((newData.length === 1 && newData[0].y === 0 ) || 
                 (newData.length === 2 && newData[0].y === 0 && newData[1].y === 0 ) || 
@@ -88,7 +84,7 @@ export const CategoryBar = ({year, month}) => {
             }
         });
         return () => { unsubscribe(); }
-    }, [month, year, chosenCategory]);
+    }, [month, year]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -97,20 +93,16 @@ export const CategoryBar = ({year, month}) => {
                     3-Month Comparison
                 </Text>
                 <Text style={styles.description}>
-                    across chosen category
+                    of total expenses
+                </Text>
+                <Text style={styles.footnote}>
+                    swipe for more
                 </Text>
             </View>
-            
-             <CategoryPicker 
-                category={chosenCategory}
-                setCategory={setChosenCategory}
-                year={year}
-                month={month}
-            />
 
-            <View style={{alignSelf: 'center', marginBottom: 40}}>
+            <View style={{alignSelf: 'center', flex: 1, justifyContent: 'center', marginBottom: 40}}>
                 <VictoryChart
-                    height={275}
+                    height={350}
                     width={Dimensions.get('window').width - 80}
                     domainPadding={{x: [25, 25], y: [25, 25]}}
                 >   
@@ -126,9 +118,8 @@ export const CategoryBar = ({year, month}) => {
                         data={data}
                         alignment="middle"
                         barWidth={25}
-                        style={{ data: { fill: "#2D7EAF" }, labels: { fontSize: 15 } }}
-                        sortKey={item => monthNumber(item.x)} 
-                        horizontal={true}
+                        style={{ data: { fill: "#284f8f" }, labels: { fontSize: 15 } }}
+                        sortKey={item => monthNumber(item.x)}
                         labels={({ datum }) => "$" + `${parseFloat(datum.y).toFixed(2)}`}
                     />
                 </VictoryChart>
@@ -153,9 +144,15 @@ const styles = StyleSheet.create({
     },
     description: {
         marginLeft: 20,
-        marginBottom: 20,
         marginTop: 10,
         fontSize: 18,
         fontStyle: 'italic'
+    },
+    footnote: {
+        marginLeft: 20,
+        marginTop: 10,
+        fontSize: 16,
+        fontStyle: 'italic',
+        color: 'gray',
     }
 });

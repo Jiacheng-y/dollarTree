@@ -5,6 +5,7 @@ import { signOutEmailPassword } from './AuthScreen';
 import { IOSStatusBar } from '../Components/IOSStatusBar';
 import { monthName } from '../Functions/monthName';
 import { ThreeMonth } from '../Components/DataVisualisation/ThreeMonth';
+import { TopSpending } from '../Components/DataVisualisation/TopSpending';
 
 export const InsightsScreen = ({ navigation }) => {
     const [year, setYear] = useState(new Date().getFullYear()); // the user's selected year to be displayed
@@ -33,6 +34,10 @@ export const InsightsScreen = ({ navigation }) => {
                 </View>
 
                 <ScrollView>
+                    <TopSpending
+                        year={year}
+                        month={month}
+                    />
                     <ExpensePie
                         year={year}
                         month={month}

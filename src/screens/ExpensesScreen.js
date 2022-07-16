@@ -1,7 +1,7 @@
 import { StyleSheet, FlatList, Pressable, Text, Dimensions, ImageBackground, View, StatusBar } from "react-native";
 import React, { useState, useEffect } from 'react';
 import { db, auth } from "../Firebase";
-import { query, collection, doc, onSnapshot, deleteDoc, getDoc, getDocs, updateDoc, where } from "firebase/firestore";
+import { query, collection, doc, onSnapshot, deleteDoc, getDoc, getDocs, updateDoc, where, setDoc } from "firebase/firestore";
 import { ExpenseEntry } from '../Components/Entries/ExpenseEntry';
 import { monthName } from "../Functions/monthName";
 import { IOSStatusBar } from "../Components/IOSStatusBar";
@@ -13,7 +13,7 @@ export const ExpensesScreen = ({ navigation }) => {
 
     const [list, setList] = useState([]);
 
-    const [expenses, setExpenses] = useState(3); 
+    const [expenses, setExpenses] = useState(0); 
 
     const thisUserID = auth.currentUser.uid;
 
@@ -22,13 +22,15 @@ export const ExpensesScreen = ({ navigation }) => {
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const items = [];
             snapshot.forEach((doc) => {
-                items.push({
-                    id: doc.id,
-                    amount: "$" + doc.data().amount.toFixed(2),
-                    category: doc.data().category,
-                    date: doc.data().date.split("/")[0] + " " + monthName(parseInt(doc.data().date.split("/")[1])),
-                    description: doc.data().description
-                }); 
+                if (doc.id != "Total") {
+                    items.push({
+                        id: doc.id,
+                        amount: "$" + doc.data().amount.toFixed(2),
+                        category: doc.data().category,
+                        date: doc.data().date.split("/")[0] + " " + monthName(parseInt(doc.data().date.split("/")[1])),
+                        description: doc.data().description
+                    }); 
+                }
             })
             items.sort((a, b) => {
                 return parseInt(a.date.split("/")[0]) - parseInt(b.date.split("/")[0]);
@@ -39,13 +41,13 @@ export const ExpensesScreen = ({ navigation }) => {
     }, [month, year]);
 
     useEffect(() => {
-        const q = query(collection(db, "users", `${thisUserID}`, "budgets", `${year}`, `${month}`));
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            var newExpenses = 0; 
-            snapshot.forEach((doc) => {
-                newExpenses += doc.data().expenses; 
-            })
-            setExpenses(newExpenses); 
+        const docRef = doc(db, "users", `${thisUserID}`, "Expenses", `${year}`, `${month}`, "Total");
+        const unsubscribe = onSnapshot(docRef, (doc) => {
+            if (doc.exists()) {
+                setExpenses(doc.data().total);
+            } else {
+                setExpenses(0);
+            }
         });
         return () => { unsubscribe(); }
     }, [month, year]);
@@ -59,9 +61,16 @@ export const ExpensesScreen = ({ navigation }) => {
             const q = query(collection(db, "users", `${thisUserID}`, "budgets", `${year}`, `${month}`), where("category", "==", deleteCategory));
             const querySnapshot = await getDocs(q);
             querySnapshot.forEach(async (doc) => {
-                 const newExpense = doc.data().expenses - deleteAmount;
+                 const newExpense = parseFloat((doc.data().expenses - deleteAmount).toFixed(2));
+                 console.log("newBudget" + newExpense)
                  await updateDoc(doc.ref, { expenses: newExpense }); 
             });
+
+            const docRef = doc(db, "users", `${thisUserID}`, "Expenses", `${year}`, `${month}`, "Total");
+            const docSnap = await getDoc(docRef); 
+            await setDoc(docRef, {
+                    total: parseFloat((docSnap.data().total - deleteAmount).toFixed(2))
+                });
             
             await deleteDoc(toDeleteDoc.ref);
         } catch (error) {
