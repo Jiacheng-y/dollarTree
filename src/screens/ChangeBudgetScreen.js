@@ -4,6 +4,7 @@ import { db, auth } from "../Firebase";
 import { updateDoc, doc, query, collection, where, getDocs} from "firebase/firestore";
 import { MaterialIcons } from '@expo/vector-icons';
 import { IOSStatusBar } from "../Components/IOSStatusBar";
+import { PresetCategoryPicker } from "../Components/Pickers/PresetCategoryPicker";
 
 export const ChangeBudgetScreen = ({ navigation, route }) => {
     const { data, year, month } = route.params;
@@ -50,6 +51,13 @@ export const ChangeBudgetScreen = ({ navigation, route }) => {
                 <Text style={styles.header}>Budget</Text>
             </View>
 
+            <PresetCategoryPicker
+                category={category}
+                setCategory={setCategory}
+            />
+
+            <Text style={styles.footnote}>change expenses categories as well if needed</Text>
+
             <View style={styles.container}> 
                 <MaterialIcons 
                     style={styles.categoryIcon}
@@ -63,8 +71,6 @@ export const ChangeBudgetScreen = ({ navigation, route }) => {
                     placeholder="Category">
                 </TextInput>
             </View>
-
-            <Text style={styles.footnote}>change expenses categories as well if needed</Text>
                 
             <View style={styles.container}>
                 <MaterialIcons 
@@ -126,13 +132,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         alignSelf: 'center',
         opacity: 0.93,
-        marginTop: 15
     }, 
     container: {
         flexDirection: 'row',
         height: 50,
         alignItems: 'center',
-        marginTop: 15
+        marginBottom: 15
     },
     categoryIcon: {
         marginLeft: 33,

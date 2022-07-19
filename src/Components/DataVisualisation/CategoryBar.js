@@ -52,7 +52,8 @@ export const CategoryBar = ({year, month}) => {
                     newData.push(
                         { 
                             x: monthName(monthVar).substring(0, 3),
-                            y: 0
+                            y: 0,
+                            year: yearVar
                         }
                     ); 
                 }
@@ -60,7 +61,8 @@ export const CategoryBar = ({year, month}) => {
                     newData.push(
                         { 
                             x: monthName(monthVar).substring(0, 3),
-                            y: doc.data().expenses
+                            y: doc.data().expenses,
+                            year: yearVar
                         }
                     ); 
                 });
@@ -71,12 +73,13 @@ export const CategoryBar = ({year, month}) => {
                 newData.push(
                     { 
                         x: monthName(month).substring(0, 3),
-                        y: 0
+                        y: 0,
+                        year: year
                     }
                 ); 
             }
             snapshot.forEach((doc) => {
-                newData.push({ x: monthName(month).substring(0, 3), y: doc.data().expenses }); 
+                newData.push({ x: monthName(month).substring(0, 3), y: doc.data().expenses, year: year }); 
             })
             setData(newData);
             if ((newData.length === 1 && newData[0].y === 0 ) || 
@@ -127,7 +130,7 @@ export const CategoryBar = ({year, month}) => {
                         alignment="middle"
                         barWidth={25}
                         style={{ data: { fill: "#2D7EAF" }, labels: { fontSize: 15 } }}
-                        sortKey={item => monthNumber(item.x)} 
+                        sortKey={item => [item.year, monthNumber(item.x)]}
                         horizontal={true}
                         labels={({ datum }) => "$" + `${parseFloat(datum.y).toFixed(2)}`}
                     />

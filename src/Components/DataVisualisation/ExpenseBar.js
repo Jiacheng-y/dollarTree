@@ -45,14 +45,16 @@ export const ExpenseBar = ({year, month}) => {
                     newData.push(
                         { 
                             x: monthName(monthVar).substring(0, 3),
-                            y: 0
+                            y: 0,
+                            year: yearVar
                         }
                     ); 
                 } else {
                     newData.push(
                         { 
                             x: monthName(monthVar).substring(0, 3),
-                            y: docSnap.data().total
+                            y: docSnap.data().total,
+                            year: yearVar
                         }
                     ); 
                 }
@@ -63,14 +65,16 @@ export const ExpenseBar = ({year, month}) => {
                 newData.push(
                     { 
                         x: monthName(month).substring(0, 3),
-                        y: 0
+                        y: 0,
+                        year: year
                     }
                 ); 
             } else {
                 newData.push(
                     { 
                         x: monthName(month).substring(0, 3),
-                        y: document.data().total
+                        y: document.data().total,
+                        year: year
                     }
                 ); 
             }
@@ -119,7 +123,7 @@ export const ExpenseBar = ({year, month}) => {
                         alignment="middle"
                         barWidth={25}
                         style={{ data: { fill: "#284f8f" }, labels: { fontSize: 15 } }}
-                        sortKey={item => monthNumber(item.x)}
+                        sortKey={item => [item.year, monthNumber(item.x)]}
                         labels={({ datum }) => "$" + `${parseFloat(datum.y).toFixed(2)}`}
                     />
                 </VictoryChart>

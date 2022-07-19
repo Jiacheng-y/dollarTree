@@ -1,6 +1,6 @@
 import { VictoryPie } from 'victory-native';
 import React, { useState, useEffect } from 'react';
-import { query, collection, onSnapshot } from "firebase/firestore";
+import { query, collection, onSnapshot, getDoc, doc } from "firebase/firestore";
 import { db, auth } from "../../Firebase";
 import { SafeAreaView, Text, StyleSheet, View, Dimensions } from "react-native";
 
@@ -42,7 +42,12 @@ export const ExpensePie = ({year, month}) => {
             if (snapshot.empty) {
                 setEdge(true);
             } else {
-                setEdge(false);
+                const docSnap = await getDoc(doc(db, "users", `${thisUserID}`, "Expenses", `${year}`, `${month}`, "Total"))
+                if (!docSnap.exists()) {
+                    setEdge(true);
+                } else {
+                    setEdge(false);
+                }
             }
 
             snapshot.forEach((doc) => {
