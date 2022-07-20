@@ -1,8 +1,8 @@
 import Matter from "matter-js";
-import Money from "../Objects/Money";
-import Floor from "../Objects/Floor";
+import Money from "../Components/Money";
+import Land from "../Components/Land";
 import { Dimensions } from "react-native";
-import Tree from "../Objects/Tree";
+import Tree from "../Components/Tree";
 
 const windowHeight = Dimensions.get('window').height
 const windowWidth = Dimensions.get('window').width
@@ -17,8 +17,8 @@ export default restart = () => {
         // return the physics of the world
         physics: {engine, world},
         // also return all the components in the game world
-        Money: Money(world, 'green', {x: 50, y: 100}, {height: 40, width: 40}),
-        Tree: Tree(world, 'green', {x: windowWidth/2, y: windowHeight-80}, {height: windowHeight*0.75, width: windowWidth*0.65}),
-        Floor: Floor(world, 'green', {x: windowWidth / 2, y: windowHeight-60}, {height: 40, width: windowWidth})
+        // Money: Money(world, 'green', {x: 50, y: 100}, {height: 40, width: 40}),
+        // Tree: Tree(world, 'green', {x: windowWidth / 2, y: windowHeight - 80}, {height: windowHeight*0.75, width: windowWidth*0.65}),
+        Land: Land(world, 'green', {x: windowWidth / 2, y: windowHeight / 2}, {height: windowWidth - 130, width: windowWidth - 130})
     }
 };
