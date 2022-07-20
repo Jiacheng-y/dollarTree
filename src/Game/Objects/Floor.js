@@ -1,20 +1,20 @@
 import Matter from "matter-js";
 import React from "react";
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
 
-const Floor = (props) => {
-    
-    // max value of x of the body - min value of x of the body
+const FloorRenderer = (props) => {
+
+    // max value of x of the body within the rectangle - min value of x of the body within the rectangle
     const widthBody = props.body.bounds.max.x - props.body.bounds.min.x
     const heightBody = props.body.bounds.max.y - props.body.bounds.min.y
 
-    //get x and y position of the center of bird's body
+    // get x and y position of the center of Floor's body
     const xBody = props.body.position.x - widthBody/2
     const yBody = props.body.position.y - heightBody/2
 
     const color = props.color;
 
-    //return the bird component as it should look
+    // return the bird component as it should look
     return(
         <View style={{
             backgroundColor: color,
@@ -30,29 +30,28 @@ const Floor = (props) => {
     )
 }
 
-export default (world, color, pos, size) => {
+export default function Floor(world, color, pos, size) {
 
-    //create a "hit box" of the bird component
+    // create a "box" of the Floor component
     const initialFloor = Matter.Bodies.rectangle(
         pos.x, 
         pos.y, 
         size.width,
         size.height,
-        //parameters in curly brackets are optional params
+        // optional params
         {
             label: 'Floor', 
-        isStatic: true},
+            isStatic: true
+        }
     )
     
-    //add initial bird to world prev defined
+    // add initial Floor to world
     Matter.World.add(world, initialFloor)
 
-    return{
+    return {
         body: initialFloor, 
         color, 
         pos, 
-        //pass a const variable to renderer
-        //variable passed will handle creating everything to be rendered out
-        renderer: <Floor/>
+        renderer: <FloorRenderer/>
     }
 };

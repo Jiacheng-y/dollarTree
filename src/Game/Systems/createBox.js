@@ -1,5 +1,5 @@
 import Matter from "matter-js";
-import Money from "../Components/Game/Money";
+import Money from "../Objects/Money";
 
 export const CreateBox = (entities, { touches, screen }) => {
     let boxIds = 0;
@@ -10,4 +10,4 @@ export const CreateBox = (entities, { touches, screen }) => {
       entities[++boxIds] = Money;
     });
     return entities;
-  };
+};

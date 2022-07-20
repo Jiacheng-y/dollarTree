@@ -56,7 +56,7 @@ const Tabs = () => {
           }
 
           // You can return any component that you like here!
-          return <FontAwesome5 name={iconName} size={size} color={color} />;
+          return <FontAwesome5 name={iconName} size={23} color={color} />;
         },
         tabBarActiveTintColor: '#004aad',
         tabBarInactiveTintColor: 'gray',
@@ -68,7 +68,8 @@ const Tabs = () => {
         options={{ headerShown: false }}/>
       <Tab.Screen name="Insights" component={InsightsNavigator}
         options={{ headerShown: false }}/>
-      <Tab.Screen name="Tree" component={TreeScreen} />
+      <Tab.Screen name="Tree" component={TreeScreen} 
+        options={{ headerShown: false }}/>
     </Tab.Navigator>
     );
 };
