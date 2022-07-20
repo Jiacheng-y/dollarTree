@@ -14,6 +14,7 @@ import { db, auth } from '../Firebase';
 import { query, collection, onSnapshot, addDoc, runTransaction, doc, updateDoc, where, getDocs } from 'firebase/firestore';
 import { IOSStatusBar } from '../Components/IOSStatusBar';
 import { MaterialIcons } from '@expo/vector-icons';
+import { PresetCategoryPicker } from '../Components/Pickers/PresetCategoryPicker';
 
 export const EditBudgetScreen = ({ route, navigation }) => {
 
@@ -122,6 +123,13 @@ export const EditBudgetScreen = ({ route, navigation }) => {
                 <Text style={styles.header}>Budget</Text>
             </View>
 
+            <Text style={styles.info}>select a preset category or input your own</Text>
+
+            <PresetCategoryPicker 
+                category={category}
+                setCategory={setCategory}
+            />
+
             <View style={styles.container}> 
                 <MaterialIcons 
                     style={styles.categoryIcon}
@@ -191,13 +199,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         alignSelf: 'center',
         opacity: 0.93,
-        marginTop: 15
     }, 
     container: {
         flexDirection: 'row',
         height: 50,
         alignItems: 'center',
-        marginTop: 15
+        marginBottom: 15
     },
     categoryIcon: {
         marginLeft: 33,
@@ -206,6 +213,13 @@ const styles = StyleSheet.create({
     amountIcon: {
         marginLeft: 35,
         marginRight: 10
+    },
+    info: {
+        marginLeft: 35,
+        fontSize: 15,
+        color: 'gray',
+        fontStyle: 'italic',
+        marginTop: 15
     }
 })
 
