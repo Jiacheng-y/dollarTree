@@ -45,6 +45,10 @@ export const AuthScreen = ({setAuthState}) => {
                             email: userCredential.user.email
                         });
                     });
+            const coinsDoc = doc(db, "users", `${auth.currentUser.uid}`, "Coins", "Total");
+            await setDoc(coinsDoc, {
+                total: 0
+            });
         }
         catch (error) {
             if (error.code === 'auth/email-already-in-use') {

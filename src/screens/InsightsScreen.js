@@ -54,11 +54,11 @@ export const InsightsScreen = ({ navigation }) => {
                     /> 
                 </ScrollView>
 
-                {/* <Pressable 
+                <Pressable 
                     style={styles.logOut}
                     onPress={signOutEmailPassword}>
                     <Text style={{color: 'white', fontSize: 20}}>Log Out</Text>
-                </Pressable> */}
+                </Pressable>
 
             </ImageBackground>
         </View>

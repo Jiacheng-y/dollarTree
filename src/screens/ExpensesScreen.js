@@ -6,6 +6,7 @@ import { ExpenseEntry } from '../Components/Entries/ExpenseEntry';
 import { monthName } from "../Functions/monthName";
 import { IOSStatusBar } from "../Components/IOSStatusBar";
 import { FontAwesome } from '@expo/vector-icons'; 
+import { Coin } from "../Game/Components/Coin";
 
 export const ExpensesScreen = ({ navigation }) => {
     const [year, setYear] = useState(new Date().getFullYear()); 
@@ -90,7 +91,11 @@ export const ExpensesScreen = ({ navigation }) => {
                 style={styles.image}
             >
 
-                <View style={{flexDirection: 'row', marginTop: 20}}>
+                <Coin
+                    
+                />
+
+                <View style={{flexDirection: 'row', marginTop: 15}}>
                     <Text style={styles.date}>{monthName(month) + " " + year + " Expenses"}</Text>
                     <Pressable
                         style={styles.dateButton}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
     StyleSheet,
     Text,
@@ -9,12 +9,14 @@ import {
     Platform,
     StatusBar,
     Keyboard,
+    Animated,
 } from 'react-native';
 import { db, auth } from '../Firebase';
-import { query, collection, onSnapshot, addDoc, runTransaction, doc, updateDoc, where, getDocs } from 'firebase/firestore';
+import { query, collection, onSnapshot, addDoc, runTransaction, doc, updateDoc, where, getDocs, getDoc, setDoc } from 'firebase/firestore';
 import { IOSStatusBar } from '../Components/IOSStatusBar';
 import { MaterialIcons } from '@expo/vector-icons';
 import { PresetCategoryPicker } from '../Components/Pickers/PresetCategoryPicker';
+import { Coin } from '../Game/Components/Coin';
 
 export const EditBudgetScreen = ({ route, navigation }) => {
 
@@ -29,6 +31,37 @@ export const EditBudgetScreen = ({ route, navigation }) => {
 
     var catPlaceHolder = 'Category';
 
+    // For coin animation
+    const [show, setShow] = useState(false);
+    const coinImage = require("../Images/Coin.png");
+    const moveAnim = useRef(new Animated.ValueXY({x: 210, y: -50})).current; 
+    const X = 25;
+    const Y = -450; 
+
+    const move = () => {
+        Animated.timing(moveAnim, {
+            toValue: {x: X, y: Y},
+            timing: 500,
+            useNativeDriver: true
+        }).start(async () => {
+            const coinsRef = doc(db, "users", `${thisUserID}`, "Coins", "Total");
+            const coinsSnap = await getDoc(coinsRef); 
+            const newAmount = coinsSnap.data().total + 5
+            await setDoc(coinsRef, {
+                total: newAmount
+            });
+            setTimeout(() => {
+                navigation.navigate('Budget');
+            }, 375);
+            setShow(false);
+        });
+    }
+    
+    const animatedStyle = {
+        transform: moveAnim.getTranslateTransform()
+    }
+    // For coin animation
+
     const onSubmitHandler = async () => {
 
         if (category.length === 0) {
@@ -40,6 +73,8 @@ export const EditBudgetScreen = ({ route, navigation }) => {
         }
 
         try {
+            setShow(true);
+            move();
 
             const budgetCollection = collection(db, "users", `${thisUserID}` , "budgets", `${date.getFullYear()}`, `${month}`);
             
@@ -50,7 +85,6 @@ export const EditBudgetScreen = ({ route, navigation }) => {
                 newExpense += doc.data().amount;
             });
 
-            console.log(newExpense)
             const budgetRef = await addDoc(budgetCollection, {
                 date: `${month}`, 
                 category: category,
@@ -58,17 +92,19 @@ export const EditBudgetScreen = ({ route, navigation }) => {
                 expenses: newExpense,
             })
 
+            const bonusDoc = doc(db, "users", `${thisUserID}` , "budgets", `${date.getFullYear()}`, `${month}`, "Bonus");
+            await setDoc(bonusDoc, {
+                claimed: false
+            });
+
             //findExpense(category, budgetRef.id);
 
-            console.log('completed', budgetRef.id);
+            // console.log('completed', budgetRef.id);
 
             clearForm();
-
         } catch (error) {
             console.log(error);
         }
-
-        navigation.navigate('Budget');
     };
 
     const clearForm = () => {
@@ -112,13 +148,16 @@ export const EditBudgetScreen = ({ route, navigation }) => {
     // }
 
     return (
-        <View style={{backgroundColor: 'white', flex: 1}}>
+        <View style={[styles.animatedContainer]}>
             { Platform.OS === 'ios' 
                 ? <IOSStatusBar color="#0F3091" opacity={0.93} />
                 : <StatusBar backgroundColor="#0F3091"/>
             }
 
             <View style={styles.image}>
+                <Coin 
+                    
+                />
                 <Text style={styles.header}>Add</Text>
                 <Text style={styles.header}>Budget</Text>
             </View>
@@ -166,15 +205,25 @@ export const EditBudgetScreen = ({ route, navigation }) => {
                 android_ripple={{ color: 'white' }} >
                 <Text style={{fontSize: 20, color: "white", fontWeight: 'bold'}}>+    Add</Text>
             </Pressable>
-
+            {
+                show 
+                ? <Animated.Image
+                    source={coinImage}
+                    style={[styles.coinImage, animatedStyle]}
+                    />
+                : <View />
+            }
         </View>
     );
 };
 
 const styles = StyleSheet.create({
+    animatedContainer: {
+        backgroundColor: 'white', 
+        flex: 1
+    },
     image: {
         height: 120,
-        justifyContent: 'center',
         backgroundColor: "#0F3091",
         opacity: 0.93
     },
@@ -220,6 +269,10 @@ const styles = StyleSheet.create({
         color: 'gray',
         fontStyle: 'italic',
         marginTop: 15
+    },
+    coinImage: {
+        height: 30,
+        width: 30
     }
 })
 

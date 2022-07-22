@@ -1,8 +1,8 @@
 import Matter from "matter-js";
-import Money from "../Components/Money";
-import Land from "../Components/Land";
+import Money from "../Objects/Money";
+import Land from "../Objects/Land";
 import { Dimensions } from "react-native";
-import Tree from "../Components/Tree";
+import Tree from "../Objects/Tree";
 
 const windowHeight = Dimensions.get('window').height
 const windowWidth = Dimensions.get('window').width

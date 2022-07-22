@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './authState';
+import coinSliceReducer from './coinSlice';
 
 export const store = configureStore({
     reducer: {
-        authState: authReducer
+        coinSlice: coinSliceReducer
     }
 })
