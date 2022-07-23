@@ -89,7 +89,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 5,
     opacity: 0.6,
-    marginBottom: 10,
     width: 63
     //opacity: controlOpacity(null)
   },
