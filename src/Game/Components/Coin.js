@@ -33,13 +33,13 @@ export const Coin = () => {
     useEffect(() => {
         onSnapshot(doc(db, "users", `${thisUserID}`, "Coins", "Total"), (doc) => {
             // listener retrieves new value for count when it is updated
+            const difference = doc.data().total - ref.current; 
             const myInterval = setInterval(() => {
                 if (shouldUpdate.current) {
-                    if (ref.current + 3 >= doc.data().total) {
-                        ref.current += (doc.data().total - ref.current);
+                    if (ref.current >= doc.data().total) {
                         clearInterval(myInterval);
                     } else {
-                        ref.current += parseInt((doc.data().total - ref.current) / 5);
+                        ref.current += parseInt(difference / 5);
                         dispatch(setCount(ref.current));    
                     }
                 } else {
