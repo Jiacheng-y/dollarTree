@@ -160,6 +160,11 @@ const GameNavigator = () => {
               component={StoreScreen}
               options={{ headerShown: false }}
           />
+          <Stack.Screen
+              name="Select Month and Year"
+              component={SetDateScreen}
+              options={{ headerShown: false }}
+          />  
         </Stack.Navigator>
   );
 };

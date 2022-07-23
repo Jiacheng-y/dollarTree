@@ -25,8 +25,8 @@ const LandRenderer = (props) => {
                     `${xBody}`+ "," + `${yBody - heightBody/2}` + " " 
                     
                 }
-                fill={color}
-                stroke={color}
+                fill="#4d8680"
+                stroke="#4d8680"
                 strokeWidth="5"
             />
         </Svg>
