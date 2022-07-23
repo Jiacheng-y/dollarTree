@@ -8,12 +8,17 @@ import { Coin } from '../../Game/Components/Coin';
 import { IOSStatusBar } from '../../Components/IOSStatusBar';
 import { monthName } from '../../Functions/monthName';
 import { signOutEmailPassword } from '../AuthScreen';
+import { auth } from '../../Firebase';
+
 
 // colour scheme: #19635b, #33765d, #4d8680, #669792, #80a9a4, #99bab6, #b3bc8, #ccdcdb, #e6eeed
 
 export default function GardenScreen({navigation}) {
+    // use these values to access the database according to month, year, and user chosen
     const [year, setYear] = useState(new Date().getFullYear()); 
     const [month, setMonth] = useState(new Date().getMonth() + 1);
+    const [user, setUser] = useState(auth.currentUser.uid);
+    const [userEmail, setUserEmail] = useState("");
 
     return (
       <GameEngine
@@ -38,8 +43,8 @@ export default function GardenScreen({navigation}) {
         </View>
         
 
-        <View style={{flexDirection: 'row', marginTop: 15, justifyContent: 'center'}}>
-            <Text style={styles.date}>{monthName(month) + " " + year + " Garden"}</Text>
+        <View style={{flexDirection: 'row', marginTop: 25, justifyContent: 'center'}}>
+            <Text style={styles.date}>{monthName(month) + " " + year}</Text>
             <Pressable
                 style={styles.dateButton}
                 onPress={() => { 
@@ -48,6 +53,35 @@ export default function GardenScreen({navigation}) {
                 <Text style={{fontSize: 15, color: "white"}}>Change</Text>
             </Pressable>
         </View>
+
+        {
+          user == auth.currentUser.uid
+          ? 
+            <Text style={styles.header}>Your Garden</Text>
+          :
+            <Text style={styles.header}>{userEmail}'s Garden</Text>
+
+        }
+
+        {
+          user != auth.currentUser.uid
+            ? 
+              <Pressable
+                style={styles.visit}
+                onPress={() => { 
+                    setUser(auth.currentUser.uid);
+                }}>
+                <Text style={styles.visitText}>click to return to your garden</Text>
+              </Pressable>
+            :
+              <Pressable
+                style={styles.visit}
+                onPress={() => { 
+                    navigation.navigate('Select User', { setUser: setUser, setUserEmail: setUserEmail });
+                }}>
+                <Text style={styles.visitText}>click to visit a friend's garden</Text>
+              </Pressable>
+        }
 
         <Pressable
           style={styles.storeButton}
@@ -72,7 +106,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     height: 50,
     justifyContent: 'center',
-    marginTop: Dimensions.get('window').height - 280,
+    marginTop: Dimensions.get('window').height - 340,
     alignSelf: 'center',
 
   },
@@ -89,16 +123,21 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 5,
     opacity: 0.6,
-    width: 63
+    width: 63,
     //opacity: controlOpacity(null)
   },
   date: {
     color: '#4d8680',
+    fontSize: 25,
+    alignSelf: 'center',
+  }, 
+  header: {
+    color: '#4d8680',
     fontWeight: 'bold',
     fontSize: 28,
-    marginBottom: 10,
-    marginTop: 10
-  }, 
+    marginVertical: 10,
+    alignSelf: 'center'
+  },
   logOut: {
     marginLeft: 10,
     alignItems: 'center',
@@ -111,5 +150,15 @@ const styles = StyleSheet.create({
     color: 'white', 
     fontSize: 17,
     fontWeight: 'bold'
+  },
+  visit: {
+    width: 350,
+    alignSelf: 'center'
+  },
+  visitText: {
+    fontSize: 20,
+    color: '#4d8680',
+    fontStyle: 'italic',
+    alignSelf: 'center'
   }
 });
