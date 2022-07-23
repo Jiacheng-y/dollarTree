@@ -6,7 +6,7 @@ import { Coin } from '../../Game/Components/Coin';
 
 export const StoreScreen = () => {
     const list100 = ["Orange Tree", "Palm Tree", "Oak Tree"];
-    const list200 = ["Lavender", "Sunflowers", "Daisy Bush"];
+    const list200 = ["Lavender", "Daisies", "Rose Bush"];
     const list300 = ["Swing", "Autumn Tree", "Cherry Blossom Tree"];
 
     return (

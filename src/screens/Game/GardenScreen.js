@@ -7,6 +7,7 @@ import { createBox } from '../../Game/Systems/createBox';
 import { Coin } from '../../Game/Components/Coin';
 import { IOSStatusBar } from '../../Components/IOSStatusBar';
 import { monthName } from '../../Functions/monthName';
+import { signOutEmailPassword } from '../AuthScreen';
 
 // colour scheme: #19635b, #33765d, #4d8680, #669792, #80a9a4, #99bab6, #b3bc8, #ccdcdb, #e6eeed
 
@@ -26,7 +27,16 @@ export default function GardenScreen({navigation}) {
             : <StatusBar backgroundColor="#e8f4ea"/>
         }
         
-        <Coin/>
+        <View style={{flexDirection: 'row'}}>
+          <Coin/>
+
+          <Pressable 
+              style={styles.logOut}
+              onPress={signOutEmailPassword}>
+              <Text style={styles.logOutText}>Log Out</Text>
+          </Pressable>
+        </View>
+        
 
         <View style={{flexDirection: 'row', marginTop: 15, justifyContent: 'center'}}>
             <Text style={styles.date}>{monthName(month) + " " + year + " Garden"}</Text>
@@ -62,7 +72,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     height: 50,
     justifyContent: 'center',
-    marginTop: Dimensions.get('window').height - 270,
+    marginTop: Dimensions.get('window').height - 280,
     alignSelf: 'center',
 
   },
@@ -87,6 +97,20 @@ const styles = StyleSheet.create({
     color: '#4d8680',
     fontWeight: 'bold',
     fontSize: 28,
-    marginBottom: 10
+    marginBottom: 10,
+    marginTop: 10
   }, 
+  logOut: {
+    marginLeft: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#0F3091',
+    borderRadius: 8,
+    width: Dimensions.get('window').width - 160
+  },
+  logOutText: {
+    color: 'white', 
+    fontSize: 17,
+    fontWeight: 'bold'
+  }
 });
