@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, Pressable, Text } from 'react-native';
+import { StyleSheet, View, Pressable, Text, Platform, StatusBar } from 'react-native';
 import { GameEngine } from "react-native-game-engine";
 import Entities from '../../Game/Entities';
 import physics from '../../Game/Systems/physics';
 import { createBox } from '../../Game/Systems/createBox';
 import { Coin } from '../../Game/Components/Coin';
+import { IOSStatusBar } from '../../Components/IOSStatusBar';
 
 export default function GardenScreen({month, year, navigation}) {
     return (
@@ -13,6 +14,14 @@ export default function GardenScreen({month, year, navigation}) {
         systems={[physics, createBox]} // functions called on every tick (update/re-start of game loop)
         entities={Entities()}
       >
+
+        { Platform.OS === 'ios' 
+            ? <IOSStatusBar color="#e8f4ea"/>
+            : <StatusBar backgroundColor="#e8f4ea"/>
+        }
+
+        <Coin/>
+
         <Pressable
           style={styles.button}
           onPress={() => { 
@@ -20,7 +29,7 @@ export default function GardenScreen({month, year, navigation}) {
           }}>
           <Text style={styles.buttonText}>Store</Text>
         </Pressable>
-        {/* <Coin/> */}
+
       </GameEngine>
     );
 }
@@ -28,12 +37,21 @@ export default function GardenScreen({month, year, navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "#e8f4ea",
   },
   button: {
-    marginTop: 50,
-    marginLeft: 20,
+    marginLeft: 25,
     backgroundColor: 'gray',
-    width: 100
+    width: 105,
+    marginVertical: 20,
+    borderRadius: 8,
+    height: 30,
+    justifyContent: 'center'
+  },
+  buttonText: {
+    alignSelf: 'center',
+    color: "white",
+    fontSize: 20,
+    fontWeight: 'bold'
   }
 });

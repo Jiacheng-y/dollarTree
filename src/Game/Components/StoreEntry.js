@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
-import { StyleSheet, Pressable, Text, Image, Alert, Dimensions } from 'react-native';
+import React from 'react';
+import { StyleSheet, Pressable, Text, Image, Alert, Dimensions, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { gardenImages } from '../../Images/gardenImages';
+import { gardenImages } from '../../Images/Garden/gardenImages';
+import { db, auth } from '../../Firebase';
+import { collection, addDoc, doc, getDoc, setDoc } from 'firebase/firestore';
 
 export const StoreEntry = ({item, price}) => { 
     const navigation = useNavigation();
@@ -9,16 +11,33 @@ export const StoreEntry = ({item, price}) => {
     const displayConfirmation = () => {
         Alert.alert(
             "Confirm Purchase?",
-            `${price}` + " coins",
+            `${item} \n` + `${price}` + " coins",
             [
                 {
                     text: "Cancel",
                     style: "default"
                 },
                 { 
-                    text: "Confirm", onPress: () => {
-                        console.log("Deduct Coins, Add Tree and Return to Garden") 
-                        navigation.navigate("Garden")
+                    text: "Confirm", onPress: async () => {
+                        const coinsRef = doc(db, "users", `${auth.currentUser.uid}`, "Coins", "Total");
+                        const coinsSnap = await getDoc(coinsRef); 
+                        if (coinsSnap.data().total < price) {
+                            Alert.alert("Not enough coins! :(")
+                        } else {
+                            const newAmount = coinsSnap.data().total - price
+                            await setDoc(coinsRef, {
+                                total: newAmount
+                            });
+    
+                            const gardenCollection = collection(db, "users", `${auth.currentUser.uid}` , "Garden", `${new Date().getFullYear()}`, `${new Date().getMonth() + 1}`);
+                            await addDoc(gardenCollection, {
+                                name: item,
+                            })
+    
+                            setTimeout(() => {
+                                navigation.navigate("Garden");
+                            }, 375)
+                        }
                     }
                 }
             ]
@@ -30,30 +49,39 @@ export const StoreEntry = ({item, price}) => {
             onPress={displayConfirmation}
             style={styles.container}
         >
-            <Image
-                // need to generalise
-                source={gardenImages[item]}
-                style={styles.image}
-            > 
-            </Image>
-            <Text style={styles.text}>{item}</Text>
-            <Text style={styles.text}>{price} Coins</Text>
+            <View style={styles.imageContainer}>
+                <Image
+                    source={gardenImages[item]}
+                    style={styles.image}
+                > 
+                </Image>
+            </View>
+            
+            <Text style={styles.name}>{item}</Text>
+            <Text style={styles.price}>{price} Coins</Text>
         </Pressable>
     )
 }
 
 const styles = StyleSheet.create({
     image: {
-        height: 150,
-        width: 150,
-        resizeMode: 'contain'
+        height: 130,
+        width: 130,
+        resizeMode: 'contain',
     },
     container: {
         backgroundColor: 'white',
         width: Dimensions.get('window').width / 2,
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center'
     },
-    text: {
+    name: {
+        fontSize: 17,
+        fontWeight: 'bold',
+        color: 'gray',
+        marginTop: 5
+    },
+    price: {
         fontSize: 15
     }
 })
