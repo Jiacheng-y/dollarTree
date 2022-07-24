@@ -35,7 +35,7 @@ export const EditExpensesScreen = ({ navigation }) => {
             const coinsRef = doc(db, "users", `${thisUserID}`, "Coins", "Total");
             const coinsSnap = await getDoc(coinsRef); 
             await setDoc(coinsRef, {
-                total: 5 + coinsSnap.data().total 
+                total: 10 + coinsSnap.data().total 
             });
             setTimeout(() => {
                 navigation.navigate('Expenses');

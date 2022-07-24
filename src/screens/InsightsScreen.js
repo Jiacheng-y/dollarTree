@@ -7,6 +7,7 @@ import { monthName } from '../Functions/monthName';
 import { ThreeMonth } from '../Components/DataVisualisation/ThreeMonth';
 import { TopSpending } from '../Components/DataVisualisation/TopSpending';
 import { AverageSpent } from '../Components/DataVisualisation/AverageSpent';
+import { Coin } from '../Game/Components/Coin';
 
 
 export const InsightsScreen = ({ navigation }) => {
@@ -24,7 +25,9 @@ export const InsightsScreen = ({ navigation }) => {
                     resizeMode="cover"
                     style={styles.image}
             >
-                <View style={{flexDirection: 'row', marginTop: 20}}>
+                <Coin/>
+            
+                <View style={{flexDirection: 'row', marginTop: 15}}>
                     <Text style={styles.date}>{monthName(month) + " " + year + " Insights"}</Text>
                     <Pressable
                         style={styles.dateButton}
@@ -53,12 +56,6 @@ export const InsightsScreen = ({ navigation }) => {
                         month={month}
                     /> 
                 </ScrollView>
-
-                {/* <Pressable 
-                    style={styles.logOut}
-                    onPress={signOutEmailPassword}>
-                    <Text style={{color: 'white', fontSize: 20}}>Log Out</Text>
-                </Pressable> */}
 
             </ImageBackground>
         </View>

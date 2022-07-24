@@ -46,7 +46,7 @@ export const EditBudgetScreen = ({ route, navigation }) => {
         }).start(async () => {
             const coinsRef = doc(db, "users", `${thisUserID}`, "Coins", "Total");
             const coinsSnap = await getDoc(coinsRef); 
-            const newAmount = coinsSnap.data().total + 5
+            const newAmount = coinsSnap.data().total + 10
             await setDoc(coinsRef, {
                 total: newAmount
             });

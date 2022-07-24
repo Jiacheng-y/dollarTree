@@ -16,6 +16,7 @@ import { ChangeExpensesScreen } from './src/Screens/ChangeExpenseScreen';
 import { ChangeBudgetScreen } from './src/Screens/ChangeBudgetScreen';
 import GardenScreen from './src/Screens/Game/GardenScreen';
 import { StoreScreen } from './src/Screens/Game/StoreScreen';
+import { SelectUserScreen } from './src/Screens/Game/SelectUserScreen';
 
 export default App = () => {
   return (
@@ -158,6 +159,16 @@ const GameNavigator = () => {
           <Stack.Screen
               name="Store"
               component={StoreScreen}
+              options={{ headerShown: false }}
+          />
+          <Stack.Screen
+              name="Select Month and Year"
+              component={SetDateScreen}
+              options={{ headerShown: false }}
+          />  
+          <Stack.Screen
+              name="Select User"
+              component={SelectUserScreen}
               options={{ headerShown: false }}
           />
         </Stack.Navigator>
