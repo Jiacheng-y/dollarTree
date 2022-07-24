@@ -1,6 +1,6 @@
 import Matter from "matter-js";
 import React from "react";
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { Image } from 'react-native';
 
 const Tree = (props) => {
     
@@ -15,7 +15,7 @@ const Tree = (props) => {
     const color = props.color;
     const tree = require("../../../assets/d00428efa0bf27b9edd37eac32dfd2c1.png")
 
-    //return the bird component as it should look
+    // return the Tree component as it should look
     return(
         <Image style={{ position: 'absolute', left: xBody, top: yBody, width: widthBody, height: heightBody, }} resizeMode="stretch" source={tree} />
     )
@@ -23,25 +23,23 @@ const Tree = (props) => {
 
 export default (world, color, pos, size) => {
 
-    //create a "hit box" of the bird component
+    // create a "box" of the Tree component
     const initialTree = Matter.Bodies.rectangle(
         pos.x, 
         pos.y, 
         size.width,
         size.height,
-        //parameters in curly brackets are optional params
+        // optional params
         {label: 'Tree'},
     )
     
-    //add initial bird to world prev defined
+    // add initial Tree to world
     Matter.World.add(world, initialTree)
 
     return{
         body: initialTree, 
         color, 
         pos, 
-        //pass a const variable to renderer
-        //variable passed will handle creating everything to be rendered out
         renderer: <Tree/>
     }
 };

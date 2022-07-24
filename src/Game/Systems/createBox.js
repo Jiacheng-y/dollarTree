@@ -1,7 +1,7 @@
 import Matter from "matter-js";
-import Money from "../Components/Game/Money";
+import Money from "../Objects/Money";
 
-export const CreateBox = (entities, { touches, screen }) => {
+export const createBox = (entities, { touches, screen }) => {
     let boxIds = 0;
     let world = entities["physics"].world;
     touches.filter(t => t.type === "press").forEach(t => {
@@ -10,4 +10,4 @@ export const CreateBox = (entities, { touches, screen }) => {
       entities[++boxIds] = Money;
     });
     return entities;
-  };
+};

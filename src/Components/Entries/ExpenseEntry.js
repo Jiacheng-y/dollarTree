@@ -27,7 +27,7 @@ export const ExpenseEntry = ({data, onDelete}) => {
                 <Text style={styles.category}>{data.category}</Text>
             </View>
             
-            <View style={{flex: 1}}>
+            <View style={{flex: 1.1}}>
                 <Text style={styles.amount}>{"$" + data.amount.toFixed(2)}</Text>
                 <Text style={styles.date}>{data.date.split("/")[0] + " " + monthName(parseInt(data.date.split("/")[1]))}</Text>
             </View>
