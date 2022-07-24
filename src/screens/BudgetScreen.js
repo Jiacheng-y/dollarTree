@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     StyleSheet,
     Text,
@@ -9,13 +9,16 @@ import {
     StatusBar,
     Platform,
     FlatList,
+    Alert,
+    Animated
 } from 'react-native';
 import { db, auth } from '../Firebase';
-import { query, collection, onSnapshot, addDoc, deleteDoc, doc, orderBy, runTransaction, where, getDocs, updateDoc } from 'firebase/firestore';
+import { query, collection, onSnapshot, setDoc, addDoc, getDoc, deleteDoc, doc, orderBy, runTransaction, where, getDocs, updateDoc } from 'firebase/firestore';
 import { BudgetEntry } from '../Components/Entries/BudgetEntry';
 import { IOSStatusBar } from '../Components/IOSStatusBar';
 import { monthName } from '../Functions/monthName';
 import { FontAwesome } from '@expo/vector-icons'; 
+import { Coin } from '../Game/Components/Coin';
 
 export const BudgetScreen = ({ navigation }) => {
 
@@ -25,6 +28,41 @@ export const BudgetScreen = ({ navigation }) => {
     const [year, setYear] = useState(date.getFullYear());
     const [budget, setBudget] = useState(0);
 
+    // For coin animation
+    const [show, setShow] = useState(false);
+    const coinImage = require("../Images/Coin.png");
+    const moveAnim = useRef(new Animated.ValueXY({x: 300, y: 100})).current; 
+    const X = 25;
+    const Y = -740; 
+
+    const move = (value) => {
+        Animated.timing(moveAnim, {
+            toValue: {x: X, y: Y},
+            timing: 500,
+            useNativeDriver: true
+        }).start(async () => {
+            const coinsRef = doc(db, "users", `${auth.currentUser.uid}`, "Coins", "Total");
+            const coinsSnap = await getDoc(coinsRef); 
+            const newAmount = coinsSnap.data().total + value * 50;
+            await setDoc(coinsRef, {
+                total: newAmount
+            });
+            // to handle edge cases where the previous month is december of the previous year
+            const year = new Date().getMonth() == 0 ? new Date().getFullYear() - 1 : new Date().getFullYear()
+            const month = new Date().getMonth() == 0 ? 12 : new Date().getMonth()
+            const bonusRef = doc(db, "users", `${auth.currentUser.uid}`, "budgets", `${year}`, `${month}`, "Bonus");
+            await setDoc(bonusRef, {
+                claimed: true
+            });
+            setShow(false);
+        });
+    }
+    
+    const animatedStyle = {
+        transform: moveAnim.getTranslateTransform()
+    }
+    // For coin animation
+
     useEffect(() => {
         const q = collection(db, "users", `${auth.currentUser.uid}` , "budgets", `${year}`, `${month}`);
         const budgetQuery = query(q, orderBy("amount", "desc"));
@@ -33,11 +71,13 @@ export const BudgetScreen = ({ navigation }) => {
             var newBudget = 0;
             const budgets = [];
             snapshot.forEach(doc => {
-                budgets.push({
-                    id: doc.id, 
-                    ... doc.data()
-                });
-                newBudget += doc.data().amount;
+                if (doc.id != "Bonus") {
+                    budgets.push({
+                        id: doc.id, 
+                        ... doc.data()
+                    });
+                    newBudget += doc.data().amount;
+                }
             });
 
             setBudgetList([...budgets]);
@@ -48,6 +88,57 @@ export const BudgetScreen = ({ navigation }) => {
             subscriber();
         }
     }, [month, year]);
+
+    useEffect(() => {
+        var counter = 0;
+        // to handle edge cases where the previous month is december of the previous year
+        const year = new Date().getMonth() == 0 ? new Date().getFullYear() - 1 : new Date().getFullYear()
+        const month = new Date().getMonth() == 0 ? 12 : new Date().getMonth()
+
+        const numCategories = async () => {
+            const budgetCollection = query(collection(db, "users", `${auth.currentUser.uid}`, "budgets", `${year}`, `${month}`));
+            const querySnapshot = await getDocs(budgetCollection);
+            querySnapshot.forEach((doc) => {
+                if (doc.id != "Bonus" && doc.data().expenses <= doc.data().amount) {
+                    counter++;
+                }
+            });
+        }
+
+        numCategories();
+
+        const showAlert = () => {
+            Alert.alert(
+                "Collect " + `Last Month` + "'s Bonus Coins?",
+                "You met " + `${counter}` + " budget goals! \n Claim your " +
+                `${counter * 50}` + " coin reward here :)",
+                [
+                  {
+                    text: "Cancel",
+                    style: "default",
+                  },
+                  {
+                    text: "Collect",
+                    onPress: () => {
+                        setShow(true);
+                        move(counter);
+                    },
+                    style: "default",
+                  },
+                ],
+              );
+            
+        }
+
+        const helper = async () => {
+            const docRef = doc(db, "users", `${auth.currentUser.uid}`, "budgets", `${year}`, `${month}`, "Bonus");
+            const docSnap = await getDoc(docRef); 
+            if (!docSnap.data().claimed) {
+                showAlert();
+            }
+        }
+        helper();
+    }, [])
 
     const onDeleteHandler = async (id) => {
         try {
@@ -72,8 +163,11 @@ export const BudgetScreen = ({ navigation }) => {
                 resizeMode="cover"
                 style={styles.image}
             >
+                <Coin
+                    
+                />
 
-                <View style={{flexDirection: 'row', marginTop: 20}}>
+                <View style={{flexDirection: 'row', marginTop: 15}}>
                     <Text style={styles.date}>{monthName(month) + " " + year + " Budget"}</Text>
                     <Pressable
                         style={styles.dateButton}
@@ -122,6 +216,14 @@ export const BudgetScreen = ({ navigation }) => {
                     //onPressIn={()  => controlOpacity(0.1)}
                 />
 
+                {
+                    show 
+                    ? <Animated.Image
+                        source={coinImage}
+                        style={[styles.coinImage, animatedStyle]}
+                        />
+                    : <View />
+                }
             </ImageBackground>
         </View>
     );
@@ -179,5 +281,9 @@ const styles = StyleSheet.create({
         color: "gray", 
         fontSize: 17,
         marginTop: 10
+    },
+    coinImage: {
+        height: 30,
+        width: 30
     }
 })

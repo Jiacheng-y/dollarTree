@@ -1,5 +1,5 @@
-import { Text, StyleSheet, TextInput, Pressable, View, Dimensions, Platform, StatusBar } from "react-native";
-import React, { useState } from 'react';
+import { Text, StyleSheet, TextInput, Pressable, View, Dimensions, Platform, StatusBar, Animated } from "react-native";
+import React, { useState, useRef } from 'react';
 import { db, auth } from "../Firebase";
 import { collection, addDoc, updateDoc, query, getDocs, where, setDoc, getDoc, doc} from "firebase/firestore";
 import { DatePicker } from "../Components/Pickers/DatePicker";
@@ -8,8 +8,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { EvilIcons } from '@expo/vector-icons'; 
 import { MaterialIcons } from '@expo/vector-icons';
 import { IOSStatusBar } from "../Components/IOSStatusBar";
+import { Coin } from "../Game/Components/Coin";
 
-export const EditExpensesScreen = ({ navigation}) => {
+export const EditExpensesScreen = ({ navigation }) => {
     const [date, setDate] = useState(new Date());
     const formattedDate = `${date.getDate()}` + "/" + `${date.getMonth() + 1}` + "/" + `${date.getFullYear()}`;
     const [amount, setAmount] = useState(0);
@@ -18,8 +19,41 @@ export const EditExpensesScreen = ({ navigation}) => {
     
     const thisUserID = auth.currentUser.uid;
 
+    // For coin animation
+    const [show, setShow] = useState(false);
+    const coinImage = require("../Images/Coin.png");
+    const moveAnim = useRef(new Animated.ValueXY({x: 208, y: -45})).current; 
+    const X = 25;
+    const Y = -475; 
+
+    const move = () => {
+        Animated.timing(moveAnim, {
+            toValue: {x: X, y: Y},
+            timing: 500,
+            useNativeDriver: true
+        }).start(async () => {
+            const coinsRef = doc(db, "users", `${thisUserID}`, "Coins", "Total");
+            const coinsSnap = await getDoc(coinsRef); 
+            await setDoc(coinsRef, {
+                total: 5 + coinsSnap.data().total 
+            });
+            setTimeout(() => {
+                navigation.navigate('Expenses');
+            }, 375);
+            setShow(false);
+        });
+}
+    
+    const animatedStyle = {
+        transform: moveAnim.getTranslateTransform()
+    }
+    // For coin animation
+
     const addItem = async (object) => {
         try {
+            setShow(true);
+            move();
+
             await addDoc(collection(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`), {
                 date: object.date,
                 description: object.description,
@@ -56,7 +90,7 @@ export const EditExpensesScreen = ({ navigation}) => {
                 });
             }
         } catch (error) {
-            console.log(error);
+            console.log(error)
         }
     }
 
@@ -68,6 +102,9 @@ export const EditExpensesScreen = ({ navigation}) => {
             }
 
             <View style={styles.image}>
+                <Coin
+                    
+                />
                 <Text style={styles.header}>Add</Text>
                 <Text style={styles.header}>Transaction</Text>
             </View>
@@ -131,10 +168,18 @@ export const EditExpensesScreen = ({ navigation}) => {
                         setDescription('');
                         setAmount('');
                         setDate(new Date());
-                        navigation.navigate('Expenses');
                     }}>
                     <Text style={{fontSize: 20, color: "white", fontWeight: 'bold'}}>+    Add</Text>
                 </Pressable>
+
+                {
+                    show 
+                    ? <Animated.Image
+                        source={coinImage}
+                        style={[styles.coinImage, animatedStyle]}
+                        />
+                    : <View />
+                }
             </View>
         </View>
     );
@@ -143,7 +188,6 @@ export const EditExpensesScreen = ({ navigation}) => {
 const styles = StyleSheet.create({
     image: {
         height: 120,
-        justifyContent: 'center',
         backgroundColor: "#0F3091",
         opacity: 0.93
     },
@@ -187,6 +231,10 @@ const styles = StyleSheet.create({
     amountIcon: {
         marginLeft: 35,
         marginRight: 19
+    },
+    coinImage: {
+        height: 30,
+        width: 30
     }
 })
 

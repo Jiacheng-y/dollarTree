@@ -21,7 +21,7 @@ export const TopSpending = ({year, month}) => {
                 setEdge(false);
             }
             snapshot.forEach((doc) => {
-                    if (doc.id != "Total") {
+                    if (doc.id != "Total" && doc.id != "Bonus") {
                         newData.push({ x: doc.data().category , y: doc.data().expenses }); 
                     }
                 }

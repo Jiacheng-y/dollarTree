@@ -11,10 +11,11 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { Provider } from 'react-redux';
 import { store } from './src/Store';
 import React, { useState } from 'react';
-import TreeScreen from './src/Screens/TreeScreen';
 import { SetDateScreen } from './src/Screens/SetDateScreen';
 import { ChangeExpensesScreen } from './src/Screens/ChangeExpenseScreen';
 import { ChangeBudgetScreen } from './src/Screens/ChangeBudgetScreen';
+import GardenScreen from './src/Screens/Game/GardenScreen';
+import { StoreScreen } from './src/Screens/Game/StoreScreen';
 
 export default App = () => {
   return (
@@ -39,6 +40,7 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const Tabs = () => {
+
   return (
     <Tab.Navigator 
       screenOptions={({ route }) => ({
@@ -51,7 +53,7 @@ const Tabs = () => {
             iconName = "money-check";
           } else if (route.name === 'Expenses') {
             iconName = "dollar-sign";
-          } else if (route.name === 'Tree') {
+          } else if (route.name === 'Garden') {
             iconName = "tree";
           }
 
@@ -68,7 +70,7 @@ const Tabs = () => {
         options={{ headerShown: false }}/>
       <Tab.Screen name="Insights" component={InsightsNavigator}
         options={{ headerShown: false }}/>
-      <Tab.Screen name="Tree" component={TreeScreen} 
+      <Tab.Screen name="Garden" component={GameNavigator} 
         options={{ headerShown: false }}/>
     </Tab.Navigator>
     );
@@ -139,6 +141,23 @@ const InsightsNavigator = () => {
           <Stack.Screen
               name="Select Month and Year"
               component={SetDateScreen}
+              options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+  );
+};
+
+const GameNavigator = () => {
+  return (
+    <Stack.Navigator>
+          <Stack.Screen
+              name="Garden"
+              component={GardenScreen}
+              options={{ headerShown: false }}
+          />
+          <Stack.Screen
+              name="Store"
+              component={StoreScreen}
               options={{ headerShown: false }}
           />
         </Stack.Navigator>

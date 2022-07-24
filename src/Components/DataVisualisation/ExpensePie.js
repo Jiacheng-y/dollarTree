@@ -51,7 +51,7 @@ export const ExpensePie = ({year, month}) => {
             }
 
             snapshot.forEach((doc) => {
-                if (doc.data().expenses > 0) {
+                if (doc.data().expenses > 0 && doc.id != "Bonus") {
                     newData.push({ x: doc.data().category , y: doc.data().expenses }); 
                 }
             })
