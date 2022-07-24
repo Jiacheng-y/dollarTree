@@ -36,7 +36,7 @@ export const Coin = () => {
             const difference = doc.data().total - ref.current; 
             const myInterval = setInterval(() => {
                 if (shouldUpdate.current) {
-                    if (ref.current >= doc.data().total) {
+                    if (ref.current == doc.data().total) {
                         clearInterval(myInterval);
                     } else {
                         ref.current += parseInt(difference / 5);
