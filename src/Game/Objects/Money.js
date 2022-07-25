@@ -48,7 +48,7 @@ export default (world, color, pos, size) => {
         {label: 'Money'},
     )
     
-    // add initial bird to the world 
+    // add initial coin to the world 
     Matter.World.add(world, initialMoney)
 
     return {

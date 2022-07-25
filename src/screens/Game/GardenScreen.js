@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Pressable, Text, Platform, StatusBar, Dimensions } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { StyleSheet, View, Pressable, Text, Platform, StatusBar, Dimensions, FlatList, ScrollView, SafeAreaView } from 'react-native';
+import { collection, query, onSnapshot,  } from 'firebase/firestore';
+import { db, auth } from "../../Firebase";
 import { GameEngine } from "react-native-game-engine";
 import Entities from '../../Game/Entities';
 import physics from '../../Game/Systems/physics';
@@ -8,7 +10,7 @@ import { Coin } from '../../Game/Components/Coin';
 import { IOSStatusBar } from '../../Components/IOSStatusBar';
 import { monthName } from '../../Functions/monthName';
 import { signOutEmailPassword } from '../AuthScreen';
-import { auth } from '../../Firebase';
+import Tree from '../../Game/Objects/Tree';
 
 
 // colour scheme: #19635b, #33765d, #4d8680, #669792, #80a9a4, #99bab6, #b3bc8, #ccdcdb, #e6eeed
@@ -19,14 +21,42 @@ export default function GardenScreen({navigation}) {
     const [month, setMonth] = useState(new Date().getMonth() + 1);
     const [user, setUser] = useState(auth.currentUser.uid);
     const [userEmail, setUserEmail] = useState("");
+    const [trees, setTrees] = useState([]);
+
+    //listener for changes in trees planted
+    useEffect(() => {
+      const q = collection(db, "users", `${user}` , "Garden", `${year}`, `${month}`);
+      const treeQuery = query(q);
+
+      const subscriber = onSnapshot(treeQuery, (snapshot) => {
+          const trees = [];
+
+          snapshot.forEach(doc => {
+              if (doc.data().number > 0) {
+                for (i = 0; i < doc.data().number; i++) {
+                  trees.push(doc.data().name)
+                }
+              } else {
+                trees.push(doc.data().name)
+              }
+          });
+
+          setTrees(trees);
+      });
+
+      return () => {
+          subscriber();
+      }
+  }, [month, year]);
+
 
     return (
       <GameEngine
+        //keeps a reference of the game engine under this.engine
         style={styles.container}
         systems={[physics, createBox]} // functions called on every tick (update/re-start of game loop)
         entities={Entities()}
       >
-
         { Platform.OS === 'ios' 
             ? <IOSStatusBar color="#e8f4ea"/>
             : <StatusBar backgroundColor="#e8f4ea"/>
@@ -84,12 +114,36 @@ export default function GardenScreen({navigation}) {
         }
 
         <Pressable
-          style={styles.storeButton}
-          onPress={() => { 
-              navigation.navigate('Store');
-          }}>
-          <Text style={styles.buttonText}>Store</Text>
-        </Pressable>
+            style={styles.storeButton}
+            onPress={() => { 
+                navigation.navigate('Garden Insights');
+            }}>
+            <Text style={styles.buttonText}>Trees Planted</Text>
+          </Pressable>
+
+          <Pressable
+            style={styles.storeButton}
+            onPress={() => { 
+                navigation.navigate('Store');
+            }}>
+            <Text style={styles.buttonText}>Store</Text>
+          </Pressable>
+          
+            <FlatList
+              //list of trees planted 
+              //(render tree component according to docs listener)
+              data={trees}
+              renderItem={({ item }) => (
+                <View style={{ flex: 1, flexDirection: 'column', margin: 1 }}>
+                  <Tree
+                  engine = {this.engine}
+                  tree = {item} />
+                </View>
+              )}
+              //Setting the number of column
+              numColumns={3}
+              keyExtractor={(item, index) => index}
+            />
 
       </GameEngine>
     );

@@ -3,7 +3,7 @@ import { StyleSheet, Pressable, Text, Image, Alert, Dimensions, View } from 'rea
 import { useNavigation } from '@react-navigation/native';
 import { gardenImages } from '../../Images/Garden/gardenImages';
 import { db, auth } from '../../Firebase';
-import { collection, addDoc, doc, getDoc, setDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, getDoc, setDoc, increment } from 'firebase/firestore';
 
 export const StoreEntry = ({item, price}) => { 
     const navigation = useNavigation();
@@ -33,7 +33,12 @@ export const StoreEntry = ({item, price}) => {
                             await addDoc(gardenCollection, {
                                 name: item,
                             })
-    
+
+                            const docRef = doc(db, "users", `${thisUserID}`, "Garden", `${new Date().getFullYear()}`, `${new Date().getMonth() + 1}`, "Total");
+                            const docSnap = await setDoc(docRef, {
+                                total: increment(1)
+                            });
+                            
                             setTimeout(() => {
                                 navigation.navigate("Garden");
                             }, 375)

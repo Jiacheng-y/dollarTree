@@ -1,12 +1,12 @@
 export const gardenImages = {
-    "Orange Tree": require("./orange-tree.jpg"),
-    "Oak Tree": require("./oak-tree.jpg"),
-    "Autumn Tree": require("./autumn-tree.jpg"),
-    "Cherry Blossom Tree": require("./cherry-blossom-tree.jpg"),
-    "Rose Bush": require("./rose-bush.jpg"),
-    "Lavender": require("./lavender.jpg"),
-    "Palm Tree": require("./palm-tree.jpg"),
-    "Daisies": require("./daisies.jpg"),
-    "Swing": require("./swing.jpg"),
+    "Orange Tree": require("./orange-tree.png"),
+    "Oak Tree": require("./oak-tree.png"),
+    "Autumn Tree": require("./autumn-tree.png"),
+    "Cherry Blossom Tree": require("./cherry-blossom-tree.png"),
+    "Rose Bush": require("./rose-bush.png"),
+    "Lavender": require("./lavender.png"),
+    "Palm Tree": require("./palm-tree.png"),
+    "Daisies": require("./daisies.png"),
+    "Swing": require("./swing.png"),
 
 }

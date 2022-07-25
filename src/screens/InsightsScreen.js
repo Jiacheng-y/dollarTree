@@ -1,4 +1,4 @@
-import { Pressable, Text, StyleSheet, ScrollView, Dimensions, Platform, View, ImageBackground } from 'react-native';
+import { Pressable, Text, StyleSheet, ScrollView, Dimensions, Platform, View, ImageBackground, StatusBar } from 'react-native';
 import React, { useState } from 'react';
 import { ExpensePie } from '../Components/DataVisualisation/ExpensePie';
 import { signOutEmailPassword } from './AuthScreen';

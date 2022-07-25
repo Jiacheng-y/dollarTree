@@ -17,6 +17,7 @@ import { ChangeBudgetScreen } from './src/Screens/ChangeBudgetScreen';
 import GardenScreen from './src/Screens/Game/GardenScreen';
 import { StoreScreen } from './src/Screens/Game/StoreScreen';
 import { SelectUserScreen } from './src/Screens/Game/SelectUserScreen';
+import  GardenInsightsScreen from './src/Screens/Game/GardenInsightsScreen';
 
 export default App = () => {
   return (
@@ -148,6 +149,23 @@ const InsightsNavigator = () => {
   );
 };
 
+const GardenInsightsNavigator = () => {
+  return (
+    <Stack.Navigator>
+          <Stack.Screen
+              name="Garden Insights"
+              component={GardenInsightsScreen}
+              options={{ headerShown: false }}
+          />
+          <Stack.Screen
+              name="Select Month and Year"
+              component={SetDateScreen}
+              options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+  );
+};
+
 const GameNavigator = () => {
   return (
     <Stack.Navigator>
@@ -169,6 +187,11 @@ const GameNavigator = () => {
           <Stack.Screen
               name="Select User"
               component={SelectUserScreen}
+              options={{ headerShown: false }}
+          />
+          <Stack.Screen
+              name="Garden Insights"
+              component={GardenInsightsNavigator}
               options={{ headerShown: false }}
           />
         </Stack.Navigator>
