@@ -1,13 +1,15 @@
 import { Text, StyleSheet, TextInput, Pressable, View, Dimensions, Platform, StatusBar } from "react-native";
 import React, { useState, useEffect } from 'react';
 import { db, auth } from "../Firebase";
-import { collection, updateDoc, query, getDocs, where, setDoc, getDoc, doc} from "firebase/firestore";
+import { collection, updateDoc, query, getDocs, where, addDoc, getDoc, doc} from "firebase/firestore";
 import { DatePicker } from "../Components/Pickers/DatePicker";
 import { CategoryPicker } from "../Components/Pickers/CategoryPicker";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { EvilIcons } from '@expo/vector-icons'; 
 import { MaterialIcons } from '@expo/vector-icons';
 import { IOSStatusBar } from "../Components/IOSStatusBar";
+import { deleteItem } from "./ExpensesScreen";
+import { addItem } from "./EditExpensesScreen";
 
 export const ChangeExpensesScreen = ({ navigation, route }) => {
     const { data } = route.params;
@@ -30,41 +32,62 @@ export const ChangeExpensesScreen = ({ navigation, route }) => {
 
     const changeItem = async (object) => {
         try {
-            await updateDoc(doc(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`, `${data.id}`), {
-                date: object.date,
-                description: object.description,
-                amount: parseFloat(parseFloat(object.amount).toFixed(2)),
-                category: object.category
-            }); 
-    
-            const q = query(collection(db, "users", `${thisUserID}`, "budgets", `${date.getFullYear()}`, `${date.getMonth() + 1}`), where("category", "==", object.category));
-            const querySnapshot = await getDocs(q);
+            // if month or year of date is changed, delete original document and create a new document
+            // hence changes to other fields do not matter
+            const ogDateArr = data.date.split("/");
+            if (ogDateArr[1] != date.getMonth() + 1 || ogDateArr[2] != date.getFullYear()) {
+                deleteItem(data.id, ogDateArr[2], ogDateArr[1]);
+                addItem(object, date);
+            } else {
+                // update original document with new fields 
+                await updateDoc(doc(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`, `${data.id}`), {
+                    date: object.date,
+                    description: object.description,
+                    amount: parseFloat(parseFloat(object.amount).toFixed(2)),
+                    category: object.category
+                }); 
 
-            querySnapshot.forEach(async (doc) => {
-                // if category was changed, add expense to new category
-                var newExpense;
-                if (object.category != data.category) {
-                    newExpense = doc.data().expenses + parseFloat(parseFloat(object.amount).toFixed(2));
-                } else {
-                    newExpense = parseFloat((doc.data().expenses - data.amount + parseFloat(parseFloat(object.amount).toFixed(2))).toFixed(2));
-                }
-                 await updateDoc(doc.ref, { expenses: newExpense });
-            });
-
-            const docRef = doc(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`, "Total");
-            const docSnap = await getDoc(docRef); 
-            await updateDoc(docRef, {
-                total: docSnap.data().total - data.amount + parseFloat(parseFloat(object.amount).toFixed(2))
-            });
-
-            // if category was changed, deduct expense from old category
-            if (object.category != data.category) {
-                const ogCat = query(collection(db, "users", `${thisUserID}`, "budgets", `${date.getFullYear()}`, `${date.getMonth() + 1}`), where("category", "==", data.category));
-                const ogCatSnapshot = await getDocs(ogCat);
-                ogCatSnapshot.forEach(async (doc) => {
-                    const newExpense = parseFloat((doc.data().expenses - data.amount).toFixed(2));
-                    await updateDoc(doc.ref, { expenses: newExpense });  
+                // update total expenses document (simply remains if the amount field is not changed)
+                const docRef = doc(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`, "Total");
+                const docSnap = await getDoc(docRef); 
+                await updateDoc(docRef, {
+                    total: docSnap.data().total - data.amount + parseFloat(parseFloat(object.amount).toFixed(2))
                 });
+
+                // update total spent amount under budget categories
+                const q = query(collection(db, "users", `${thisUserID}`, "budgets", `${date.getFullYear()}`, `${date.getMonth() + 1}`), where("category", "==", object.category));
+                const querySnapshot = await getDocs(q);
+
+                // if user changes the category to Others without having first created an Others budget category (by creating an Others expense entry)
+                if (querySnapshot.empty) {
+                    await addDoc(collection(db, "users", `${thisUserID}`, "budgets", `${date.getFullYear()}`, `${date.getMonth() + 1}`), {
+                        date: `${date.getMonth() + 1}`, 
+                        category: object.category,
+                        amount: 0, 
+                        expenses: parseFloat(parseFloat(object.amount).toFixed(2))
+                    }); 
+                }
+
+                querySnapshot.forEach(async (doc) => {
+                    // if category was changed, add expense to new category
+                    var newExpense;
+                    if (object.category != data.category) {
+                        newExpense = doc.data().expenses + parseFloat(parseFloat(object.amount).toFixed(2));
+                    } else {
+                        newExpense = parseFloat((doc.data().expenses - data.amount + parseFloat(parseFloat(object.amount).toFixed(2))).toFixed(2));
+                    }
+                    await updateDoc(doc.ref, { expenses: newExpense });
+                });
+
+                // if category was changed, deduct expense from old category
+                if (object.category != data.category) {
+                    const ogCat = query(collection(db, "users", `${thisUserID}`, "budgets", `${date.getFullYear()}`, `${date.getMonth() + 1}`), where("category", "==", data.category));
+                    const ogCatSnapshot = await getDocs(ogCat);
+                    ogCatSnapshot.forEach(async (doc) => {
+                        const newExpense = parseFloat((doc.data().expenses - data.amount).toFixed(2));
+                        await updateDoc(doc.ref, { expenses: newExpense });  
+                    });
+                }
             }
         } catch (error) {
             console.log(error);

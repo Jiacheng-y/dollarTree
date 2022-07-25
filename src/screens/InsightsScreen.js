@@ -1,7 +1,6 @@
 import { Pressable, Text, StyleSheet, ScrollView, Dimensions, Platform, View, ImageBackground, StatusBar } from 'react-native';
 import React, { useState } from 'react';
 import { ExpensePie } from '../Components/DataVisualisation/ExpensePie';
-import { signOutEmailPassword } from './AuthScreen';
 import { IOSStatusBar } from '../Components/IOSStatusBar';
 import { monthName } from '../Functions/monthName';
 import { ThreeMonth } from '../Components/DataVisualisation/ThreeMonth';

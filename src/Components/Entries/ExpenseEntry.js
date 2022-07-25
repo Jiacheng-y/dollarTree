@@ -6,7 +6,7 @@ import { monthName } from '../../Functions/monthName';
 
 export const ExpenseEntry = ({data, onDelete}) => {
     const DeleteIcon = () => (
-        <TouchableOpacity onPress={() => onDelete(data.id)}>
+        <TouchableOpacity onPress={() => onDelete()}>
             <MaterialIcons name="delete" size={28} color="#0F3091" />
         </TouchableOpacity>
     );

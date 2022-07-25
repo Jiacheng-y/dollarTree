@@ -52,31 +52,6 @@ export const ExpensesScreen = ({ navigation }) => {
         });
         return () => { unsubscribe(); }
     }, [month, year]);
-
-    const deleteItem = async (id) => {
-        try {
-            const toDeleteDoc = await getDoc(doc(db, "users", `${thisUserID}`, "Expenses", `${year}`, `${month}`, `${id}`));
-            const deleteAmount = toDeleteDoc.data().amount;
-            const deleteCategory = toDeleteDoc.data().category;
-            
-            const q = query(collection(db, "users", `${thisUserID}`, "budgets", `${year}`, `${month}`), where("category", "==", deleteCategory));
-            const querySnapshot = await getDocs(q);
-            querySnapshot.forEach(async (doc) => {
-                 const newExpense = parseFloat((doc.data().expenses - deleteAmount).toFixed(2));
-                 await updateDoc(doc.ref, { expenses: newExpense }); 
-            });
-
-            const docRef = doc(db, "users", `${thisUserID}`, "Expenses", `${year}`, `${month}`, "Total");
-            const docSnap = await getDoc(docRef); 
-            await setDoc(docRef, {
-                    total: parseFloat((docSnap.data().total - deleteAmount).toFixed(2))
-                });
-            
-            await deleteDoc(toDeleteDoc.ref);
-        } catch (error) {
-            console.log(error);
-        } 
-    }
     
     return (
         <View style={{backgroundColor: 'white', flex: 1}}>
@@ -121,7 +96,7 @@ export const ExpensesScreen = ({ navigation }) => {
                     renderItem={({item}) => (
                         <ExpenseEntry
                             data={item}
-                            onDelete={deleteItem}>
+                            onDelete={() => deleteItem(item.id, year, month)}>
                         </ExpenseEntry>
                     )} 
                     style={styles.listContainer}
@@ -215,3 +190,28 @@ const styles = StyleSheet.create({
 
 // further enhancements: 
 // image background loads slower
+
+export const deleteItem = async (id, year, month) => {
+    try {
+        const toDeleteDoc = await getDoc(doc(db, "users", `${auth.currentUser.uid}`, "Expenses", `${year}`, `${month}`, `${id}`));
+        const deleteAmount = toDeleteDoc.data().amount;
+        const deleteCategory = toDeleteDoc.data().category;
+        
+        const q = query(collection(db, "users", `${auth.currentUser.uid}`, "budgets", `${year}`, `${month}`), where("category", "==", deleteCategory));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach(async (doc) => {
+             const newExpense = parseFloat((doc.data().expenses - deleteAmount).toFixed(2));
+             await updateDoc(doc.ref, { expenses: newExpense }); 
+        });
+
+        const docRef = doc(db, "users", `${auth.currentUser.uid}`, "Expenses", `${year}`, `${month}`, "Total");
+        const docSnap = await getDoc(docRef); 
+        await setDoc(docRef, {
+                total: parseFloat((docSnap.data().total - deleteAmount).toFixed(2))
+            });
+        
+        await deleteDoc(toDeleteDoc.ref);
+    } catch (error) {
+        console.log(error);
+    } 
+}
