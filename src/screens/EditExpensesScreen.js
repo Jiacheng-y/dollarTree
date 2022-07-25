@@ -22,7 +22,8 @@ export const EditExpensesScreen = ({ navigation }) => {
     // For coin animation
     const [show, setShow] = useState(false);
     const coinImage = require("../Images/Coin.png");
-    const moveAnim = useRef(new Animated.ValueXY({x: 208, y: -45})).current; 
+    const befX = Dimensions.get('window').width / 2;
+    const moveAnim = useRef(new Animated.ValueXY({x: befX, y: -45})).current; 
     const X = 25;
     const Y = -475; 
 

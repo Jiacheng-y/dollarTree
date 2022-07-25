@@ -34,7 +34,8 @@ export const EditBudgetScreen = ({ route, navigation }) => {
     // For coin animation
     const [show, setShow] = useState(false);
     const coinImage = require("../Images/Coin.png");
-    const moveAnim = useRef(new Animated.ValueXY({x: 210, y: -50})).current; 
+    const befX = Dimensions.get('window').width / 2;
+    const moveAnim = useRef(new Animated.ValueXY({x: befX, y: -50})).current; 
     const X = 25;
     const Y = -450; 
 
