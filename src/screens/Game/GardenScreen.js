@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, View, Pressable, Text, Platform, StatusBar, Dimensions, FlatList, ScrollView, SafeAreaView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Pressable, Text, Platform, StatusBar, Dimensions, FlatList } from 'react-native';
 import { collection, query, onSnapshot,  } from 'firebase/firestore';
 import { db, auth } from "../../Firebase";
 import { GameEngine } from "react-native-game-engine";
@@ -113,37 +113,37 @@ export default function GardenScreen({navigation}) {
               </Pressable>
         }
 
-        <Pressable
-            style={styles.storeButton}
+          {/* <Pressable
+            style={styles.plantedButton}
             onPress={() => { 
                 navigation.navigate('Garden Insights');
             }}>
             <Text style={styles.buttonText}>Trees Planted</Text>
-          </Pressable>
-
-          <Pressable
-            style={styles.storeButton}
-            onPress={() => { 
-                navigation.navigate('Store');
-            }}>
-            <Text style={styles.buttonText}>Store</Text>
-          </Pressable>
+          </Pressable> */}
           
-            <FlatList
-              //list of trees planted 
-              //(render tree component according to docs listener)
-              data={trees}
-              renderItem={({ item }) => (
-                <View style={{ flex: 1, flexDirection: 'column', margin: 1 }}>
-                  <Tree
-                  engine = {this.engine}
-                  tree = {item} />
-                </View>
-              )}
-              //Setting the number of column
-              numColumns={3}
-              keyExtractor={(item, index) => index}
-            />
+        <FlatList
+          //list of trees planted 
+          //(render tree component according to docs listener)
+          data={trees}
+          renderItem={({ item }) => (
+            <View style={{ flex: 1, flexDirection: 'column', margin: 1 }}>
+              <Tree
+              engine = {this.engine}
+              tree = {item} />
+            </View>
+          )}
+          //Setting the number of column
+          numColumns={3}
+          keyExtractor={(item, index) => index}
+        />
+
+        <Pressable
+          style={styles.storeButton}
+          onPress={() => { 
+              navigation.navigate('Store');
+          }}>
+          <Text style={styles.buttonText}>Store</Text>
+        </Pressable>
 
       </GameEngine>
     );
@@ -160,10 +160,19 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     height: 50,
     justifyContent: 'center',
-    marginTop: Dimensions.get('window').height - 340,
     alignSelf: 'center',
+    marginBottom: 5
 
   },
+  // plantedButton: {
+  //   backgroundColor: '#4d8680',
+  //   width: 370,
+  //   borderRadius: 8,
+  //   height: 50,
+  //   justifyContent: 'center',
+  //   marginTop: Dimensions.get('window').height - 440,
+  //   alignSelf: 'center',
+  // },
   buttonText: {
     alignSelf: 'center',
     color: "white",

@@ -1,6 +1,6 @@
 import React from "react";
 import { Image } from 'react-native';
-import { TouchableOpacity } from "react-native-web";
+import { TouchableOpacity } from "react-native";
 import { gardenImages } from "../../Images/Garden/gardenImages";
 
 export default Tree = (props) => {
