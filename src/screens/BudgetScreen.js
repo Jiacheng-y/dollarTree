@@ -31,9 +31,10 @@ export const BudgetScreen = ({ navigation }) => {
     // For coin animation
     const [show, setShow] = useState(false);
     const coinImage = require("../Images/Coin.png");
-    const moveAnim = useRef(new Animated.ValueXY({x: 300, y: 100})).current; 
-    const X = 25;
-    const Y = -740; 
+    const befX = Dimensions.get('window').width;
+    const moveAnim = useRef(new Animated.ValueXY({x: befX, y: 0})).current; 
+    const X = -103;
+    const Y = 0.75; 
 
     const move = (value) => {
         Animated.timing(moveAnim, {
@@ -163,9 +164,20 @@ export const BudgetScreen = ({ navigation }) => {
                 resizeMode="cover"
                 style={styles.image}
             >
-                <Coin
-                    
-                />
+                <View style={{flexDirection: 'row'}}>
+                    <Coin/>
+    
+                    {
+                        show 
+                        ? <Animated.Image
+                            source={coinImage}
+                            style={[styles.coinImage, animatedStyle]}
+                            />
+                        : <View />
+                    }      
+
+                </View>
+                 
 
                 <View style={{flexDirection: 'row', marginTop: 15}}>
                     <Text style={styles.date}>{monthName(month) + " " + year + " Budget"}</Text>
@@ -215,15 +227,6 @@ export const BudgetScreen = ({ navigation }) => {
                     }
                     //onPressIn={()  => controlOpacity(0.1)}
                 />
-
-                {
-                    show 
-                    ? <Animated.Image
-                        source={coinImage}
-                        style={[styles.coinImage, animatedStyle]}
-                        />
-                    : <View />
-                }
             </ImageBackground>
         </View>
     );
@@ -284,6 +287,7 @@ const styles = StyleSheet.create({
     },
     coinImage: {
         height: 30,
-        width: 30
+        width: 30,
+        marginTop: -3
     }
 })
