@@ -42,57 +42,12 @@ export const EditExpensesScreen = ({ navigation }) => {
             }, 375);
             setShow(false);
         });
-}
+    }
     
     const animatedStyle = {
         transform: moveAnim.getTranslateTransform()
     }
     // For coin animation
-
-    const addItem = async (object) => {
-        try {
-            setShow(true);
-            move();
-
-            await addDoc(collection(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`), {
-                date: object.date,
-                description: object.description,
-                amount: parseFloat(parseFloat(object.amount).toFixed(2)),
-                category: object.category
-            }); 
-    
-            const q = query(collection(db, "users", `${thisUserID}`, "budgets", `${date.getFullYear()}`, `${date.getMonth() + 1}`), where("category", "==", object.category));
-            const querySnapshot = await getDocs(q);
-            
-            if (querySnapshot.empty) {
-                await addDoc(collection(db, "users", `${thisUserID}`, "budgets", `${date.getFullYear()}`, `${date.getMonth() + 1}`), {
-                    date: `${date.getMonth() + 1}`, 
-                    category: object.category,
-                    amount: 0, 
-                    expenses: parseFloat(parseFloat(object.amount).toFixed(2))
-                }); 
-            }
-
-            querySnapshot.forEach(async (doc) => {
-                 const newExpense = doc.data().expenses + parseFloat(parseFloat(object.amount).toFixed(2));
-                 await updateDoc(doc.ref, { expenses: newExpense });  
-            });
-
-            const docRef = doc(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`, "Total");
-            const docSnap = await getDoc(docRef); 
-            if (docSnap.exists()) {
-                await setDoc(docRef, {
-                    total: parseFloat(parseFloat(object.amount).toFixed(2)) + docSnap.data().total 
-                });
-            } else {
-                await setDoc(docRef, {
-                    total: parseFloat(parseFloat(object.amount).toFixed(2))
-                });
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    }
 
     return (
         <View style={{backgroundColor: 'white', flex: 1,}}>
@@ -164,7 +119,9 @@ export const EditExpensesScreen = ({ navigation }) => {
                 <Pressable
                     style={styles.button}
                     onPress={() => { 
-                        addItem({date: formattedDate, description: description, amount: amount, category: category});
+                        setShow(true);
+                        move();
+                        addItem({date: formattedDate, description: description, amount: amount, category: category}, date);
                         setDescription('');
                         setAmount('');
                         setDate(new Date());
@@ -237,4 +194,48 @@ const styles = StyleSheet.create({
         width: 30
     }
 })
+
+export const addItem = async (object, date) => {
+    try {
+        const thisUserID = auth.currentUser.uid;
+
+        await addDoc(collection(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`), {
+            date: object.date,
+            description: object.description,
+            amount: parseFloat(parseFloat(object.amount).toFixed(2)),
+            category: object.category
+        }); 
+
+        const q = query(collection(db, "users", `${thisUserID}`, "budgets", `${date.getFullYear()}`, `${date.getMonth() + 1}`), where("category", "==", object.category));
+        const querySnapshot = await getDocs(q);
+        
+        if (querySnapshot.empty) {
+            await addDoc(collection(db, "users", `${thisUserID}`, "budgets", `${date.getFullYear()}`, `${date.getMonth() + 1}`), {
+                date: `${date.getMonth() + 1}`, 
+                category: object.category,
+                amount: 0, 
+                expenses: parseFloat(parseFloat(object.amount).toFixed(2))
+            }); 
+        }
+
+        querySnapshot.forEach(async (doc) => {
+             const newExpense = doc.data().expenses + parseFloat(parseFloat(object.amount).toFixed(2));
+             await updateDoc(doc.ref, { expenses: newExpense });  
+        });
+
+        const docRef = doc(db, "users", `${thisUserID}`, "Expenses", `${date.getFullYear()}`, `${date.getMonth() + 1}`, "Total");
+        const docSnap = await getDoc(docRef); 
+        if (docSnap.exists()) {
+            await setDoc(docRef, {
+                total: parseFloat(parseFloat(object.amount).toFixed(2)) + docSnap.data().total 
+            });
+        } else {
+            await setDoc(docRef, {
+                total: parseFloat(parseFloat(object.amount).toFixed(2))
+            });
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
 
