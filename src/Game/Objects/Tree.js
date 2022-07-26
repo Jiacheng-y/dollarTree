@@ -13,7 +13,7 @@ export default Tree = (props) => {
             onPress = {() => {
                 props.engine.dispatch({ type: "shake-tree", })
             }}>
-            <Image style={{ position: 'absolute', }} resizeMode="contain" source={tree} />
+            <Image style={{ position: 'absolute', }} resizeMode="stretch" source={tree} />
         </TouchableOpacity>
             
     )

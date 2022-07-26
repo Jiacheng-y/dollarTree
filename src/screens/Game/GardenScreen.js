@@ -53,6 +53,7 @@ export default function GardenScreen({navigation}) {
     return (
       <GameEngine
         //keeps a reference of the game engine under this.engine
+        ref={(ref) => { this.engine = ref; }}
         style={styles.container}
         systems={[physics, createBox]} // functions called on every tick (update/re-start of game loop)
         entities={Entities()}
@@ -126,10 +127,11 @@ export default function GardenScreen({navigation}) {
           //(render tree component according to docs listener)
           data={trees}
           renderItem={({ item }) => (
-            <View style={{ flex: 1, flexDirection: 'column', margin: 1 }}>
+            <View style={{ flex: 1, flexDirection: 'column', margin: 1, width: Dimensions.get("window").width * 0.05, 
+              height: Dimensions.get("window").height * 0.05  }}>
               <Tree
-              engine = {this.engine}
-              tree = {item} />
+              engine={this.engine}
+              tree={item} />
             </View>
           )}
           //Setting the number of column
