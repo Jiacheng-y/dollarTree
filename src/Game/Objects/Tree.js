@@ -26,9 +26,9 @@ export default Tree = (props) => {
     const move = () => {
         Animated.timing(moveAnim, {
             toValue: {x: aftX, y: aftY},
-            timing: 5000,
+            timing: 2000,
             useNativeDriver: true
-        }).start(async () => {
+        }).start(() => {
             showRef.current = false;
             setShow(false);
         });
@@ -43,8 +43,8 @@ export default Tree = (props) => {
         <TouchableOpacity
             onPress = {() => {
                 //props.engine.dispatch({ type: "shake-tree"})
-                setShow(true)
                 showRef.current = true
+                setShow(true)
                 move()
             }}
             style={{
