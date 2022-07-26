@@ -1,6 +1,7 @@
 import Matter from "matter-js";
 import React from "react";
-import Svg, { Polygon } from 'react-native-svg';
+import { Dimensions } from "react-native";
+import Svg, { Rect } from 'react-native-svg';
 
 const LandRenderer = (props) => {
 
@@ -17,7 +18,14 @@ const LandRenderer = (props) => {
     // return the Land component as it should look
     return(
         <Svg>
-            <Polygon
+            <Rect
+                x={Dimensions.get('window').width / 2 - Dimensions.get('window').width * 0.45}
+                y={Dimensions.get('window').height / 2 - Dimensions.get('window').width * 0.45}
+                width={Dimensions.get('window').width * 0.9}
+                height={Dimensions.get('window').width * 0.9}
+                fill="#669792"
+            />
+            {/* <Polygon
                 points={
                     `${xBody + widthBody/2}`+ "," + `${yBody}` + " " + 
                     `${xBody}`+ "," + `${yBody + heightBody/2}` + " " +
@@ -28,7 +36,7 @@ const LandRenderer = (props) => {
                 fill="#4d8680"
                 stroke="#4d8680"
                 strokeWidth="5"
-            />
+            /> */}
         </Svg>
     )
 }
@@ -47,8 +55,6 @@ export default function Land(world, color, pos, size) {
             isStatic: true
         }
     )
-
-    Matter.Body.rotate(initialLand, 45)
     
     // add initial Land to world
     Matter.World.add(world, initialLand)

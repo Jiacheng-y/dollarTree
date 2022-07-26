@@ -34,7 +34,7 @@ export const StoreEntry = ({item, price}) => {
                                 name: item,
                             })
 
-                            const docRef = doc(db, "users", `${thisUserID}`, "Garden", `${new Date().getFullYear()}`, `${new Date().getMonth() + 1}`, "Total");
+                            const docRef = doc(db, "users", `${auth.currentUser.uid}`, "Garden", `${new Date().getFullYear()}`, `${new Date().getMonth() + 1}`, "Total");
                             const docSnap = await setDoc(docRef, {
                                 total: increment(1)
                             });

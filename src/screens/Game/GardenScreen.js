@@ -40,14 +40,13 @@ export default function GardenScreen({navigation}) {
                 trees.push(doc.data().name)
               }
           });
-
           setTrees(trees);
       });
 
       return () => {
           subscriber();
       }
-  }, [month, year]);
+  }, [month, year, user]);
 
 
     return (
@@ -121,23 +120,23 @@ export default function GardenScreen({navigation}) {
             }}>
             <Text style={styles.buttonText}>Trees Planted</Text>
           </Pressable> */}
-          
-        <FlatList
-          //list of trees planted 
-          //(render tree component according to docs listener)
-          data={trees}
-          renderItem={({ item }) => (
-            <View style={{ flex: 1, flexDirection: 'column', margin: 1, width: Dimensions.get("window").width * 0.05, 
-              height: Dimensions.get("window").height * 0.05  }}>
-              <Tree
-              engine={this.engine}
-              tree={item} />
-            </View>
-          )}
-          //Setting the number of column
-          numColumns={3}
-          keyExtractor={(item, index) => index}
-        />
+
+        <View style={styles.listContainer}>
+          <FlatList
+            //list of trees planted 
+            //(render tree component according to docs listener)
+            data={trees}
+            renderItem={({ item }) => (
+                <Tree
+                engine={this.engine}
+                tree={item} />
+            )}
+            //Setting the number of column
+            numColumns={5}
+            keyExtractor={(item, index) => index}
+            // scrollEnabled={false}
+          />
+        </View>
 
         <Pressable
           style={styles.storeButton}
@@ -163,8 +162,14 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignSelf: 'center',
-    marginBottom: 5
+    marginTop: 35
 
+  },
+  listContainer: {
+    marginTop: 58,
+    marginLeft: Dimensions.get('window').width / 2 - Dimensions.get('window').width * 0.45,
+    height: Dimensions.get('window').width * 0.9,
+    width: Dimensions.get('window').width * 0.9,
   },
   // plantedButton: {
   //   backgroundColor: '#4d8680',

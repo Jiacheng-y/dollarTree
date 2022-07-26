@@ -10,10 +10,16 @@ export default Tree = (props) => {
     // return the Tree component as it should look
     return(
         <TouchableOpacity 
-            onPress = {() => {
-                props.engine.dispatch({ type: "shake-tree", })
-            }}>
-            <Image style={{ position: 'absolute', width: Dimensions.width * 0.1, height: Dimensions.height * 0.1}} resizeMode="stretch" source={tree} />
+            style={{
+                width: Dimensions.get('window').width * 0.18,
+                height: 100,
+                justifyContent: 'center'
+            }}
+            // onPress = {() => {
+            //     props.engine.dispatch({ type: "shake-tree", })
+            // }}
+        >
+            <Image style={{ width: Dimensions.get('window').width * 0.18, height: Dimensions.get('window').height * 0.18}} resizeMode="contain" source={tree} />
         </TouchableOpacity>
             
     )
