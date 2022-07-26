@@ -1,7 +1,7 @@
 import Matter from "matter-js";
 import React from "react";
 import { Dimensions } from "react-native";
-import Svg, { Rect } from 'react-native-svg';
+import Svg, { Rect, Line } from 'react-native-svg';
 
 const LandRenderer = (props) => {
 

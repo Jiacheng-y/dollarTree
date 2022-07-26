@@ -31,7 +31,7 @@ export const StoreEntry = ({item, price}) => {
     
                             const gardenCollection = collection(db, "users", `${auth.currentUser.uid}` , "Garden", `${new Date().getFullYear()}`, `${new Date().getMonth() + 1}`);
                             await addDoc(gardenCollection, {
-                                name: item,
+                                name: item
                             })
 
                             const docRef = doc(db, "users", `${auth.currentUser.uid}`, "Garden", `${new Date().getFullYear()}`, `${new Date().getMonth() + 1}`, "Total");

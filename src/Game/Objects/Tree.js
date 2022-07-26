@@ -1,18 +1,11 @@
 import { TouchableOpacity } from "react-native";
 import { gardenImages } from "../../Images/Garden/gardenImages";
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
     StyleSheet,
-    Text,
     View,
-    Pressable,
     Dimensions,
-    ImageBackground,
     Image,
-    StatusBar,
-    Platform,
-    FlatList,
-    Alert,
     Animated
 } from 'react-native';
 
@@ -20,21 +13,23 @@ export default Tree = (props) => {
 
     const tree = gardenImages[props.tree];
 
-
     // For coin animation
     const [show, setShow] = useState(false);
-    const coinImage = require("../../../assets/rptrz-ps-transparent-800x400.gif");
-    const befX = Dimensions.get('window').width;
-    const moveAnim = useRef(new Animated.ValueXY({x: befX / 2, y: 0})).current; 
-    const X = befX/ 2;
-    const Y = 500; 
+    const showRef = useRef(false);
+    const coinImage = require("../../Images/Coin.png");
+    const befX = 20
+    const befY = 46;
+    const moveAnim = useRef(new Animated.ValueXY({x: befX, y: befY})).current; 
+    const aftX = befX;
+    const aftY = 92; 
 
-    const move = (value) => {
+    const move = () => {
         Animated.timing(moveAnim, {
-            toValue: {x: X, y: Y},
+            toValue: {x: aftX, y: aftY},
             timing: 5000,
             useNativeDriver: true
         }).start(async () => {
+            showRef.current = false;
             setShow(false);
         });
     }
@@ -49,24 +44,31 @@ export default Tree = (props) => {
             onPress = {() => {
                 //props.engine.dispatch({ type: "shake-tree"})
                 setShow(true)
+                showRef.current = true
                 move()
             }}
             style={{
                 width: Dimensions.get('window').width * 0.18,
-                height: 100,
-                justifyContent: 'center'
+                height: 92,
+                justifyContent: 'center',
             }}
         >
             {
-                show 
+                showRef.current 
                 ? <Animated.Image
                     source={coinImage}
                     style={[styles.coinImage, animatedStyle]}
                     />
                 : <View />
             }
-            <Image style={{ width: Dimensions.get('window').width * 0.18, height: Dimensions.get('window').height * 0.18}} resizeMode="contain" source={tree} />
 
+            <Image 
+                style={{ 
+                    width: Dimensions.get('window').width * 0.18, 
+                    height: Dimensions.get('window').height * 0.15}} 
+                    resizeMode="contain" 
+                    source={tree} 
+            />
         </TouchableOpacity>
             
     )

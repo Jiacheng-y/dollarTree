@@ -23,7 +23,7 @@ export default function GardenScreen({navigation}) {
     const [userEmail, setUserEmail] = useState("");
     const [trees, setTrees] = useState([]);
 
-    //listener for changes in trees planted
+    // listener for changes in trees planted
     useEffect(() => {
       const q = collection(db, "users", `${user}` , "Garden", `${year}`, `${month}`);
       const treeQuery = query(q);
@@ -32,13 +32,7 @@ export default function GardenScreen({navigation}) {
           const trees = [];
 
           snapshot.forEach(doc => {
-              if (doc.data().number > 0) {
-                for (i = 0; i < doc.data().number; i++) {
-                  trees.push(doc.data().name)
-                }
-              } else {
                 trees.push(doc.data().name)
-              }
           });
           setTrees(trees);
       });
@@ -123,18 +117,14 @@ export default function GardenScreen({navigation}) {
 
         <View style={styles.listContainer}>
           <FlatList
-            //list of trees planted 
-            //(render tree component according to docs listener)
             data={trees}
             renderItem={({ item }) => (
                 <Tree
-                engine={this.engine}
-                tree={item} />
+                  tree={item} 
+                />
             )}
-            //Setting the number of column
             numColumns={5}
-            keyExtractor={(item, index) => index}
-            scrollEnabled={false}
+
           />
         </View>
 
