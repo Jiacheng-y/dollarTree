@@ -134,7 +134,7 @@ export default function GardenScreen({navigation}) {
             //Setting the number of column
             numColumns={5}
             keyExtractor={(item, index) => index}
-            // scrollEnabled={false}
+            scrollEnabled={false}
           />
         </View>
 
