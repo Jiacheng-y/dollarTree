@@ -4,27 +4,20 @@ import Money from "../Objects/Money";
 export const createBox = (entities, { touches, dispatch, events, screen }) => {
     let boxIds = 0;
     let world = entities["physics"].world;
-    let boxSize = Math.trunc(Math.max(screen.width, screen.height) * 0.015);
+    let boxSize = 40;
     
-    if (events.length) {
+    //console.log(events);
+
+    if (events.length > 0) {
       for (i = 0; i < events.length; i++) {
         if (events[i].type === "shake-tree") {
           for (i=0;i<3;i++) {
-            let body = Matter.Bodies.rectangle(
-              events[i].pageX,
-              events[i].pageY,
-              boxSize,
-              boxSize,
-              { //optional parameters
-                frictionAir: 0.021,
-                restitution: 1.0
-              }
-            );
+            let coin = Money(world, "white", {x: 50, y: 100 }, {width: 40, height: 40});
         
-            Matter.World.add(world, [body]);
+            Matter.World.add(world, [coin]);
         
             entities[++boxIds] = {
-              body: body,
+              body: coin,
               size: [boxSize, boxSize],
               renderer: Money
             };

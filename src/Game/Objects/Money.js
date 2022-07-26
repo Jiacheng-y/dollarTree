@@ -32,7 +32,7 @@ const Money = (props) => {
 }
 
 // will be called whenever Money is created
-export default (world, color, pos, size) => {
+export default function (world, color, pos, size) {
 
     // the "box" of the Money component
     const initialMoney = Matter.Bodies.rectangle(
