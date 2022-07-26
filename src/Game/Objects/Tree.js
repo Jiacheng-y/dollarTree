@@ -1,5 +1,5 @@
 import React from "react";
-import { Image } from 'react-native';
+import { Dimensions, Image } from 'react-native';
 import { TouchableOpacity } from "react-native";
 import { gardenImages } from "../../Images/Garden/gardenImages";
 
@@ -13,7 +13,7 @@ export default Tree = (props) => {
             onPress = {() => {
                 props.engine.dispatch({ type: "shake-tree", })
             }}>
-            <Image style={{ position: 'absolute', }} resizeMode="contain" source={tree} />
+            <Image style={{ position: 'absolute', width: Dimensions.width * 0.1, height: Dimensions.height * 0.1}} resizeMode="stretch" source={tree} />
         </TouchableOpacity>
             
     )
