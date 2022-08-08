@@ -20,6 +20,7 @@ export const DatePicker = ({date, setDate, placeHolder}) => {
                     mode="date"
                     onChange={(event, date) => {
                         setDate(date);
+                        setToDisplay(false);
                     }}
                 />
             }
