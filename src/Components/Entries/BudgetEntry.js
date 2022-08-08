@@ -43,7 +43,7 @@ export const BudgetEntry = (props) => {
             <View style={styles.progressBar}>
                 {
                     proportion <= 1
-                    ? <View style={[styles.spent, {flex: proportion}]}/>
+                    ? <View style={[styles.spent, {flex: parseFloat(proportion)}]}/>
                     : <View style={styles.overspent}/>
                 }
             </View>
