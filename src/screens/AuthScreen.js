@@ -232,5 +232,4 @@ const styles = StyleSheet.create({
 
 export const signOutEmailPassword = async () => {
     await signOut(auth);
-    setErrorMessage("");
 }
